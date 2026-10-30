@@ -143,8 +143,8 @@ svg text{font-family:var(--mono)}
   <div class="kick">Part I · Why keep it locally</div>
   <h1><span class="n">3.</span> What you keep. <b>What you share.</b></h1>
   <div class="sub">Knowing is different from disclosing. You choose what crosses.</div>
-  <div class="panel" style="left:120px;top:290px;width:560px;height:440px;background:var(--ink);border-color:var(--ink)"><div class="label" style="color:var(--pale);font-size:16px;margin:26px 30px">Your private perspective</div></div>
-  <div class="panel" style="left:920px;top:290px;width:560px;height:440px;border-color:var(--cobalt)"><div class="label" style="color:var(--cobalt);font-size:16px;margin:26px 30px">Shared view</div><div class="label" id="shared-empty" style="color:var(--muted);margin:0 30px">nothing shared yet</div></div>
+  <div class="panel" style="left:120px;top:290px;width:560px;height:440px;background:var(--ink);border-color:var(--ink)"><div class="label" style="color:var(--pale);font-size:16px;margin:26px 30px">Kept on your device</div></div>
+  <div class="panel" style="left:920px;top:290px;width:560px;height:440px;border-color:var(--cobalt)"><div class="label" style="color:var(--cobalt);font-size:16px;margin:26px 30px">Shared with the community</div><div class="label" id="shared-empty" style="color:var(--muted);margin:0 30px;line-height:1.8">Nothing shared yet.<br>Touch a bright line on the left: it crosses as a leaf<br>others can check. The grey ones never move.</div></div>
   <svg width="200" height="40" style="left:700px;top:490px"><line x1="10" y1="20" x2="190" y2="20" stroke="#305BDF" stroke-width="2"/><path d="M180,12 L192,20 L180,28" fill="none" stroke="#305BDF" stroke-width="2"/><text x="100" y="8" text-anchor="middle" font-size="13" fill="#305BDF">CHOSEN</text></svg>
   <div id="keep"></div>
   <div class="hint">Touch something to share it</div>
@@ -156,7 +156,7 @@ svg text{font-family:var(--mono)}
   <div class="frame"></div>
   <div class="kick">Part II · Knowledge, promise, trust</div>
   <h1><span class="n">4.</span> Three different <b>graphs</b></h1>
-  <div class="sub">Knowledge, promises and trust are connected, but not interchangeable.</div>
+  <div class="sub">Knowledge, promises and trust are connected, but not interchangeable. Touch each in turn.</div>
   <div id="graphs"></div>
   <aside class="notes">Click each row in turn. Knowledge: what is known or done. Promise: what is offered and accepted. Trust: the relationship between the two, evidenced. The middle term is never skipped.</aside>
 </section>
@@ -181,7 +181,7 @@ svg text{font-family:var(--mono)}
   <svg id="road" width="1500" height="480" viewBox="0 0 1500 480" style="left:50px;top:200px"></svg>
   <div style="position:absolute;left:62px;top:690px;display:flex;gap:14px;align-items:center"><button class="act" id="thumb-btn" onclick="thumbStep()">👍 Thumb up</button><span class="label" style="color:var(--cobalt)" id="thumb-step">Trust Tasks: small, standard asks between two parties</span></div>
   <div style="position:absolute;right:62px;top:690px;display:flex;gap:8px"><button class="act on" id="tm-h" onclick="thumbMode('h')">As hitchhikers</button><button class="act" id="tm-a" onclick="thumbMode('a')">As agents</button></div>
-  <aside class="notes">Use the thumb as the analogy, then switch to agents: the same five steps. Then the meme: like the thumb and Don't Panic, a trust task is a gesture anyone can read; it flows between communities while each keeps its own graph. Don't panic: you own your own perspective in the trust graph. Trust Tasks (the Trust over IP task force we contribute to) are small, standard requests between parties: vouch for me, show you belong, agree these terms. The Hitchhikers will run their own, local first, on their own node. The thumb up is the first one, and it sets you on an adventure. Zero knowledge is what makes the last step possible: proving your place in someone's guide or community without revealing who you are or who vouched.</aside>
+  <aside class="notes">Use the thumb as the analogy, then switch to agents: the same five steps. Then where it leads: a hitchhiker cooperates on guides and guidance (guiding someone, writing a field guide together, the timebank, the local exchange), and each of these is a trust task, recorded as trust built for the community's verifiable trust agents. Between agents, the same tasks open the data beneath evidence leaves over the Trust Spanning Protocol: for autoresearch challenges, guide quality and governance. Trust Tasks (the Trust over IP task force we contribute to) are small, standard requests between parties: vouch for me, show you belong, agree these terms. The Hitchhikers will run their own, local first, on their own node. The thumb up is the first one, and it sets you on an adventure. Zero knowledge is what makes the last step possible: proving your place in someone's guide or community without revealing who you are or who vouched.</aside>
 </section>
 
 <section class="scene dark" data-part="III" data-sec="Local">
@@ -189,7 +189,7 @@ svg text{font-family:var(--mono)}
   <div class="kick">Part III · Local nodes</div>
   <h1><span class="n">7.</span> A shared world, <b>local nodes</b></h1>
   <div class="sub">Each community hosts its own guides and its own trust, locally, on hardware it owns.</div>
-  <svg id="net" width="1300" height="520" viewBox="0 0 1300 520" style="left:150px;top:270px"></svg>
+  <svg id="net" width="1300" height="540" viewBox="0 0 1300 540" style="left:150px;top:260px"></svg>
   <div class="hint">Touch a node</div>
   <aside class="notes">Keep it high level: a community node is a small computer the community owns, running the OpenVTC services and its guides. We have a kit for it; the first Hitchhikers node is being stood up (not yet proven end to end, if asked).</aside>
 </section>
@@ -250,7 +250,7 @@ svg text{font-family:var(--mono)}
   <div class="frame"></div>
   <div class="kick">Part IV · Guides and guidance</div>
   <h1><span class="n">13.</span> Trust is <b>earned</b></h1>
-  <div class="sub" id="lad-sub">By showing you understand what the community depends on.</div>
+  <div class="sub" id="lad-sub">Traveller · Thumb up: joins by DID, towel in hand. Each step is a trust task, recorded as trust built.</div>
   <svg id="ladder" width="1400" height="440" viewBox="0 0 1400 440" style="left:100px;top:300px"></svg>
   <div class="hint">Touch to take the next step</div>
   <aside class="notes">Stages unlock by demonstrated understanding and contribution, not fees or identity checks. Each stage can become a credential the VTC issues; a predicate proof lets a member show the stage without showing who vouched.</aside>
@@ -262,7 +262,7 @@ svg text{font-family:var(--mono)}
   <div class="kick">Part IV · Guides and guidance</div>
   <h1 style="font-size:120px"><span class="n">14.</span> Don't <b>Panic</b></h1>
   <div class="sub" id="pv-site" style="top:150px;max-width:1300px;color:var(--pale);font-family:var(--mono);font-size:24px">Send a proverb about not panicking.</div>
-  <svg id="pv" width="1440" height="560" viewBox="0 0 1440 560" style="left:80px;top:280px"></svg>
+  <svg id="pv" width="1440" height="460" viewBox="0 0 1440 460" style="left:80px;top:330px"></svg>
   <div class="hint" id="pv-hint">Touch one proverb, then another, to say it resonates</div>
   <div style="position:absolute;right:60px;bottom:80px;display:flex;gap:8px;opacity:.6"><input id="pv-text" placeholder="type one from chat" style="font-family:var(--mono);font-size:14px;background:transparent;border:1px solid #6b6a64;color:var(--off);padding:7px 10px;width:320px"><button class="act" style="padding:7px 12px;font-size:12px" onclick="pvAdd()">Add</button></div>
   <aside class="notes">Don't Panic is a meme every Hitchhiker already shares: a common understanding that travels across different verifiable trust communities before any of them trusts the other. Proverbs left by visitors appear here once they are approved. You can also type one from chat. Ask "which of these resonates with which?" and draw the edges: the room's own small trust graph.</aside>
@@ -297,8 +297,9 @@ svg text{font-family:var(--mono)}
   <div class="sub" id="mage-sub">A trust agent can belong to many communities. It travels between them, bringing guidance and solving problems.</div>
   <svg id="mage" width="1500" height="560" viewBox="0 0 1500 560" style="left:50px;top:190px"></svg>
   <div style="position:absolute;left:62px;top:690px;display:flex;gap:14px;align-items:center"><button class="act" id="mage-btn" onclick="mageHop()">Travel →</button></div>
+  <div id="mage-scroll" style="position:absolute;right:62px;top:688px;width:680px;text-align:right;font-size:13px;line-height:1.7;color:#8EA4FF;letter-spacing:.04em"></div>
   <div class="label" style="position:absolute;left:250px;top:696px;color:#8f8c84">Carries: its keys, its standing, its evidence<br>Never carries: its owner's data, another community's edges</div>
-  <aside class="notes">In OpenVTC an agent (a verifiable trust agent) joins each community by DID and is admitted on that community's terms. A Mages City mage is admitted by work evidence, so it can be trusted to arrive somewhere new and help. It moves between communities like a hitchhiker: it brings guidance backed by sealed work, and it leaves with nothing that wasn't its own. The communities stay separate; only proofs and guidance travel.</aside>
+  <aside class="notes">In OpenVTC an agent (a verifiable trust agent) joins each community by DID and is admitted on that community's terms. A Mages City mage is admitted by work evidence, so it can be trusted to arrive somewhere new and help. It moves between communities like a hitchhiker: it brings guidance backed by sealed work, and it leaves with nothing that wasn't its own. The communities stay separate; only proofs and guidance travel. Above them sits the higher network: the first VTC a person joins, and the First Person network that recognises the same person across every community.</aside>
 </section>
 
 <!-- 10 what we've built -->
@@ -330,10 +331,10 @@ svg text{font-family:var(--mono)}
   <h1 style="top:200px;font-size:150px">Don't <b>Panic.</b></h1>
   <div style="position:absolute;left:62px;top:390px;font-family:var(--head);font-weight:400;text-transform:uppercase;font-size:40px;line-height:1.15">Who holds your community's keys?<br><span style="color:var(--pale)">Who could recover them?</span></div>
   <div class="label" style="position:absolute;left:820px;top:150px;color:#8f8c84">Put your thumb up, leave a proverb, or launch a guide</div>
-  <div data-prompt style="position:absolute;left:820px;top:190px;width:560px;color:var(--off)"></div>
-  <div class="label" style="position:absolute;left:62px;bottom:62px;color:#8f8c84;font-size:15px">hitchhikers.earth · mages.city · <a href="../chain/" style="color:#8EA4FF">the scroll →</a> · <a href="../notes" style="color:#8EA4FF">work notes →</a></div>
-  <svg id="close-star" width="250" height="250" viewBox="-180 -180 360 360" style="left:1290px;top:560px"></svg>
-  <div style="position:absolute;left:820px;top:500px;width:440px;color:var(--off)"><div class="label" style="color:#8f8c84;margin-bottom:10px">From visitors</div><div data-approved="3"></div></div>
+  <div data-prompt style="position:absolute;left:820px;top:190px;width:600px;max-height:470px;overflow-y:auto;padding-right:10px;color:var(--off)"></div>
+  <div class="label" style="position:absolute;left:820px;bottom:62px;color:#8f8c84;font-size:15px">hitchhikers.earth · mages.city · <a href="../chain/" style="color:#8EA4FF">the scroll →</a> · <a href="../notes" style="color:#8EA4FF">work notes →</a></div>
+  <svg id="close-star" width="190" height="190" viewBox="-180 -180 360 360" style="left:560px;top:560px"></svg>
+  <div style="position:absolute;left:62px;top:560px;width:470px;max-height:230px;overflow:hidden;color:var(--off)"><div class="label" style="color:#8f8c84;margin-bottom:10px">From visitors</div><div data-approved="3"></div></div>
   <aside class="notes">Leave the two questions up for discussion.</aside>
 </section>
 
@@ -345,7 +346,7 @@ svg text{font-family:var(--mono)}
 /* ---------- paths through the guide: a main thread, with deeper scenes as branches of the scene they belong to ---------- */
 (function () {
   const PATHS = {
-    workshop: ['Cover', 'Opportunity', 'Why local', 'Privacy', 'Thumb up', 'Three nodes', 'The guide', 'Hitchhiker mage', 'Discussion', 'Close'],
+    workshop: ['Cover', 'Opportunity', 'Why local', 'Thumb up', 'Three nodes', 'The pathway', 'The guide', 'Cities', 'Evidence', 'Hitchhiker mage', 'Close'],
     lightning: ['Cover', 'Opportunity', 'Thumb up', 'Three nodes', 'Hitchhiker mage', 'Close']};
   // where each scene belongs when it is not on the main thread
   const PARENT = {'Built': 'Opportunity', 'Why local': 'Opportunity', 'Local': 'Why local', 'Cities': 'Why local', 'Privacy': 'Thumb up', 'Three graphs': 'Privacy', 'Trust': 'Thumb up',
@@ -453,11 +454,11 @@ function why(m) {
 why(0);
 
 /* ---------- 02 keep / share ---------- */
-const KEEP = [['Your keys', 0], ['Personal notes', 0], ['Who vouched for you', 0], ['Full history', 0], ['Proof of a stage', 1], ['A guide you wrote', 1], ['An evidence root', 1]];
+const KEEP = [['Your keys', 0], ['Personal notes', 0], ['Who vouched for you', 0], ['Full history', 0], ['Proof of a stage', 1], ['A field guide you co-wrote', 1], ['Hours given to the timebank', 1], ['An evidence root', 1]];
 const shared = new Set();
 function keepDraw() {
   $('#keep').innerHTML = KEEP.map((k, i) => { const on = shared.has(i), n = [...shared].indexOf(i);
-    const x = on ? 950 : 150, y = on ? 360 + n * 48 : 360 + i * 48;
+    const x = on ? 950 : 150, y = on ? 360 + n * 44 : 350 + i * 44;
     return `<div class="item ${k[1] ? '' : 'locked'}" data-i="${i}" style="left:${x}px;top:${y}px;color:${on ? C.ink : (k[1] ? C.off : '')}">${k[0]}</div>`; }).join('');
   $('#shared-empty').style.display = shared.size ? 'none' : '';
   $$('#keep .item').forEach(d => d.onclick = () => { const i = +d.dataset.i; if (!KEEP[i][1]) { d.classList.remove('shake'); void d.offsetWidth; d.classList.add('shake'); return; } shared.has(i) ? shared.delete(i) : shared.add(i); keepDraw(); });
@@ -465,14 +466,15 @@ function keepDraw() {
 keepDraw();
 
 /* ---------- 03 three graphs ---------- */
-const GR = [['01', 'Knowledge', 'What is known or done', C.muted], ['02', 'Promise', 'What is offered and accepted', C.cobalt], ['03', 'Trust', 'The promise kept, with evidence', C.coral]];
+const GR = [['01', 'Knowledge', 'What is known or done', C.muted, 'Bonfires · knowledge graphs from chat'], ['02', 'Promise', 'What is offered and accepted', C.cobalt, 'Trust Tasks · offers, terms, receipts'], ['03', 'Trust', 'The promise kept, with evidence', C.coral, 'OpenVTC · trust graphs']];
 let grOn = -1;
 function graphsDraw() {
   $('#graphs').innerHTML = GR.map((g, i) => `<div class="panel click" data-i="${i}" style="left:120px;top:${290 + i * 140}px;width:1360px;height:112px;border-left:6px solid ${g[3]};opacity:${grOn < 0 || grOn >= i ? 1 : .35};transition:opacity .4s">
     <div style="position:absolute;left:34px;top:34px;font-family:var(--mono);font-size:30px;color:${g[3]}">${g[0]}</div>
     <div style="position:absolute;left:120px;top:24px;font-family:var(--head);font-weight:400;font-size:34px;text-transform:uppercase;color:${i ? g[3] : C.ink}">${g[1]}</div>
-    <div class="label" style="position:absolute;left:122px;top:70px;color:var(--muted)">${grOn >= i ? g[2] : ''}</div>
-    <svg width="300" height="40" style="left:1000px;top:36px">${[0, 1, 2].map(k => `<circle cx="${30 + k * 110}" cy="20" r="11" fill="${g[3]}" opacity="${grOn >= i ? 1 : .3}"/>`).join('')}<line x1="30" y1="20" x2="250" y2="20" stroke="${g[3]}" stroke-width="2.5" opacity="${grOn >= i ? 1 : .3}"/></svg></div>`).join('');
+    <div class="label" style="position:absolute;left:122px;top:70px;color:var(--muted)">${g[2]}</div>
+    <div class="label" style="position:absolute;right:300px;top:44px;color:${g[3]};font-weight:700;opacity:${grOn >= i ? 1 : .55}">${g[4]}</div>
+    <svg width="240" height="40" style="left:1090px;top:36px">${[0, 1, 2].map(k => `<circle cx="${20 + k * 100}" cy="20" r="11" fill="${g[3]}" opacity="${grOn >= i ? 1 : .3}"/>`).join('')}<line x1="20" y1="20" x2="220" y2="20" stroke="${g[3]}" stroke-width="2.5" opacity="${grOn >= i ? 1 : .3}"/></svg></div>`).join('');
   $$('#graphs .panel').forEach(p => p.onclick = () => { grOn = +p.dataset.i; graphsDraw(); });
 }
 graphsDraw();
@@ -483,6 +485,8 @@ function ct(stepN) {
   [[330, 'Person A'], [1070, 'Person B']].forEach(([x, n]) => { const g = el('g', {transform: `translate(${x},250)`}); s.append(g); const st = star(g, 170, false); st.pose(x / 100); g.append(el('text', {y: 222, 'text-anchor': 'middle', fill: C.cobalt, 'font-size': 16}, n.toUpperCase())); });
   const subs = ['Two people, two perspectives.', 'They met. That is proximity, not trust.', 'They both accepted a commitment: a promise.', 'The promise was kept, with evidence. Now it is trust.'];
   $('#ct-sub').textContent = subs[stepN || 0];
+  if (!stepN) ['MEET', 'COMMIT', 'EVIDENCE'].forEach((w, k) => { s.append(el('text', {x: 700, y: 200 + k * 50, 'text-anchor': 'middle', 'font-size': 20, 'font-weight': 700, fill: C.dim}, (k + 1) + ' · ' + w)); });
+  if (!stepN) s.append(el('text', {x: 700, y: 370, 'text-anchor': 'middle', 'font-size': 13, fill: C.muted}, 'THREE STEPS FROM STRANGERS TO TRUST'));
   if (stepN >= 1) s.append(el('line', {x1: 510, y1: 250, x2: 890, y2: 250, stroke: C.muted, 'stroke-width': 2, 'stroke-dasharray': '3 8'}));
   if (stepN >= 2) { s.append(el('rect', {x: 590, y: 180, width: 220, height: 140, fill: C.off, stroke: C.ink, 'stroke-width': 1.5}));
     s.append(el('text', {x: 700, y: 232, 'text-anchor': 'middle', 'font-size': 17, fill: C.ink, 'font-weight': 600}, 'MUTUAL'));
@@ -493,16 +497,16 @@ function ct(stepN) {
 ct(0);
 
 /* ---------- 05 local network ---------- */
-const NET = [['Hitchhikers', 200, 120, 'The Hitchhikers: guides and trust hosted on a small node of their own'], ['Community', 560, 330, 'Another community: its own Pi, its own members, its own edges'], ['Mages City', 900, 110, 'Mages City: a trust community of agents, already live on OpenVTC'], ['Local AI', 1140, 360, 'A local model on the community\'s own machine: it answers from the community\'s guides, and the data never leaves'], ['Explorer', 330, 370, 'A traveller: visits, keeps their own story, shares what they choose']];
+const NET = [['Your community', 600, 260, 'Its own Pi: its guides, its trust graph, its members. The other nodes connect; they do not take over'], ['The Hitchhikers', 220, 90, 'Guides and guidance, the timebank and the local exchange, hosted on a node of their own'], ['OpenVTC', 600, 50, 'The trust graph services each node runs, from the DTG working group'], ['Mages City', 980, 90, 'Open autoresearch and agentic privacy: agents with checkable work, already live on OpenVTC'], ['Bonfires', 1120, 300, 'Knowledge graphs from the community\'s chat, kept on the community\'s machine'], ['Local AI', 940, 450, 'A local model on the community\'s own machine: it answers from the guides, and the data never leaves'], ['Chathackers', 260, 450, 'Agents that live in the group chats and help, without taking the chat away'], ['The local co-op', 90, 290, 'Members co-own the hardware: the Pi is the co-op\'s, not a platform\'s']];
 let netSel = -1;
 function netDraw() {
   const s = $('#net'); s.innerHTML = '';
-  [[0, 1], [1, 2], [2, 3], [1, 3], [0, 4], [4, 1]].forEach(([a, b]) => s.append(el('line', {x1: NET[a][1], y1: NET[a][2], x2: NET[b][1], y2: NET[b][2], stroke: C.pale, 'stroke-width': 1.5, 'stroke-dasharray': '3 7', opacity: .8})));
+  [[0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 1]].forEach(([a, b]) => s.append(el('line', {x1: NET[a][1], y1: NET[a][2], x2: NET[b][1], y2: NET[b][2], stroke: C.pale, 'stroke-width': 1.5, 'stroke-dasharray': '3 7', opacity: .8})));
   NET.forEach((n, i) => { const g = el('g', {class: 'click'}); const on = netSel === i;
-    g.append(el('circle', {cx: n[1], cy: n[2], r: 46, fill: '#0c0d0e', stroke: on ? C.off : '#2a2c2e', 'stroke-width': 2}));
+    g.append(el('circle', {cx: n[1], cy: n[2], r: i ? 40 : 58, fill: '#0c0d0e', stroke: on ? C.off : i ? '#2a2c2e' : C.cobalt, 'stroke-width': 2}));
     g.append(el('circle', {cx: n[1], cy: n[2], r: 28, fill: 'none', stroke: C.pale, 'stroke-width': 1.5}));
     g.append(el('circle', {cx: n[1], cy: n[2], r: on ? 12 : 9, fill: on ? '#FFFFFF' : C.pale}));
-    g.append(el('text', {x: n[1], y: n[2] + 76, 'text-anchor': 'middle', fill: C.off, 'font-size': 15}, n[0].toUpperCase()));
+    g.append(el('text', {x: n[1], y: n[2] + (i ? 66 : 84), 'text-anchor': 'middle', fill: C.off, 'font-size': 15}, n[0].toUpperCase()));
     g.onclick = () => { netSel = i; netDraw(); }; s.append(g); });
   if (netSel >= 0) pop(sceneOf('#net'), 1150, 130, {tag: 'A node', title: NET[netSel][0], body: NET[netSel][3] + '.'});
 }
@@ -526,15 +530,16 @@ function guidePlay() { gStep = (gStep + 1) % 4; guideDraw(); }
 guideDraw();
 
 /* ---------- 07 trust is earned ---------- */
-const LAD = [['Traveller', 'Joins by DID, towel in hand'], ['Contributor', 'A fork the community merged'], ['Author', 'A guide others used to run the node'], ['Mentor', 'Stewards a round of the game'], ['Fellow', 'Sustained keeping, vouched by peers']];
+const LAD = [['Traveller', 'Thumb up: joins by DID, towel in hand'], ['Contributor', 'A proverb, a fork the community merged'], ['Author', 'A field guide others walked'], ['Mentor', 'Guides someone new; gives hours to the timebank'], ['Fellow', 'Sustained keeping, vouched by peers']];
 let lad = 0;
 function ladDraw() {
   const s = $('#ladder'); s.innerHTML = '';
   s.append(el('line', {x1: 100, y1: 330, x2: 1300, y2: 90, stroke: C.line || '#cfc8b8', 'stroke-width': 1.5, 'stroke-dasharray': '3 7'}));
   LAD.forEach((l, i) => { const x = 100 + i * 300, y = 330 - i * 60, on = i <= lad;
     s.append(el('circle', {cx: x, cy: y, r: i === lad ? 20 : 12, fill: on ? (i === lad ? C.cobalt : C.ink) : C.paper, stroke: C.ink, 'stroke-width': 1.5}));
-    s.append(el('text', {x, y: y + 52, 'text-anchor': 'middle', 'font-size': 17, fill: on ? C.ink : C.dim, 'font-weight': 600}, l[0].toUpperCase())); });
-  $('#lad-sub').textContent = LAD[lad][0] + ': ' + LAD[lad][1].toLowerCase() + '.';
+    s.append(el('text', {x, y: y + 52, 'text-anchor': 'middle', 'font-size': 17, fill: on ? C.ink : C.dim, 'font-weight': 600}, l[0].toUpperCase()));
+    s.append(el('text', {x, y: y + 76, 'text-anchor': 'middle', 'font-size': 13, fill: on ? C.cobalt : C.dim}, l[1].split(':')[0].toUpperCase())); });
+  $('#lad-sub').textContent = LAD[lad][0] + ' · ' + LAD[lad][1] + '. Each step is a trust task, recorded as trust built.';
 }
 $('#ladder').onclick = () => { lad = (lad + 1) % LAD.length; ladDraw(); };
 ladDraw();
@@ -546,7 +551,7 @@ const Q = new URLSearchParams(location.search);
 const wall = (location.protocol.startsWith('http') ? '' : 'https://dontpanic.mages.city') + '/api/approved';
 $('#pv-site').innerHTML = 'A shared phrase between communities: the first common understanding of a first person network. <span style="color:#fff">Add a proverb at the end →</span>';
 let SRV = [], SRVE = [], LOC = store.get('local', [{id: 1, text: "Don't panic; check the checksum.", by: ''}, {id: 2, text: 'A towel and a runbook: never travel without both.', by: ''}]), LE = store.get('edges', []), pvSel = null, pos = {};
-const PV = () => [...SRV, ...LOC], E = () => { const a = [...SRVE]; LE.forEach(e => { if (!a.some(x => x[0] === e[0] && x[1] === e[1])) a.push(e); }); return a; };
+const PV = () => [...SRV, ...LOC].filter((p, i, a) => a.findIndex(q => q.text.trim().toLowerCase() === p.text.trim().toLowerCase()) === i), E = () => { const a = [...SRVE]; LE.forEach(e => { if (!a.some(x => x[0] === e[0] && x[1] === e[1])) a.push(e); }); return a; };
 function pvAdd() { const t = $('#pv-text').value.trim(); if (!t) return; LOC.push({id: Date.now(), text: t, by: ''}); store.set('local', LOC); $('#pv-text').value = ''; pvDraw(); }
 $('#pv-text').addEventListener('keydown', e => { if (e.key === 'Enter') pvAdd(); });
 const STOP = new Set('a an the and or of to in on at is are be it its you your we our for with not no do dont don that this as by from when if what who'.split(' '));
@@ -555,12 +560,7 @@ function pvDraw() {
   const P = PV(), s = $('#pv'), w = 1440, h = 540; s.innerHTML = '';
   P.forEach((p, i) => { if (!pos[p.id]) { const a = i * 2.39996; pos[p.id] = {x: w / 2 + 50 * Math.sqrt(i + 1) * Math.cos(a), y: h / 2 + 40 * Math.sqrt(i + 1) * Math.sin(a)}; } });
   const soft = []; for (let i = 0; i < P.length; i++) for (let j = i + 1; j < P.length; j++) { const a = words(P[i].text), b = words(P[j].text); let n = 0; a.forEach(x => b.has(x) && n++); if (n) soft.push([P[i].id, P[j].id, n]); }
-  for (let it = 0; it < 160; it++) {
-    P.forEach(a => P.forEach(b => { if (a.id >= b.id) return; const p = pos[a.id], q = pos[b.id]; let dx = p.x - q.x, dy = p.y - q.y; const d2 = dx * dx + dy * dy + .01, d = Math.sqrt(d2), f = Math.min(30, 90000 / d2); dx /= d; dy /= d; p.x += dx * f; p.y += dy * f * .6; q.x -= dx * f; q.y -= dy * f * .6; }));
-    const pull = (a, b, k) => { const p = pos[a], q = pos[b]; if (!p || !q) return; const dx = q.x - p.x, dy = q.y - p.y; p.x += dx * k; p.y += dy * k; q.x -= dx * k; q.y -= dy * k; };
-    E().forEach(e => pull(e[0], e[1], .02)); soft.forEach(e => pull(e[0], e[1], .004 * e[2]));
-    P.forEach(p => { const o = pos[p.id]; o.x += (w / 2 - o.x) * .004; o.y += (h / 2 - o.y) * .004; o.x = Math.max(160, Math.min(w - 160, o.x)); o.y = Math.max(20, Math.min(h - 40, o.y)); });
-  }
+  P.forEach((p, i) => { const c = i % 4, r = Math.floor(i / 4); pos[p.id] = {x: 190 + c * 350 + (r % 2) * 90, y: 50 + r * 104}; });
   if (!P.length) { s.append(el('text', {x: w / 2, y: h / 2, 'text-anchor': 'middle', fill: C.dim, 'font-size': 20}, 'WAITING FOR THE FIRST PROVERB…')); return; }
   const deg = {}; E().forEach(e => { deg[e[0]] = (deg[e[0]] || 0) + 1; deg[e[1]] = (deg[e[1]] || 0) + 1; });
   soft.forEach(e => { const p = pos[e[0]], q = pos[e[1]]; s.append(el('line', {x1: p.x, y1: p.y, x2: q.x, y2: q.y, stroke: C.pale, opacity: .3, 'stroke-dasharray': '3 7'})); });
@@ -568,7 +568,7 @@ function pvDraw() {
   P.forEach(p => { const o = pos[p.id], r = 8 + 4 * (deg[p.id] || 0), g = el('g', {class: 'click'});
     g.append(el('circle', {cx: o.x, cy: o.y, r: r + 8, fill: 'none', stroke: C.pale, opacity: .4}));
     g.append(el('circle', {cx: o.x, cy: o.y, r, fill: pvSel === p.id ? '#FFFFFF' : C.pale}));
-    const t = el('text', {x: o.x, y: o.y + r + 26, 'text-anchor': 'middle', fill: C.off, 'font-size': 16}); t.style.fontFamily = 'var(--body)'; t.textContent = p.text.length > 44 ? p.text.slice(0, 42) + '…' : p.text; g.append(t);
+    const t = el('text', {x: o.x, y: o.y + r + 26, 'text-anchor': 'middle', fill: C.off, 'font-size': 16}); t.style.fontFamily = 'var(--body)'; t.textContent = p.text.length > 38 ? p.text.slice(0, 36) + '…' : p.text; g.append(t);
     g.onclick = () => pvClick(p.id); s.append(g); });
 }
 function pvClick(id) { if (pvSel == null) pvSel = id; else if (pvSel === id) pvSel = null; else { const k = [Math.min(pvSel, id), Math.max(pvSel, id)]; if (!LE.some(e => e[0] === k[0] && e[1] === k[1])) LE.push(k); store.set('edges', LE); pvSel = null; }
@@ -586,16 +586,17 @@ async function seal() { pub = await sha($('#run').textContent.trim()); $('#root-
 $('#run').addEventListener('input', sealDraw); sealDraw();
 
 /* ---------- 10 what exists ---------- */
-const BUILT = [['OpenVTC', 'The trust layer, from the DTG working group: communities, members, credentials', 'trust'], ['Hitchhiker story', "Towels, guides and Don't Panic: a narrative people want to join", 'adoption'], ['Field Guide', 'Where guides are created and played, in real places', 'guides'], ['The local co-op', 'Members co-own the nodes, with local AI on them; embassies host, personal machines visit', 'ownership'], ['Keyring · Star Key', 'Your agent on your phone (Keyring, from the DTG working group, with the VTA built in) and in your browser (Star Key): join a community by DID, bring your own terms', 'your agent'], ['Mages City', 'Agents earning standing with work others can check, travelling between communities as hitchhiker mages', 'our work']];
+const BUILT = [['The Hitchhikers', "Guides and guidance, the timebank and the local exchange; towels and Don't Panic: a narrative people want to join", 'guides'], ['OpenVTC', 'The trust layer, from the DTG working group: communities, members, credentials', 'trust graphs'], ['Mages City', 'agentprivacy: open autoresearch and agentic privacy; agents with checkable work, travelling as hitchhiker mages', 'autoresearch'], ['Bonfires', "Turns a group chat's conversation into a shared knowledge graph", 'knowledge'], ['The local co-op', 'Members co-own the nodes, with local AI on them; embassies host, personal machines visit', 'ownership'], ['Chathackers', "Agents that live in a community's group chats and help it", 'chat agents'], ['Field Guide', 'Where guides are created and played, in real places', 'field guides'], ['Keyring · Star Key', 'Your agent on your phone (Keyring, from the DTG working group, with the VTA built in) and in your browser (Star Key): join a community by DID, bring your own terms', 'your agent']];
 let bSel = -1;
 function builtDraw() {
   const s = $('#built'); s.innerHTML = '';
-  BUILT.forEach((b, i) => { const x = 120 + (i % 3) * 420, y = 60 + Math.floor(i / 3) * 190, on = bSel === i, g = el('g', {class: 'click'});
-    const col = {trust: C.cobalt, adoption: C.coral, guides: C.cobalt, ownership: C.coral, 'our work': C.ink, 'your agent': C.cobalt}[b[2]] || C.ink;
-    g.append(el('rect', {x, y, width: 380, height: 140, fill: on ? C.ink : C.off, stroke: C.ink, 'stroke-width': 1.5}));
+  BUILT.forEach((b, i) => { const x = 20 + (i % 4) * 345, y = 40 + Math.floor(i / 4) * 200, on = bSel === i, g = el('g', {class: 'click'});
+    const col = i % 2 ? C.ink : C.cobalt;
+    g.append(el('rect', {x, y, width: 320, height: 160, fill: on ? C.ink : C.off, stroke: C.ink, 'stroke-width': 1.5}));
     g.append(el('circle', {cx: x + 30, cy: y + 34, r: 7, fill: col}));
     g.append(el('text', {x: x + 48, y: y + 40, 'font-size': 13, fill: on ? C.pale : col}, b[2].toUpperCase()));
-    const t = el('text', {x: x + 24, y: y + 92, 'font-size': 24, fill: on ? C.off : C.ink, 'font-weight': 400}); t.style.fontFamily = 'var(--head)'; t.textContent = b[0].toUpperCase(); g.append(t);
+    const t = el('text', {x: x + 24, y: y + 92, 'font-size': 26, fill: on ? C.off : C.ink, 'font-weight': 400}); t.style.fontFamily = 'var(--head)'; t.textContent = b[0].toUpperCase(); g.append(t);
+    g.append(el('text', {x: x + 24, y: y + 130, 'font-size': 12, fill: on ? C.pale : C.muted}, 'TOUCH FOR WHAT IT BRINGS'));
     g.onclick = () => { bSel = i; builtDraw(); pop(sceneOf('#built'), 230, 130, {tag: b[2], title: b[0], body: b[1] + '.'}, true); }; s.append(g); });
   $('#built-sub').textContent = bSel < 0 ? 'Touch one to see what it brings.' : '';
 }
@@ -611,7 +612,7 @@ const sceneOf = id => $(id).closest('.scene');
 /* ---------- opportunity: many projects, one community ---------- */
 C.brass = '#8A857A';
 const OPP = [
-  {name: 'The Hitchhikers', role: 'Guides and guidance', col: C.ink, card: {tag: 'Guides and guidance', title: 'The Hitchhikers', body: 'The story, and the reason to gather.', list: ['Guides a community writes, follows and keeps', 'Guidance anyone can fork; the community decides what merges', "Towels, quests, Don't Panic: a narrative people want to join"]}},
+  {name: 'The Hitchhikers', role: 'Guides and guidance', col: C.ink, card: {tag: 'Guides and guidance', title: 'The Hitchhikers', body: 'The story, and the reason to gather.', list: ['Guides a community writes, follows and keeps', 'Guidance anyone can fork; the community decides what merges', 'The timebank and the local exchange: an hour given, a favour returned', "Towels, quests, Don't Panic: a narrative people want to join"]}},
   {name: 'OpenVTC', role: 'Trust graphs', col: C.cobalt, card: {tag: 'Trust graphs', title: 'OpenVTC', body: 'The trust layer, from the DTG working group.', list: ['Members join a community by DID', 'Promises and vouches become credentials', 'Each community holds its own graph']}},
   {name: 'Mages City', pre: 'agentprivacy', role: 'Open autoresearch · agentic privacy', col: '#6B665C', card: {tag: 'agentprivacy · open autoresearch · agentic privacy', title: 'Mages City', body: 'From agentprivacy: agents that do research in the open, and act on your behalf without giving you away.', list: ['Open autoresearch: every run sealed, anyone can re-check it', 'Agentic privacy: one agent protects, one connects', 'Hitchhiker mages that travel between communities and help']}},
   {name: 'Bonfires', role: 'Knowledge graphs from chat', col: '#B5651D', card: {tag: 'Knowledge graphs from chat', title: 'Bonfires', body: "Turns a group chat's conversation into a shared knowledge graph.", list: ['What a community learns in chat becomes knowledge it keeps', 'Talk becomes guidance the guide can hold']}},
@@ -720,7 +721,7 @@ kindsDraw();
 const BEATS = [['Resolve', 'The traveller finds the embassy by its DID: who it is, where its door is.'], ['Admission', 'The gate reads the traveller\'s terms and lets them in, or doesn\'t.'],
   ['Exchange', 'Messages pass through the mediator, each one signed.'], ['Understanding', 'The traveller shows they understood the guide they came for.'],
   ['Consent', 'Both agree what gets recorded, and what doesn\'t.'], ['Seal', 'Host, traveller and a witness sign. The sealed visit can become a credential: "I visited and understood", shown without showing who else was there.']];
-let beat = -1;
+let beat = 0;
 function visitDraw() {
   const s = $('#visit'); s.innerHTML = '';
   const lanes = [['TRAVELLER', 90], ['EMBASSY', 250], ['WITNESS', 410]], x0 = 220, dx = 220;
@@ -772,14 +773,26 @@ $$('#why-check .act').forEach(b => b.onclick = () => { $$('#why-check .act').for
 
 /* ---------- the hitchhiker mage: one agent, many communities ---------- */
 const VTCS = [
-  ['Mages City', 170, 330, 'Home', 'Admitted by work evidence. Its standing travels with it as roots anyone can check.'],
-  ['The Hitchhikers', 470, 140, 'A node keeps dropping offline', 'The mage brings a recovery guide it has tested on a Pi, and adds it to the community\'s guide for the next keeper.'],
-  ['A security collective', 800, 330, 'A fix is claimed', 'The mage re-runs it and seals what it saw. The collective trusts the result, not the claimant.'],
-  ['An open science lab', 1110, 230, 'A result needs reproducing', 'The mage reproduces it, and seals the negative result too, saving the next team a run.'],
-  ['A city district', 1330, 420, 'Who may use the river sensors?', 'The mage drafts guidance for the residents, and they decide. Their graph stays with them.']];
+  ['Mages City', 170, 350, 'Home', 'Admitted by work evidence. Its standing travels with it as roots anyone can check.'],
+  ['The Hitchhikers', 470, 230, 'A node keeps dropping offline', 'The mage brings a recovery guide it has tested on a Pi, and adds it to the community\'s guide for the next keeper.'],
+  ['A security collective', 800, 350, 'A fix is claimed', 'The mage re-runs it and seals what it saw. The collective trusts the result, not the claimant.'],
+  ['An open science lab', 1110, 260, 'A result needs reproducing', 'The mage reproduces it, and seals the negative result too, saving the next team a run.'],
+  ['A city district', 1330, 370, 'Who may use the river sensors?', 'The mage drafts guidance for the residents, and they decide. Their graph stays with them.']];
 let hop = -1, mageAnim = null;
+const HIGHER = {tag: 'The higher network', title: 'The First Person network', body: 'Above the communities: people, each with their own trust graph, joined across every community they belong to. It grows from the first VTC, the first community a person joins.', list: ['The first VTC: where a hitchhiker first joins, and is first vouched for', 'The First Person network: the same person, recognised across communities', 'Communities stay separate; people and their proofs connect them']};
 function mageDraw(from) {
   const s = $('#mage'); s.innerHTML = '';
+  // the higher network: the First Person network, grown from the first VTC
+  const HY = 70, FV = [750, HY], lit = hop >= 0;
+  let seed = 11; const r = () => (seed = (seed * 16807) % 2147483647) / 2147483647, ppl = [];
+  for (let k = 0; k < 18; k++) ppl.push([90 + k * 52 + r() * 20, HY - 18 + r() * 36]);
+  ppl.forEach((p, k) => { if (k) s.append(el('line', {x1: ppl[k - 1][0], y1: ppl[k - 1][1], x2: p[0], y2: p[1], stroke: '#8EA4FF', 'stroke-width': 1, opacity: lit ? .5 : .25})); });
+  ppl.forEach(p => s.append(el('circle', {cx: p[0], cy: p[1], r: 3.5, fill: '#F6F1E6', opacity: lit ? .85 : .4})));
+  VTCS.forEach(v => s.append(el('line', {x1: v[1], y1: v[2] - 48, x2: v[1], y2: HY + 18, stroke: '#8EA4FF', 'stroke-width': 1, 'stroke-dasharray': '2 6', opacity: .45})));
+  const hg = el('g', {class: 'click'}); hg.append(el('rect', {x: FV[0] - 400, y: FV[1] - 24, width: 372, height: 44, fill: '#0B0B0D'})); hg.append(el('circle', {cx: FV[0], cy: FV[1], r: 20, fill: '#1F4BFF', stroke: '#F6F1E6', 'stroke-width': 2}));
+  hg.append(el('text', {x: FV[0] - 30, y: FV[1] - 6, 'text-anchor': 'end', 'font-size': 13, 'font-weight': 700, fill: '#F6F1E6'}, 'THE FIRST VTC'));
+  hg.append(el('text', {x: FV[0] - 30, y: FV[1] + 12, 'text-anchor': 'end', 'font-size': 12, fill: '#8EA4FF'}, 'THE FIRST PERSON NETWORK · ABOVE EVERY COMMUNITY'));
+  hg.onclick = () => pop(sceneOf('#mage'), 1110, 110, HIGHER); s.append(hg);
   VTCS.forEach((v, i) => { if (i) { const a = VTCS[i - 1]; s.append(el('path', {d: `M${a[1]},${a[2]} Q${(a[1] + v[1]) / 2},${Math.min(a[2], v[2]) - 90} ${v[1]},${v[2]}`, fill: 'none', stroke: i <= hop ? '#1F4BFF' : '#3a3c40', 'stroke-width': i <= hop ? 2.5 : 1.5, 'stroke-dasharray': '5 8'})); } });
   VTCS.forEach((v, i) => { const on = i <= hop, here = i === hop;
     for (let k = 0; k < 8; k++) { const a = k / 8 * 6.283 + i, r = 62; s.append(el('circle', {cx: v[1] + r * Math.cos(a), cy: v[2] + r * Math.sin(a), r: 3.5, fill: '#F6F1E6', opacity: on ? .8 : .3})); }
@@ -794,13 +807,23 @@ function mageDraw(from) {
       const x = a[1] + (b[1] - a[1]) * e + 44, y = a[2] + (b[2] - a[2]) * e - 44 - 90 * Math.sin(Math.PI * e); st.setAttribute('transform', `translate(${x},${y})`); if (f < 1) mageAnim = requestAnimationFrame(step); };
     mageAnim = requestAnimationFrame(step); }
 }
+// each arrival is cast as a hash, chained to the last: the mage's scroll
+let mageHead = '0'.repeat(64); const mageCasts = [];
+async function mageCast(v) { const b = new TextEncoder().encode(mageHead + '|' + v[0] + '|' + v[3] + '|' + Date.now());
+  mageHead = [...new Uint8Array(await crypto.subtle.digest('SHA-256', b))].map(x => x.toString(16).padStart(2, '0')).join('');
+  const sg = window.DP ? DP.sigil(mageHead) : '', sp = window.DP ? DP.spell(mageHead) : '';
+  mageCasts.push(sg); const at = VTCS[hop], s = $('#mage');
+  const t = el('text', {x: at[1], y: at[2] - 70, 'text-anchor': 'middle', 'font-size': 22}); t.textContent = sg; t.style.transition = 'opacity 2.4s, transform 2.4s'; s.append(t);
+  requestAnimationFrame(() => { t.style.opacity = '0'; t.style.transform = 'translateY(-40px)'; });
+  $('#mage-scroll').innerHTML = `<div style="font-size:20px;letter-spacing:.1em">${mageCasts.slice(-12).join(' · ')}</div><div>THE MAGE'S SCROLL · ${mageCasts.length} CAST${mageCasts.length === 1 ? '' : 'S'} · ${esc(sp).toUpperCase()} · ${mageHead.slice(0, 16)}…</div>`; }
 function mageHop() { const from = hop; hop = hop >= VTCS.length - 1 ? 0 : hop + 1; mageDraw(from >= VTCS.length - 1 ? null : from);
-  const v = VTCS[hop]; pop(sceneOf('#mage'), 1110, 110, {tag: hop ? 'Problem: ' + v[3] : v[3], title: v[0], body: v[4]});
-  $('#mage-btn').textContent = hop >= VTCS.length - 1 ? 'Home again' : 'Travel on →'; }
+  const v = VTCS[hop]; pop(sceneOf('#mage'), 1110, 110, {tag: hop ? 'Problem: ' + v[3] : v[3], title: v[0], body: v[4], list: hop === VTCS.length - 1 ? ['Above them all: the first VTC and the First Person network (touch it)'] : undefined});
+  $('#mage-btn').textContent = hop >= VTCS.length - 1 ? 'Home again' : 'Travel on →'; setTimeout(() => mageCast(v), from >= 0 && from < VTCS.length - 1 ? 900 : 0); }
 mageDraw();
 
 /* ---------- thumb up: the first trust task, between hitchhikers or between agents ---------- */
-const MEME = {tag: 'Then it spreads', title: "Don't Panic", body: 'A thumb up is a gesture anyone can read, anywhere. Trust tasks become that between people, agents and communities: a small shared gesture that flows like a meme.', list: ["Don't panic: you own your own perspective in the trust graph", 'Every community reads the same gesture; each keeps its own graph']};
+const MEME = {tag: 'Then it spreads', title: 'The trust tasks you take part in', body: 'A hitchhiker cooperates: guiding someone, writing a field guide together, giving an hour. Each one is a trust task, recorded as trust built, for the community\'s verifiable trust agents.', list: ['Be a guide to someone new', 'Write or walk a field guide together', 'The timebank and the local exchange', "Don't Panic: the thumb up is just the first"]};
+const MEME_A = {tag: 'Then it spreads', title: 'Sharing beneath the leaves', body: 'Between agents, a trust task can open what lies beneath an evidence leaf: the data behind a result, shared over the Trust Spanning Protocol, only with who the terms allow.', list: ['Autoresearch challenges: re-run and check each other\'s work', 'Guide quality: test guidance before it merges', 'Governance: the community sees the evidence when it decides']};
 const THUMB = {
   h: [{tag: 'Trust task 1 · ask', title: 'Thumb up', body: 'The oldest trust task: you ask a stranger for something, in public, with nothing but a sign. In a trust graph, this is how a first person begins.'},
       {tag: 'Trust task 2 · offer', title: 'A car stops', body: '"Where to?" An offer, on the driver\'s terms. Trust Tasks make an offer like this a standard, signed message between two parties.'},
@@ -811,7 +834,7 @@ const THUMB = {
       {tag: 'Trust task 2 · offer', title: 'An offer', body: 'The other agent answers on its community\'s terms: what it will do, what it needs to see, what it will keep.'},
       {tag: 'Trust task 3 · agree', title: 'Agree the terms', body: 'Both agents sign the terms. Your agent brings yours (MyTerms): what may be shared, and what never leaves you.'},
       {tag: 'Trust task 4 · keep', title: 'The task is done', body: 'The work happens and a signed receipt comes back. Now each side has something real to vouch for.'},
-      {tag: 'Trust task 5 · prove', title: 'Prove your place', body: 'With zero knowledge your agent can later show "I belong to this community", "I hold this stage", without revealing who you are or who vouched.', list: ['Agents traverse communities this way: the hitchhiker mage', 'Each task is local first, held on the community\'s own node']}, MEME]};
+      {tag: 'Trust task 5 · prove', title: 'Prove your place', body: 'With zero knowledge your agent can later show "I belong to this community", "I hold this stage", without revealing who you are or who vouched.', list: ['Agents traverse communities this way: the hitchhiker mage', 'Each task is local first, held on the community\'s own node']}, MEME_A]};
 let tStep = -1, tMode = 'h';
 function thumbMode(m) { tMode = m; tStep = -1; $('#tm-h').classList.toggle('on', m === 'h'); $('#tm-a').classList.toggle('on', m === 'a'); thumbStep(); }
 function roadDraw() {
@@ -823,7 +846,9 @@ function roadDraw() {
       for (let i = 0; i < 18; i++) nodes.push([120 + r() * 1260, 60 + r() * 360]);
       nodes.forEach((n, i) => { if (i) { const m = nodes[Math.floor(r() * i)]; s.append(el('line', {x1: m[0], y1: m[1], x2: n[0], y2: n[1], stroke: '#1F4BFF', 'stroke-width': 1.5, opacity: .6})); } });
       nodes.forEach(n => { s.append(el('circle', {cx: n[0], cy: n[1], r: 12, fill: '#0B0B0D'})); const t = el('text', {x: n[0], y: n[1] + 6, 'text-anchor': 'middle', 'font-size': 14}); t.textContent = '👍'; s.append(t); });
-      const t = el('text', {x: 750, y: 470, 'text-anchor': 'middle', 'font-size': 26, fill: '#0D0D0F'}); t.style.fontFamily = 'var(--head)'; t.textContent = "DON'T PANIC: YOU OWN YOUR OWN PERSPECTIVE"; s.append(t); return; }
+      // the leaves: a sealed result opens to the agents the terms allow
+      [[300, 'AUTORESEARCH'], [750, 'GUIDE QUALITY'], [1200, 'GOVERNANCE']].forEach(([x, n]) => { s.append(el('rect', {x: x - 110, y: 430, width: 220, height: 40, rx: 20, fill: '#0B0B0D'})); s.append(el('text', {x, y: 456, 'text-anchor': 'middle', 'font-size': 14, 'font-weight': 700, fill: '#8EA4FF'}, n)); });
+      const t = el('text', {x: 750, y: 512, 'text-anchor': 'middle', 'font-size': 24, fill: '#0D0D0F'}); t.style.fontFamily = 'var(--head)'; t.textContent = 'THE DATA BENEATH THE LEAVES, SHARED OVER TSP'; s.append(t); return; }
     [[A, 'YOUR AGENT'], [B, 'THEIR AGENT']].forEach(([p, n], i) => { const g = el('g', {transform: `translate(${p[0]},${p[1]})`}); s.append(g); const st = star(g, 70, true, false); st.pose(i * 2 + 1);
       s.append(el('text', {x: p[0], y: p[1] + 110, 'text-anchor': 'middle', 'font-size': 16, 'font-weight': 700, fill: '#0D0D0F'}, n)); });
     const msg = (dir, label, y2, col) => { const x1 = dir > 0 ? A[0] + 90 : B[0] - 90, x2 = dir > 0 ? B[0] - 90 : A[0] + 90;
@@ -845,8 +870,11 @@ function roadDraw() {
     h.append(el('rect', {x: -30, y: -96, width: 22, height: 34, rx: 5, fill: '#8A857A'}));
     h.append(el('path', {d: thumb ? 'M0,-88 L46,-104' : 'M0,-88 L22,-58', stroke: '#0D0D0F', 'stroke-width': 7, 'stroke-linecap': 'round', fill: 'none'}));
     if (thumb) { const tt = el('text', {x: 52, y: -110, 'font-size': 34}); tt.textContent = '👍'; h.append(tt); } };
-  if (meme) { [140, 420, 700, 980, 1260].forEach((x, i) => person(x, .8 + (i % 2) * .15, true));
-    const t = el('text', {x: 750, y: 440, 'text-anchor': 'middle', 'font-size': 26, fill: '#0D0D0F'}); t.style.fontFamily = 'var(--head)'; t.textContent = "DON'T PANIC: YOU OWN YOUR OWN PERSPECTIVE"; s.append(t); return; }
+  if (meme) { const TT = [['👍', 'THUMB UP'], ['🧭', 'GUIDE SOMEONE'], ['📖', 'FIELD GUIDE'], ['⏳', 'TIMEBANK'], ['🔁', 'LOCAL EXCHANGE'], ['🤝', 'VOUCH']];
+    TT.forEach(([e, n], i) => { const x = 110 + i * 186, yy = 230; if (i) s.append(el('line', {x1: x - 186 + 52, y1: yy, x2: x - 52, y2: yy, stroke: '#1F4BFF', 'stroke-width': 2, 'stroke-dasharray': '4 6'}));
+      s.append(el('circle', {cx: x, cy: yy, r: 50, fill: i ? '#F6F1E6' : '#1F4BFF', stroke: '#0D0D0F', 'stroke-width': 2})); const t = el('text', {x, y: yy + 14, 'text-anchor': 'middle', 'font-size': 38}); t.textContent = e; s.append(t);
+      s.append(el('text', {x, y: yy + 84, 'text-anchor': 'middle', 'font-size': 14, 'font-weight': 700, fill: '#0D0D0F'}, n)); });
+    const t = el('text', {x: 750, y: 440, 'text-anchor': 'middle', 'font-size': 26, fill: '#0D0D0F'}); t.style.fontFamily = 'var(--head)'; t.textContent = "DON'T PANIC: EVERY TASK YOU SHARE BUILDS TRUST"; s.append(t); return; }
   const away = tStep >= 3, hx = away ? (tStep >= 4 ? 1120 : 820) : 520;
   if (!away) person(hx, 1, tStep >= 0);
   const cxp = tStep < 1 ? 1380 : away ? hx - 40 : 660, car = el('g', {transform: `translate(${cxp},${y})`}); s.append(car);
@@ -864,7 +892,7 @@ function thumbStep() { const T = THUMB[tMode]; tStep = tStep >= T.length - 1 ? -
   if (tStep >= 0) pop(sceneOf('#road'), 1110, 110, T[tStep]); else { const d = sceneOf('#road').querySelector('.pop'); if (d) d.remove(); }
   $('#thumb-btn').textContent = tStep < 0 ? (tMode === 'h' ? '👍 Thumb up' : 'Send a trust task') : tStep >= T.length - 1 ? 'Start again' : 'Next →';
   $('#thumb-step').textContent = tStep < 0 ? 'Trust Tasks: small, standard asks between two parties' : tStep === 5 ? 'And it spreads' : `Trust task ${tStep + 1} of 5`;
-  $('#thumb-sub').textContent = tStep === 4 ? 'Zero knowledge: attest to your place without revealing yourself.' : tStep === 5 ? "Don't Panic: you own your own perspective in the trust graph." : tMode === 'h' ? 'Every hitchhiker knows the first trust task. The same steps work between agents.' : 'The same five steps, between agents: small signed messages, local first.'; }
+  $('#thumb-sub').textContent = tStep === 4 ? 'Zero knowledge: attest to your place without revealing yourself.' : tStep === 5 ? (tMode === 'h' ? 'Hitchhikers cooperate on guides and guidance. Each task is recorded as trust built.' : 'Agents share what lies beneath the evidence, on the terms agreed.') : tMode === 'h' ? 'Every hitchhiker knows the first trust task. The same steps work between agents.' : 'The same five steps, between agents: small signed messages, local first.'; }
 roadDraw();
 
 /* ---------- the discussion ---------- */
