@@ -170,9 +170,10 @@ async function api(req, env, path, body) {
     const base = cityApi(env), H = { accept: 'application/json', 'user-agent': 'hitchhikers-guide-to-trust' };
     try {
       const prof = await (await fetch(base + '/v1/community/public-profile', { headers: H })).json();
+      const health = await fetch(base + '/health', { headers: H }).then(r => r.json()).catch(() => ({}));
       const task = { id: 'urn:uuid:' + crypto.randomUUID(), type: MANIFEST, issuedAt: new Date().toISOString().replace(/\.\d+Z$/, 'Z'), recipient: prof.communityDid, payload: {} };
       const man = await (await fetch(base + '/v1/trust-tasks', { method: 'POST', headers: { ...H, 'content-type': 'application/json' }, body: JSON.stringify(task) })).json();
-      return json({ name: prof.name, did: prof.communityDid, publicUrl: prof.publicUrl, joinUrl: env.CITY_JOIN || 'https://join.mages.city/', qr: base + '/v1/community/did-qr.svg',
+      return json({ name: prof.name, did: prof.communityDid, publicUrl: prof.publicUrl, version: health.version || null, up: health.status === 'ok', joinUrl: env.CITY_JOIN || 'https://join.mages.city/', qr: base + '/v1/community/did-qr.svg',
         criteria: ((man.payload || {}).criteria || []).map(c => ({ id: c.id, description: c.description, admission: c.admission })) });
     } catch (e) { return json({ error: 'The community is not answering right now.' }, 502); }
   }
