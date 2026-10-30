@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The evidence chain · A galaxy of guides · Hitchhiker's Guide to Trust</title>
+<meta name="description" content="Every thumb up and every contribution, hashed and chained, drawn as it grows. Hashes and sigils only.">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;700&family=Space+Mono:wght@400;700&family=Cormorant+Garamond:ital@1&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script src="../mark.js"></script>
+<script src="../sigil/sigilcode.js"></script>
+<style>
+/* The evidence chain, live: the public face of the community's guide. Every star on the Star's 64 states, as on the City's scrolls; what is behind each is sealed with its owner's key. It is made to stay on a screen all night.
+   Only hashes enter the chain; what people wrote never appears here. */
+:root{--night:#0B0B0D;--cream:#F6F1E6;--blue:#1F4BFF;--pale:#8EA4FF;--muted:#8A857A;
+  --head:Anton,Impact,"Arial Narrow Bold",sans-serif;--mono:"Space Mono",Consolas,monospace}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--night);color:var(--cream);overflow:hidden;font-family:var(--mono)}
+canvas{position:fixed;inset:0;width:100%;height:100%}
+.hud{position:fixed;pointer-events:none}
+.title{left:3vw;top:3.2vh}
+.title .k{font-size:clamp(11px,1vw,15px);font-weight:700;text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(--cream);padding-bottom:4px;display:inline-block}
+.title h1{font-family:var(--head);font-weight:400;text-transform:uppercase;font-size:clamp(40px,5.6vw,96px);line-height:.92;margin:1.4vh 0 0}
+.title h1 b{font-weight:400;color:var(--blue)}
+.title p{font-size:clamp(11px,.95vw,15px);text-transform:uppercase;line-height:1.6;max-width:28vw;margin:1.6vh 0 0;color:#CFC9BB}
+.count{left:3vw;bottom:4vh}
+.rooms{left:50%;transform:translateX(-50%);top:3.4vh;display:flex;gap:1.2vw;font-size:clamp(10px,.8vw,13px);text-transform:uppercase;color:#CFC9BB}
+.rooms span{display:flex;align-items:center;gap:6px}.rooms i{width:8px;height:8px;border-radius:50%;background:#C0504D;display:inline-block}.rooms i.on{background:#3FCB6B}
+.back{pointer-events:auto;display:inline-block;margin-left:1.2vw;font-size:clamp(10px,.8vw,13px);text-transform:uppercase;color:var(--pale);text-decoration:none}
+.back:hover{color:var(--cream)}
+canvas{cursor:grab}canvas:active{cursor:grabbing}
+#orb{position:fixed;left:50%;bottom:3.4vh;transform:translateX(-50%);width:38px;height:38px;border-radius:50%;border:1px solid rgba(246,241,230,.35);background:rgba(11,11,13,.6);color:var(--cream);font-size:18px;cursor:pointer}
+#orb.off{color:var(--muted)}
+.hint{left:50%;transform:translateX(-50%);bottom:8vh;font-size:clamp(10px,.75vw,12px);text-transform:uppercase;color:var(--muted)}
+.tip{display:none;max-width:340px;background:rgba(11,11,13,.92);border:1px solid rgba(142,164,255,.5);border-radius:4px;padding:10px 12px;font-size:12px;line-height:1.5;text-transform:uppercase}
+.tip .sg{font-size:22px;letter-spacing:.06em}.tip .sc{font-family:serif;text-transform:none;font-size:15px;color:#e8c873;word-break:break-all;margin-top:4px}
+.steps{margin-top:2.2vh;display:grid;gap:.9vh;max-width:28vw}
+.steps div{font-size:clamp(10px,.85vw,14px);text-transform:uppercase;line-height:1.4;display:flex;gap:.8vw;align-items:baseline;color:#CFC9BB}
+.steps b{font-family:var(--head);font-weight:400;font-size:clamp(18px,1.7vw,28px);color:var(--blue);line-height:1}
+.count b{display:block;font-family:var(--head);font-weight:400;font-size:clamp(48px,7vw,120px);line-height:.9}
+.count span{font-size:clamp(11px,.9vw,14px);text-transform:uppercase;color:var(--muted)}
+.count .head{margin-top:1vh;font-size:clamp(10px,.8vw,13px);color:var(--pale);word-break:break-all;max-width:30vw}
+.feed{right:3vw;top:3.2vh;width:min(30vw,440px)}
+.feed .k{font-size:clamp(11px,.9vw,14px);text-transform:uppercase;color:var(--muted);margin-bottom:1vh}
+.feed{pointer-events:auto}
+.tabs{display:flex;gap:6px;margin-bottom:1.4vh}.tabs button{font-family:var(--mono);font-size:clamp(10px,.8vw,13px);text-transform:uppercase;letter-spacing:.04em;padding:5px 12px;border:1px solid rgba(246,241,230,.3);border-radius:14px;background:transparent;color:#CFC9BB;cursor:pointer}
+.tabs button.on{background:rgba(232,200,115,.15);border-color:#e8c873;color:#e8c873}
+#scroll{max-height:62vh;overflow-y:auto;padding-right:8px;font-family:serif;font-size:clamp(14px,1.15vw,19px);line-height:1.75;color:#b9a46a;word-break:break-all;scrollbar-width:thin;scrollbar-color:#3a3c40 transparent}
+#scroll span{cursor:pointer;transition:color .2s}#scroll span:hover,#scroll span.hl{color:#fff;text-shadow:0 0 10px rgba(232,200,115,.8)}
+#scroll span.mine{color:#e8c873}#scroll span.new{animation:glyphin 1.2s ease}
+@keyframes glyphin{from{color:#fff;text-shadow:0 0 14px #8EA4FF}to{}}
+.row{display:grid;grid-template-columns:auto 1fr;gap:.2vh 1vw;align-items:baseline;padding:.9vh 0;border-bottom:1px solid rgba(246,241,230,.12);animation:in .6s ease}
+.row .sg{font-size:clamp(18px,1.7vw,28px);letter-spacing:.06em}
+.row .sp{font-size:clamp(12px,1vw,16px);text-transform:uppercase}
+.row .meta{grid-column:2;font-size:clamp(9px,.75vw,12px);color:var(--muted);text-transform:uppercase}
+.row.mine .sp{color:var(--pale)}
+@keyframes in{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:none}}
+.join{right:3vw;bottom:4vh;display:flex;gap:1vw;align-items:flex-end;text-align:right}
+.join .qr{background:var(--cream);padding:8px;border-radius:3px;line-height:0}
+.join .qr svg{width:clamp(80px,8vw,130px);height:auto}
+.join .u{font-size:clamp(12px,1.1vw,18px);font-weight:700;color:var(--pale)}
+.join .s{font-size:clamp(10px,.8vw,13px);text-transform:uppercase;color:#CFC9BB;margin-top:.6vh}
+.you{left:50%;transform:translateX(-50%);bottom:12vh;text-align:center;font-size:clamp(11px,.9vw,14px);text-transform:uppercase;color:var(--pale)}
+.you b{font-size:clamp(20px,2vw,32px);color:var(--cream);letter-spacing:.08em}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="hud title"><div class="k">The Hitchhiker's Guide to Trust · the evidence chain</div><a class="back" href="../guide/?path=workshop">← back to the guide</a><h1>A galaxy<br>of <b>guides</b></h1>
+  <p>The public face of this community's guide: an evidence chain anyone can load into. Every thumb up, proverb and guide becomes a star. Its hash is public; what's behind it is sealed with your own key.</p>
+  <p style="color:#8EA4FF">Don't panic: you own your own perspective in the trust graph.</p>
+  <div class="steps"><div><b>1</b>Thumb up: your mark on the chain</div><div><b>2</b>Contribute: proverbs and guides, sealed</div><div><b>3</b>Claim it in the night's group chat: a proverb comes back</div><div><b>4</b>Later: your string is your invitation into any OpenVTC community</div></div>
+<div class="hud count"><div id="demo-tag" style="display:none;font-size:clamp(10px,.8vw,13px);text-transform:uppercase;color:#0B0B0D;background:#8EA4FF;padding:3px 8px;border-radius:3px;margin-bottom:1vh;width:max-content">Example night · simulated visitors</div><b id="n">0</b><span>stars on the chain</span><div class="head" id="head"></div></div>
+<div class="hud feed"><div class="tabs"><button class="on" id="t-latest">Latest</button><button id="t-scroll">The scroll</button></div>
+  <div id="feed-wrap"><div class="k">Latest on the chain · sigil and spell</div><div id="feed"></div></div>
+  <div id="scroll-wrap" style="display:none"><div class="k">The scroll · every star, written in the sigil script</div><div id="scroll"></div></div></div>
+<div class="hud you" id="you"></div>
+<div class="hud rooms" id="rooms"></div>
+<div class="hud tip" id="tip"></div>
+<button id="orb" title="orbit on · click to hold the star still">⟳</button>
+<div class="hud hint" id="hint">drag to turn the star · point at a star to see its threads</div>
+<div class="hud join"><div><div class="s">Put your thumb up</div><div class="u" id="url"></div><div class="s">and start contributing</div></div><div class="qr" id="qr"></div></div>
+<script>
+const $ = s => document.querySelector(s), esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+const SITE = (new URLSearchParams(location.search).get('site') || (location.protocol.startsWith('http') ? location.origin : 'https://dontpanic.mages.city')).replace(/\/$/, '');
+const API = location.protocol.startsWith('http') ? '' : 'https://dontpanic.mages.city';
+$('#url').textContent = SITE.replace(/^https?:\/\//, '');
+try { const q = qrcode(0, 'M'); q.addData(SITE + '/'); q.make(); $('#qr').innerHTML = q.createSvgTag({cellSize: 4, margin: 0}); } catch (e) {}
+
+/* ---------- the chain ---------- */
+let links = [], head = null, born = new Map();
+let MINE = new Set(window.DP ? DP.mine() : []);
+const COLOR = {thumb: [246, 241, 230], proverb: [142, 164, 255], guide: [31, 75, 255], chat: [255, 255, 255], claim: [232, 200, 115]};
+// a person's evidence root: their stars (same mark), chained in order
+const ROOTS = new Map();
+async function rootOf(mark) { const ls = links.filter(l => l.mark === mark), key = mark + ':' + ls.length; if (ROOTS.has(key)) return ROOTS.get(key);
+  let r = '0'.repeat(64); for (const l of ls) r = [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(r + '|' + l.hash)))].map(b => b.toString(16).padStart(2, '0')).join('');
+  ROOTS.set(key, r); return r; }
+const angle = (h, i) => parseInt(h.slice(i, i + 4), 16) / 65536 * Math.PI * 2;
+async function poll() {
+  try { const r = await fetch(API + '/api/chain?since=' + links.length, {cache: 'no-store'}); if (!r.ok) return; const d = await r.json();
+    d.links.forEach(l => { links.push(l); born.set(l.hash, performance.now()); }); head = d.head;
+    if (d.links.length) feed(); $('#n').textContent = links.length; $('#head').textContent = head ? 'head ' + head : '';
+  } catch (e) {} }
+/* ---------- the scroll: every link in the sigil script ---------- */
+const SCRIPT = new Map(), scriptOf = h => { let x = SCRIPT.get(h); if (x === undefined) { try { x = SigilCode.encode(Uint8Array.from(h.match(/../g).map(c => parseInt(c, 16)))); } catch (e) { x = h; } SCRIPT.set(h, x); } return x; };
+let written = 0, PASSAGE = -1;
+function writeScroll() { const box = $('#scroll'); if (!box) return; const follow = box.scrollTop + box.clientHeight >= box.scrollHeight - 30, frag = document.createDocumentFragment();
+  for (; written < links.length; written++) { const l = links[written], sp = document.createElement('span'); sp.textContent = scriptOf(l.hash) + ' '; sp.dataset.i = written;
+    if (MINE.has(l.hash)) sp.classList.add('mine'); if (written >= links.length - 3 && written > 20) sp.classList.add('new'); frag.append(sp); }
+  box.append(frag); if (follow) box.scrollTop = box.scrollHeight; }
+function markPassage(i) { if (PASSAGE === i) return; const box = $('#scroll'); if (!box) return; if (PASSAGE >= 0 && box.children[PASSAGE]) box.children[PASSAGE].classList.remove('hl'); PASSAGE = i; if (i >= 0 && box.children[i]) box.children[i].classList.add('hl'); }
+$('#scroll').addEventListener('pointerover', e => { const sp = e.target.closest('span'); if (sp) HOT = +sp.dataset.i; });
+$('#scroll').addEventListener('pointerleave', () => { HOT = -1; });
+const tab = m => { $('#t-latest').classList.toggle('on', m === 'latest'); $('#t-scroll').classList.toggle('on', m === 'scroll'); $('#feed-wrap').style.display = m === 'latest' ? '' : 'none'; $('#scroll-wrap').style.display = m === 'scroll' ? '' : 'none'; if (m === 'scroll') { const b = $('#scroll'); b.scrollTop = b.scrollHeight; } };
+$('#t-latest').onclick = () => tab('latest'); $('#t-scroll').onclick = () => tab('scroll');
+if (new URLSearchParams(location.search).has('scroll')) tab('scroll');
+function feed() { writeScroll();
+  $('#feed').innerHTML = links.slice(-7).reverse().map(l => `<div class="row ${MINE.has(l.hash) ? 'mine' : ''}"><span class="sg">${DP.sigil(l.hash)}</span><span class="sp">${esc(DP.spell(l.hash))}</span>
+    <span class="meta">#${l.seq} · ${l.kind === 'claim' ? 'claimed in the group chat' : l.kind}${l.mark ? ' · mark ' + DP.sigil(l.mark) : ''}${MINE.has(l.hash) ? ' · yours' : ''}</span></div>`).join('');
+  const mine = links.filter(l => MINE.has(l.hash));
+  if (mine.length && window.DP) DP.mark().then(async mk => { const rt = await rootOf(mk); $('#you').innerHTML = `You are in the guide · <b>${DP.sigil(mk)}</b> · ${esc(DP.spell(mk))} · ${mine.length} star${mine.length === 1 ? '' : 's'} · your root ${rt.slice(0, 12)}…`; });
+}
+
+/* ---------- drawing: the Star's 64 states, as on every star of the City ---------- */
+// a hash's first 3 bits pick a corner of the stella octangula (the Star's two tetrahedra), the next 3 a place around
+// it (8 x 8 = the 64 states), the next 9 a fine jitter. Same placement as soul.mages.city and hashsmash.mages.city.
+const bits = (hx, from, n) => { let v = 0; for (let i = 0; i < n; i++) { const c = parseInt(hx[(from + i) >> 2], 16), b = (c >> (3 - ((from + i) & 3))) & 1; v = v * 2 + b; } return v; };
+const CV = b => [(b & 1) ? 1 : -1, (b & 2) ? 1 : -1, (b & 4) ? 1 : -1], par = h => (h ^ (h >> 1) ^ (h >> 2)) & 1;
+const xyz = hx => { const house = bits(hx, 0, 3), sub = bits(hx, 3, 3), j = [bits(hx, 6, 3), bits(hx, 9, 3), bits(hx, 12, 3)], Hh = CV(house), Sv = CV(sub); return [0, 1, 2].map(i => Hh[i] + Sv[i] * .3 + (j[i] - 3.5) * .02); };
+const STELLA = [[0, 3], [0, 5], [0, 6], [3, 5], [3, 6], [5, 6], [1, 2], [1, 4], [1, 7], [2, 4], [2, 7], [4, 7]];
+const STATES = []; for (let h = 0; h < 8; h++) for (let k = 0; k < 8; k++) { const Hh = CV(h), Sv = CV(k); STATES.push([0, 1, 2].map(i => Hh[i] + Sv[i] * .3)); }
+const cv = $('#c'), g = cv.getContext('2d'); let W, H, D;
+function size() { D = Math.min(2, devicePixelRatio || 1); W = cv.width = innerWidth * D; H = cv.height = innerHeight * D; }
+addEventListener('resize', size); size();
+const ORB = {yaw: .6, pitch: -.32, v: 0, on: true, base: .0016, fy: 0, fp: 0, over: false};
+try { const o = localStorage.getItem('mages.orbit'); if (o) ORB.on = o === 'on'; } catch (e) {}
+const orbBtn = $('#orb'), setOrb = () => { orbBtn.className = ORB.on ? '' : 'off'; orbBtn.textContent = ORB.on ? '⟳' : '❚❚'; }; setOrb();
+orbBtn.onclick = () => { ORB.on = !ORB.on; try { localStorage.setItem('mages.orbit', ORB.on ? 'on' : 'off'); } catch (e) {} setOrb(); };
+const proj = p => { const cy = Math.cos(ORB.yaw), sy = Math.sin(ORB.yaw), cp = Math.cos(ORB.pitch), sp = Math.sin(ORB.pitch);
+  const x = p[0] * cy + p[2] * sy, z0 = -p[0] * sy + p[2] * cy, y = p[1] * cp - z0 * sp, z = p[1] * sp + z0 * cp, sc = Math.min(W, H) * .21 / (1 + z * .12); return {x: W / 2 + x * sc, y: H * .5 + y * sc, z}; };
+let HOT = -1, Q = [];
+let stars = []; { let s = 9; const r = () => (s = (s * 16807) % 2147483647) / 2147483647; for (let i = 0; i < 420; i++) stars.push([r(), r(), r() * 1.2 + .2, r()]); }
+function frame(now) {
+  const t = now / 1000; g.fillStyle = '#0B0B0D'; g.fillRect(0, 0, W, H);
+  stars.forEach(([x, y, r, a]) => { g.fillStyle = `rgba(246,241,230,${.06 + .2 * a * (.6 + .4 * Math.sin(t * .7 + a * 9))})`; g.fillRect(x * W, y * H, r * D, r * D); });
+  // the Star: its two tetrahedra, and its 64 states, faintly
+  const core = g.createRadialGradient(W / 2, H * .5, 0, W / 2, H * .5, Math.min(W, H) * .32); core.addColorStop(0, `rgba(61,99,255,${.16 + Math.min(.22, links.length / 600)})`); core.addColorStop(1, 'rgba(31,75,255,0)');
+  g.fillStyle = core; g.fillRect(0, 0, W, H);
+  g.lineWidth = 1.2 * D; for (const [u, v] of STELLA) { const a = proj(CV(u)), b = proj(CV(v)); g.strokeStyle = par(u) ? 'rgba(246,241,230,.28)' : 'rgba(61,99,255,.5)'; g.beginPath(); g.moveTo(a.x, a.y); g.lineTo(b.x, b.y); g.stroke(); }
+  STATES.forEach(p => { const q = proj(p); g.fillStyle = 'rgba(142,164,255,.22)'; g.fillRect(q.x - 1.2 * D, q.y - 1.2 * D, 2.4 * D, 2.4 * D); });
+  // the scroll: each link on its state; the chain threads them in order
+  Q = links.map(l => proj(l.p || (l.p = xyz(l.hash))));
+  const hot = HOT >= 0 ? links[HOT] : null, sameMark = hot && hot.mark ? new Set(links.map((l, i) => l.mark === hot.mark ? i : -1).filter(i => i >= 0)) : new Set();
+  g.lineWidth = .7 * D; g.strokeStyle = 'rgba(31,75,255,.12)'; g.beginPath(); for (let i = 1; i < Q.length; i++) { g.moveTo(Q[i - 1].x, Q[i - 1].y); g.lineTo(Q[i].x, Q[i].y); } g.stroke();
+  // constellations: each person's stars joined in order (their personal evidence chain)
+  const lastOf = new Map(); g.lineWidth = 1 * D; g.strokeStyle = 'rgba(246,241,230,.13)'; g.beginPath(); const mineLines = [];
+  links.forEach((l, i) => { if (!l.mark) return; const j = lastOf.get(l.mark); if (j != null) { if (MINE.has(l.hash) || MINE.has(links[j].hash)) mineLines.push([j, i]); else { g.moveTo(Q[j].x, Q[j].y); g.lineTo(Q[i].x, Q[i].y); } } lastOf.set(l.mark, i); }); g.stroke();
+  if (mineLines.length) { g.lineWidth = 1.2 * D; g.strokeStyle = 'rgba(232,200,115,.45)'; g.beginPath(); mineLines.forEach(([j, i]) => { g.moveTo(Q[j].x, Q[j].y); g.lineTo(Q[i].x, Q[i].y); }); g.stroke(); }
+  if (hot) { g.lineWidth = 1.4 * D; g.strokeStyle = 'rgba(232,200,115,.85)'; g.beginPath(); [HOT - 1, HOT + 1].forEach(j => { if (j >= 0 && j < Q.length) { g.moveTo(Q[HOT].x, Q[HOT].y); g.lineTo(Q[j].x, Q[j].y); } });
+    sameMark.forEach(j => { if (j !== HOT) { g.moveTo(Q[HOT].x, Q[HOT].y); g.lineTo(Q[j].x, Q[j].y); } }); g.stroke(); }
+  links.map((l, i) => i).sort((a, b) => Q[b].z - Q[a].z).forEach(i => { const l = links[i], q = Q[i], c = COLOR[l.kind] || COLOR.chat, fresh = Math.max(0, 1 - (now - (born.get(l.hash) || 0)) / 4000);
+    const depth = .55 + .45 * Math.max(0, Math.min(1, .62 - q.z * .3)), lit = sameMark.has(i) || MINE.has(l.hash), near = 1 / (1 + q.z * .18), r = (l.kind === 'guide' ? 7 : l.kind === 'claim' ? 6.2 : l.kind === 'proverb' ? 5.6 : 4.4) * D * near * (1 + 1.6 * fresh);
+    { const gr = r * (fresh > 0 || lit ? 4.5 : 3.2), gl = g.createRadialGradient(q.x, q.y, 0, q.x, q.y, gr); gl.addColorStop(0, `rgba(${c},${(fresh > 0 || lit ? .38 : .2) * depth + .45 * fresh})`); gl.addColorStop(1, `rgba(${c},0)`); g.fillStyle = gl; g.beginPath(); g.arc(q.x, q.y, gr, 0, 6.283); g.fill(); }
+    g.globalAlpha = lit ? 1 : depth * .85; g.fillStyle = sameMark.has(i) ? '#e8c873' : `rgb(${c})`; g.beginPath();
+    if (l.kind === 'thumb' || l.kind === 'chat') g.rect(q.x - r * .7, q.y - r * .7, r * 1.4, r * 1.4); else g.arc(q.x, q.y, r, 0, 6.283); g.fill(); g.globalAlpha = 1;
+    if (MINE.has(l.hash)) { g.strokeStyle = 'rgba(255,255,255,.9)'; g.lineWidth = 1.4 * D; g.beginPath(); g.arc(q.x, q.y, r + 5 * D + 2 * D * Math.sin(t * 3), 0, 6.283); g.stroke(); } });
+  if (hot) { g.strokeStyle = '#fff'; g.lineWidth = 1 * D; g.beginPath(); g.arc(Q[HOT].x, Q[HOT].y, 14 * D, 0, 6.283); g.stroke(); }
+  markPassage(HOT);
+  const target = ORB.on ? (ORB.over ? ORB.base * .25 : ORB.base) : 0; ORB.v += (target - ORB.v) * .05; if (!target && Math.abs(ORB.v) < ORB.base * .03) ORB.v = 0;
+  ORB.yaw += ORB.v + ORB.fy; ORB.pitch = Math.max(-1.3, Math.min(1.3, ORB.pitch + ORB.fp)); ORB.fy *= .92; ORB.fp *= .92;
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+// drag to turn the Star, with inertia; point at a star to see its threads and everyone else with the same mark
+let drag = null;
+cv.addEventListener('pointerdown', e => { drag = {x: e.clientX, y: e.clientY}; ORB.fy = ORB.fp = 0; });
+addEventListener('pointermove', e => {
+  if (drag) { const dx = e.clientX - drag.x, dy = e.clientY - drag.y; ORB.yaw += dx * .008; ORB.pitch = Math.max(-1.3, Math.min(1.3, ORB.pitch + dy * .008)); ORB.fy = dx * .004; ORB.fp = dy * .004; drag = {x: e.clientX, y: e.clientY}; }
+  if (!drag && e.target.closest && e.target.closest('.feed')) { $('#tip').style.display = 'none'; return; } // the scroll panel drives the highlight here
+  const mx = e.clientX * D, my = e.clientY * D; let best = -1, bd = (18 * D) ** 2; Q.forEach((q, i) => { const d = (q.x - mx) ** 2 + (q.y - my) ** 2; if (d < bd) { bd = d; best = i; } });
+  HOT = best; const tip = $('#tip');
+  if (best < 0) { tip.style.display = 'none'; return; }
+  const l = links[best], same = l.mark ? links.filter(x => x.mark === l.mark).length : 1, script = (() => { try { return SigilCode.encode(Uint8Array.from(l.hash.match(/../g).map(x => parseInt(x, 16)))); } catch (err) { return ''; } })();
+  tip.innerHTML = `<div class="sg">${DP.sigil(l.hash)}</div>${esc(DP.spell(l.hash))}<br>#${l.seq} · ${l.kind === 'claim' ? 'claimed in the group chat' : l.kind}${l.mark ? ` · mark ${DP.sigil(l.mark)} · ${same} on the chain` : ''}${MINE.has(l.hash) ? ' · yours' : ''}${script ? `<div class="sc">${esc(script)}</div>` : ''}`;
+  if (MINE.has(l.hash) && l.sealed && window.DP && DP.open) DP.open(l.sealed).then(o => { if (o && HOT === best) tip.insertAdjacentHTML('beforeend', `<div style="margin-top:6px;color:#F6F1E6;text-transform:none;font-size:14px">${o.kind === 'thumb' ? 'Your thumb up' : esc((o.title ? o.title + ': ' : '') + (o.text || ''))}</div><div style="color:#8EA4FF">opened with your key · only you can see this</div>`); });
+  if (l.room) tip.insertAdjacentHTML('beforeend', `<div style="color:#8EA4FF;margin-top:4px">from the room: ${esc(l.room)}</div>`);
+  if (l.mark && same > 1) rootOf(l.mark).then(rt => { if (HOT === best) tip.insertAdjacentHTML('beforeend', `<div style="margin-top:4px">their evidence root · ${same} stars<br><span style="color:#e8c873">${rt.slice(0, 32)}…</span></div>`); });
+  tip.style.display = 'block'; const left = e.clientX > innerWidth * .55, upw = e.clientY > innerHeight * .5; tip.style.left = (left ? e.clientX - 16 : e.clientX + 16) + 'px'; tip.style.top = (upw ? e.clientY - 16 : e.clientY + 16) + 'px'; tip.style.transform = `translate(${left ? '-100%' : '0'},${upw ? '-100%' : '0'})`;
+});
+addEventListener('pointerup', () => { drag = null; });
+cv.addEventListener('pointerenter', () => ORB.over = true); cv.addEventListener('pointerleave', () => { ORB.over = false; HOT = -1; $('#tip').style.display = 'none'; });
+/* ---------- an example night (?demo): same chain formula as the Worker, computed here ---------- */
+const DEMO = new URLSearchParams(location.search).has('demo');
+if (DEMO) {
+  $('#demo-tag').style.display = '';
+  const hx = async t => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)))].map(b => b.toString(16).padStart(2, '0')).join('');
+  let seed = 42; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const LINES = ["Don't panic; check the checksum.", 'A towel and a runbook: never travel without both.', 'Keep calm and keep your keys.', 'Nothing is on fire until someone checks.', 'Write down every command before you run it.', 'Turn up twice; the second time is where it starts.'];
+  const GUIDES = ['Bike repair, together', 'Keeping the node', 'Local AI at home', 'Finding your people', 'Recovering your keys'];
+  let visitors = [], you = null, t0 = Date.parse('2026-11-05T18:30:00Z'), clock = 0;
+  async function addDemo() {
+    if (!visitors.length) { for (let i = 0; i < 70; i++) visitors.push(await hx('demo-mark|' + i)); you = visitors[17]; }
+    const r = rnd(), kind = r < .5 ? 'thumb' : r < .72 ? 'proverb' : r < .82 ? 'guide' : r < .9 ? 'claim' : 'chat';
+    const mark = links.length % 31 === 5 ? you : visitors[Math.floor(Math.pow(rnd(), 1.4) * visitors.length)]; // "you" turns up every so often
+    clock += 20000 + rnd() * 60000; const at = new Date(t0 + clock).toISOString(), seq = links.length, prev = seq ? links[seq - 1].hash : '0'.repeat(64);
+    const content = kind === 'thumb' ? mark : kind === 'chat' || kind === 'claim' ? await hx(kind + '|' + seq) : {text: LINES[seq % LINES.length], title: kind === 'guide' ? GUIDES[seq % GUIDES.length] : ''};
+    const leaf = await hx(JSON.stringify({kind, content, at})), hash = await hx([prev, leaf, mark, seq].join('|'));
+    const link = {seq, kind, at, leaf, mark, prev, hash, room: ['Main hall', 'Library', 'Garden room'][Math.floor(rnd() * 3)]}; links.push(link); born.set(hash, performance.now());
+    if (mark === you) MINE.add(hash);
+  }
+  (async () => { for (let i = 0; i < 160; i++) await addDemo(); head = links[links.length - 1].hash; feed(); $('#n').textContent = links.length; $('#head').textContent = 'head ' + head;
+    // the "you" line reads from the demo visitor's mark
+    window.DP.mark = async () => you;
+    feed();
+    setInterval(async () => { await addDemo(); head = links[links.length - 1].hash; feed(); $('#n').textContent = links.length; $('#head').textContent = 'head ' + head; }, 2500); })();
+} else { poll(); setInterval(poll, 4000); }
+/* ---------- the rooms feeding this scroll ---------- */
+function drawRooms(list) { $('#rooms').innerHTML = list.length ? list.map(r => `<span><i class="${r.open ? 'on' : ''}"></i>${esc(r.room)} · ${r.count}</span>`).join('') : ''; }
+if (DEMO) { const RM = ['Main hall', 'Library', 'Garden room']; setInterval(() => drawRooms(RM.map(r => ({room: r, open: r !== 'Garden room' || Math.floor(Date.now() / 20000) % 3 !== 0, count: links.filter(l => l.room === r).length}))), 2000); }
+else { const rooms = async () => { try { const r = await fetch(API + '/api/rooms', {cache: 'no-store'}); if (r.ok) drawRooms(await r.json()); } catch (e) {} }; rooms(); setInterval(rooms, 10000); }
+</script>
+</body>
+</html>

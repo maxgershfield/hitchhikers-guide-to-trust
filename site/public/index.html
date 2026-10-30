@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Hitchhiker's Guide to Trust</title>
+<meta name="description" content="A Galaxy of Local-First Verifiable Trust Communities, Agents, Guides and Guidance Built with Trust Tasks. A talk and a guidebook you can visit, reread and add to.">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--night:#0B0B0D;--cream:#F6F1E6;--paper:#EFE9DC;--blue:#1F4BFF;--pale:#8EA4FF;--muted:#9E998C;--line:rgba(246,241,230,.22);
+  --head:Anton,Impact,"Arial Narrow Bold",sans-serif;--body:"Space Grotesk","Segoe UI",Arial,sans-serif;--mono:"Space Mono",Consolas,monospace}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--night);color:var(--cream);font-family:var(--body)}
+main{max-width:1100px;margin:0 auto;padding:28px 20px 60px}
+.micro{font-family:var(--mono);font-size:13px;text-transform:uppercase;letter-spacing:.04em;line-height:1.55}
+.top{display:flex;justify-content:space-between;gap:20px;border-bottom:1px solid var(--line);padding-bottom:12px}
+.top b{border-bottom:2px solid var(--cream);padding-bottom:3px}
+h1{font-family:var(--head);font-weight:400;text-transform:uppercase;font-size:clamp(52px,9vw,124px);line-height:.92;margin:14px 0 16px}
+.kicker{font-family:var(--head);font-weight:400;text-transform:uppercase;font-size:clamp(22px,3vw,34px);color:var(--blue);margin-top:30px;letter-spacing:.02em}
+.subtitle{font-family:var(--body);font-size:clamp(19px,2vw,26px);line-height:1.4;max-width:820px;margin:0 0 18px;color:var(--cream)}
+h1 span{color:var(--blue)}
+.lede{font-family:var(--mono);text-transform:uppercase;font-size:16px;line-height:1.6;max-width:620px}
+.doors{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px;margin-top:40px}
+.door{display:block;text-decoration:none;color:inherit;border:1px solid var(--line);border-radius:4px;padding:24px;transition:border-color .2s,background .2s}
+.door:hover{border-color:var(--blue);background:rgba(31,75,255,.08)}
+.door h2{font-family:var(--head);font-weight:400;text-transform:uppercase;font-size:44px;margin:8px 0 10px;line-height:1}
+.door h2 span{color:var(--blue)}
+.door p{margin:0;font-size:17px;line-height:1.5;color:#D8D2C4}
+.door .micro{color:var(--pale)}
+.gate{margin-top:30px;color:var(--muted)}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#C0504D;margin-right:8px}
+.dot.on{background:#3FCB6B}
+footer{margin-top:50px;border-top:1px solid var(--line);padding-top:14px;color:var(--muted)}
+footer a{color:var(--pale)}
+</style>
+<script src="mark.js"></script>
+<script src="prompt.js" defer></script>
+</head>
+<body>
+<main>
+  <div class="top"><div class="micro"><b>The Hitchhiker's Guide to Trust</b></div><div class="micro" style="text-align:right">A galaxy of local-first verifiable<br>trust communities, agents, guides<br>and guidance, built with Trust Tasks</div></div>
+  <div class="kicker">Don't Panic</div>
+  <h1>The Hitchhiker's Guide<br>to <span>Trust</span></h1>
+  <p class="subtitle">A Galaxy of Local-First Verifiable Trust Communities, Agents, Guides and Guidance Built with Trust Tasks</p>
+  <p class="lede">How a community's trust graph forms around guides and guidance, and why it should be kept locally. Read it, play with it, and add your own at the end, while the gate is open.</p>
+  <div class="doors">
+    <a class="door" href="guide/?path=workshop"><div class="micro">IIW 43 · the workshop</div><h2>The <span>workshop</span></h2><p>A short guide, then over to you: questions on screen, and every deeper scene one touch away.</p></a>
+    <a class="door" href="guide/?path=lightning"><div class="micro">Five minutes</div><h2>The <span>lightning</span> talk</h2><p>The fast way through: three projects, the thumb up, local nodes, the hitchhiker mage, and your turn.</p></a>
+    <a class="door" href="guide/"><div class="micro">To read at your own pace</div><h2>The whole <span>guide</span></h2><p>All nineteen scenes, each with one thing to touch.</p></a>
+    <a class="door" href="chain/"><div class="micro">Live · the public face of the guide</div><h2>The evidence <span>chain</span></h2><p>Every thumb up, proverb and guide becomes a star. Its hash is public; what's behind it is sealed with your key. Load in, see yourself, start contributing.</p></a>
+    <a class="door" href="notes"><div class="micro">How it works</div><h2>Work <span>notes</span></h2><p>The technical side, written down plainly: OpenVTC, community nodes, Trust Tasks, guides, and what happens to what you send.</p></a>
+  </div>
+  <div style="margin-top:34px;border-top:1px solid var(--line);padding-top:22px"><div class="micro" style="color:var(--pale);margin-bottom:12px">Start here: the first trust task</div><div data-prompt></div></div>
+  <div class="gate micro" id="gate" style="display:none"></div>
+  <footer class="micro">With the Hitchhikers and Field Guide · built on OpenVTC · <a href="notes">work notes</a> · hitchhikers.earth · mages.city</footer>
+</main>
+<script>
+(async () => { const g = document.getElementById('gate'); let open = false, host = '';
+  try { const r = await fetch('/api/gate', {cache: 'no-store'}); const d = await r.json(); open = r.ok && d.gate === 'open'; host = d.host || ''; } catch (e) {}
+  g.innerHTML = open ? `<span class="dot on"></span>Gate open${host && host !== 'worker' ? ' · held by ' + host.replace(/[<>&"]/g, '') : ''}` : '<span class="dot"></span>Gate closed: the node holding this site is offline; you can still read'; })();
+</script>
+</body>
+</html>

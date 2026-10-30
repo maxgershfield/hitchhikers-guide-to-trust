@@ -1,0 +1,14 @@
+# The tunnel that gives the gate its public name (see README for config.yml). Edit User= and the paths.
+[Unit]
+Description=Cloudflare Tunnel for the Don't Panic gate
+After=network-online.target dontpanic.service
+Wants=network-online.target
+
+[Service]
+User=pi
+ExecStart=/usr/bin/cloudflared --no-autoupdate tunnel --config /home/pi/.cloudflared/config.yml run
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Don't Panic · keeper</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#EFE9DC;--ink:#0D0D0F;--blue:#1F4BFF;--muted:#5E5A50;--line:#CFC6AF;--red:#C0504D;
+  --head:Anton,Impact,sans-serif;--sans:"Space Grotesk","Segoe UI",Arial,sans-serif;--mono:"Space Mono",Consolas,monospace}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans)}
+main{max-width:900px;margin:0 auto;padding:22px 16px 60px}
+h1{font-family:var(--head);font-weight:400;text-transform:uppercase;font-size:56px;margin:8px 0}
+h2{font-family:var(--head);font-weight:400;text-transform:uppercase;font-size:30px;margin:28px 0 8px;border-top:1px solid var(--ink);padding-top:12px}
+.micro{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+input,textarea{font-family:var(--sans);font-size:17px;border:1px solid var(--ink);border-radius:2px;padding:9px;background:#F7F3E8;width:100%;margin-bottom:4px}
+button{font-family:var(--mono);text-transform:uppercase;font-size:13px;font-weight:700;border:1px solid var(--ink);border-radius:2px;padding:8px 12px;background:transparent;cursor:pointer}
+button.go{background:var(--blue);border-color:var(--blue);color:#fff}
+button.no{border-color:var(--red);color:var(--red)}
+.row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start;border-bottom:1px solid var(--line);padding:10px 0}
+.row .acts{display:flex;gap:6px}
+.row small{display:block;font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:4px}
+.kind{font-family:var(--mono);font-size:11px;text-transform:uppercase;color:var(--blue)}
+.hidden{opacity:.45}
+#login{display:flex;gap:8px;margin:14px 0}
+</style>
+</head>
+<body>
+<main>
+  <div class="micro">The Hitchhiker's Guide to Trust · keeper <span id="host"></span></div>
+  <h1>Keeper</h1>
+  <p>Proverbs and new guides wait here until you approve them. You can fix a typo or a guide's name first.</p>
+  <div id="login"><input id="key" type="password" placeholder="keeper key" autocomplete="current-password"><button class="go" onclick="login()">Open</button></div>
+  <div class="micro" id="msg"></div>
+  <h2>Waiting <span id="nq"></span></h2>
+  <div id="queue"></div>
+  <h2>Approved <span id="na"></span></h2>
+  <p><button onclick="exportWiki()">Export as wiki pages</button> <span class="micro">Federated Wiki JSON: a "Don't Panic" page plus one page per new guide</span></p>
+  <div id="approved"></div>
+</main>
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+let KEY = ''; try { KEY = sessionStorage.getItem('dp-key') || ''; } catch (e) {}
+async function api(action, body = {}) {
+  const r = await fetch('/api/keeper/' + action, {method: 'POST', headers: {'content-type': 'application/json', authorization: 'Bearer ' + KEY}, body: JSON.stringify(body)});
+  const d = await r.json(); if (!r.ok) throw new Error(d.error || r.status); return d;
+}
+function login() { KEY = $('#key').value; try { sessionStorage.setItem('dp-key', KEY); } catch (e) {} refresh(); }
+async function refresh() {
+  if (!KEY) return;
+  try {
+    const {queue, approved, host} = await api('state'); $('#msg').textContent = ''; $('#login').style.display = 'none'; $('#host').textContent = '· held by ' + host;
+    $('#nq').textContent = `(${queue.length})`; $('#na').textContent = `(${approved.length})`;
+    $('#queue').innerHTML = queue.map(x => `<div class="row"><div><div class="kind">${x.kind === 'guide' ? 'new guide' : 'proverb'}</div>${x.kind === 'guide' ? `<input id="tt${x.id}" value="${esc(x.title)}">` : ''}<textarea id="t${x.id}" rows="2">${esc(x.text)}</textarea><small>${x.by ? esc(x.by) + ' · ' : ''}${esc(x.at || '')}</small></div><div class="acts"><button class="go" onclick="act('approve',${x.id})">Approve</button><button class="no" onclick="act('reject',${x.id})">Reject</button></div></div>`).join('') || '<p class="micro">Nothing waiting.</p>';
+    $('#approved').innerHTML = approved.slice().reverse().map(x => `<div class="row ${x.hidden ? 'hidden' : ''}"><div><div class="kind">${x.kind === 'guide' ? 'guide' : 'proverb'}${x.hidden ? ' · hidden' : ''}</div>${x.kind === 'guide' ? '<b>' + esc(x.title) + '</b>: ' : ''}${esc(x.text)}<small>${x.by ? esc(x.by) : ''}</small></div><div class="acts"><button onclick="act('${x.hidden ? 'show' : 'hide'}',${x.id})">${x.hidden ? 'Show' : 'Hide'}</button></div></div>`).join('') || '<p class="micro">Nothing approved yet.</p>';
+  } catch (e) { $('#msg').textContent = 'Could not open: ' + e.message; $('#login').style.display = 'flex'; }
+}
+async function act(action, id) {
+  try { const body = {id}; if (action === 'approve') { body.text = $('#t' + id).value; const tt = $('#tt' + id); if (tt) body.title = tt.value; } await api(action, body); } catch (e) { $('#msg').textContent = e.message; }
+  refresh();
+}
+async function exportWiki() { try { const pages = await api('export'); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(pages, null, 1)], {type: 'application/json'})); a.download = 'hitchhiker-guides-wiki-pages.json'; a.click(); } catch (e) { $('#msg').textContent = e.message; } }
+$('#key').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+refresh(); setInterval(refresh, 10000);
+</script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Work notes · Hitchhiker's Guide to Trust</title>
+<meta name="description" content="How the technical side of the Hitchhiker's Guide to Trust is covered: OpenVTC, community nodes, guides, and how this site handles your data.">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#EFE9DC;--ink:#0D0D0F;--blue:#1F4BFF;--muted:#5E5A50;--line:rgba(13,13,15,.2);
+  --head:Anton,Impact,"Arial Narrow Bold",sans-serif;--body:"Space Grotesk","Segoe UI",Arial,sans-serif;--mono:"Space Mono",Consolas,monospace}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body)}
+main{max-width:760px;margin:0 auto;padding:28px 18px 80px}
+.micro{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+.top{display:flex;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:10px}
+.top b{border-bottom:2px solid var(--ink);padding-bottom:3px}
+h1{font-family:var(--head);font-weight:400;text-transform:uppercase;font-size:clamp(56px,11vw,96px);line-height:.92;margin:26px 0 8px}
+h1 span{color:var(--blue)}
+h2{font-family:var(--head);font-weight:400;text-transform:uppercase;font-size:32px;margin:38px 0 8px;padding-top:14px;border-top:1px solid var(--line)}
+h2 i{font-style:normal;color:var(--blue);margin-right:10px}
+p,li{font-size:17px;line-height:1.6}
+ul{padding-left:20px}
+.status{font-family:var(--mono);font-size:12px;text-transform:uppercase;padding:2px 7px;border:1px solid var(--ink);border-radius:3px;margin-left:6px;white-space:nowrap}
+.status.done{background:var(--ink);color:var(--paper)}
+.status.next{border-style:dashed}
+.lede{font-family:var(--mono);text-transform:uppercase;font-size:15px;line-height:1.6}
+a{color:var(--blue)}
+footer{margin-top:44px;border-top:1px solid var(--line);padding-top:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+<main>
+  <div class="top"><div class="micro"><b>The Hitchhiker's Guide to Trust</b></div><div class="micro"><a href="./guide/?path=workshop">Workshop</a> · <a href="./guide/?path=lightning">Lightning</a> · <a href="./guide/">Guide</a> · <a href="./">Home</a></div></div>
+  <h1>Work<br><span>notes</span></h1>
+  <p class="lede">The talk stays light on purpose. This is where the technical side is written down: what exists, what is being built, and what is still a direction.</p>
+
+  <h2><i>01</i>The gate</h2>
+  <p>This site's pages are always readable. The one thing you can add (a proverb, or a new guide) goes through a <b>gate</b> held by a small community node, a Raspberry Pi. While the node is up, at an event or at someone's home, the gate is open. Unplug it and the gate closes: the graph can only grow while a community is hosting it.</p>
+  <p>The graph scenes in the guide are illustrations of how a trust graph forms around guides. In a community deployment the same steps map onto OpenVTC: joining a community by DID, guidance as a signed contribution, a vouch as a credential or a Trust Task between members.</p>
+
+  <h3 style="font-family:var(--head);font-weight:400;text-transform:uppercase;font-size:24px;margin:26px 0 6px">The evidence chain: the public face of the guide</h3>
+  <p>The live galaxy is an evidence chain: the public face of a community's guide, and a way to join and start contributing. Any community can deploy one, and anyone can load into it. A thumb up puts your mark on it (a hash of a secret your phone keeps). Proverbs and new guides join it the same way.</p>
+  <p>Only hashes are public. What's behind each star is sealed in your browser with a key derived from that same secret, so only you can open it; the keeper sees a contribution only to approve it for the guide.</p>
+  <p><b>The claim, tonight.</b> A thumb up also shows you a claim code: your sigil and four words, drawn from your secret. Only its hash goes on the chain, so only you have it. Paste it in the night's group chat and the bot writes a claim onto your chain (your chat handle only as a salted hash) and answers with a proverb. It is a toy invitation trust task: the shape of joining, before anyone joins.</p>
+  <p><b>Next:</b> claiming your string. When a community launches on OpenVTC, showing your secret claims your stars and what's behind them, as an invitation trust task: into Mages City and the Hitchhikers first, then any OpenVTC deployment. And the hosting agent signs and seals each stretch of the chain, so anyone can check it.</p>
+
+  <h2><i>02</i>The trust layer: OpenVTC</h2>
+  <p>OpenVTC is open verifiable-trust infrastructure from the Trust over IP DTG working group, one of its first projects. Each person has an agent (the Hitchhikers call it the Towel); each community runs its own Verifiable Trust Community with a trust registry, a DID host and a mediator.</p>
+  <p>The Hitchhiker opportunity is adoption: OpenVTC gives communities the infrastructure, and a story people want to join gives them a reason to use it.</p>
+
+  <h3 style="font-family:var(--head);font-weight:400;text-transform:uppercase;font-size:24px;margin:26px 0 6px">Trust Tasks, and the thumb up</h3>
+  <p>Trust Tasks (a Trust over IP task force we contribute to) are small, standard requests between two parties: vouch for me, show you belong, agree these terms. Putting your thumb up as a hitchhiker is the analogy: ask, an offer, agreed terms, the promise kept. The same five steps run between agents as signed messages. The Hitchhikers will run their own Trust Tasks, local first, on their own node.</p>
+  <p>Zero-knowledge proofs make the last step possible: you can attest to your place in someone's guide or community without revealing who you are, or who vouched for you. Like the thumb, and like "Don't Panic", a trust task is a gesture any community can read while each keeps its own graph. Don't panic: you own your own perspective in the trust graph.</p>
+
+  <h2><i>03</i>The community node</h2>
+  <p>A kit for running a full OpenVTC node on a Raspberry Pi 5: every service built from source on the Pi, published behind Caddy, run under systemd, with each build's commit and checksum recorded. It ships no keys and calls nowhere but the package sources and your own domain.</p>
+  <ul>
+    <li>Kit and runbook, reviewed <span class="status done">done</span></li>
+    <li>First Hitchhikers node <span class="status">being stood up</span></li>
+    <li>End to end on a real Pi <span class="status next">not yet</span></li>
+    <li>A second node, then federation <span class="status next">later</span></li>
+  </ul>
+
+  <h3 style="font-family:var(--head);font-weight:400;text-transform:uppercase;font-size:24px;margin:26px 0 6px">The pathway: one Pi to a network</h3>
+  <p>Small nodes are how OpenVTC reaches real communities. Three kinds: <b>your device</b> holds you (keys and your verifiable trust agent: on a phone, Keyring from the DTG working group has the VTA built in); a <b>community node</b> holds the community (its OpenVTC services, the credentials it issues, its guides, the graph's edges); an <b>embassy</b> is the stronger node, trusted to receive visitors from many communities, witness what happens and countersign it. Personal machines visit; embassies host.</p>
+  <p>A visit to an embassy runs in six signed beats: resolve, admission, exchange, understanding, consent, seal. The host, the visitor and a witness sign the seal, and the sealed visit can be issued as a credential, later shown as a predicate proof without revealing who else was there.</p>
+  <ul>
+    <li>A gate on one Pi (this site) <span class="status done">built</span></li>
+    <li>A community node: OpenVTC on a Pi 5 <span class="status">being stood up</span></li>
+    <li>Every member's agent: Keyring, a phone app from the DTG working group with the VTA built in <span class="status done">available</span>; Star Key in the browser <span class="status done">released</span></li>
+    <li>Embassies: the first embassy and a signed visit <span class="status">prototyped</span></li>
+    <li>Witnessed seals between embassies <span class="status next">designed</span></li>
+    <li>Federation; cities from the districts up <span class="status next">direction</span></li>
+  </ul>
+
+  <h2><i>04</i>Guides and guidance</h2>
+  <p>Field Guide, a fellow Hitchhiker project, is where guides are created and played in real places. Communities keep their own copies on their own node as forkable pages: a fork is a countersignature, the page's history is its lineage, and the community decides what merges back.</p>
+  <p>Every guide launched here can be exported as a Federated Wiki page, credited to whoever launched it. <b>Next:</b> this site moves onto the Hitchhikers' own node at a hitchhikers.earth address, taking submissions directly (as the Telegram flow does today) and turning them into wiki pages anyone can fork.</p>
+
+  <h2><i>05</i>Connected cities</h2>
+  <p>A direction, not a product. The communities who will govern connected cities need a trust graph for sensors, data and services. The local-first pattern suggests growing it from the districts up: a node per neighbourhood, guides for how things are run, promises with evidence, and only proofs crossing to the city.</p>
+
+  <h2><i>06</i>What we have given back</h2>
+  <ul>
+    <li>Fixes to the OpenVTC setup guide, merged upstream</li>
+    <li>Star Key: an OpenVTC agent in the browser that joins a community by DID and brings your own terms</li>
+    <li>Trust over IP DTG ZKP Task Force (co-chair): predicate-proof records, spec and guide chapters, formal evidence</li>
+    <li>An agreements family (IEEE 7012 / MyTerms) for Trust Tasks, in review</li>
+    <li>The community node kit above</li>
+  </ul>
+  <p>Everything goes upstream the same way: an issue first, then a pull request.</p>
+
+  <h2><i>07</i>Mages City, autoresearch and the hitchhiker mage</h2>
+  <p><b>Why it matters.</b> Research and security communities online are going to organise as verifiable trust communities: open science groups, security collectives, the people governing connected cities. In those, the only thing that should earn standing is work others can check. A sealed run lets a community trust a result without having to trust whoever claims it, and a sealed negative result saves the next team the run.</p>
+  <p><b>Mages City's contribution to guides and guidance</b> is autoresearch: one agent proposes, another checks, a human decides, and every run is sealed with a published hash root that anyone can re-verify. What the agents find becomes guidance a community can follow, fork and keep.</p>
+  <p><b>The hitchhiker mage.</b> In OpenVTC an agent joins each community by DID, on that community's terms. A Mages City mage is admitted by work evidence, so it can be trusted to arrive somewhere new and help: it travels between communities, brings guidance backed by sealed work, and solves problems. It carries its keys, its standing and its evidence; it never carries its owner's data or another community's edges.</p>
+
+  <h2><i>08</i>What happens to what you send</h2>
+  <ul>
+    <li>No accounts and no tracking. You send a line of text, and a name only if you choose to.</li>
+    <li>Your address is never stored. Rate limiting uses a salted hash held for a minute.</li>
+    <li>Nothing appears until the keeper approves it, and the keeper can hide anything later.</li>
+    <li>Approved guides can become wiki pages on the community's own node, credited to whoever wrote them.</li>
+  </ul>
+
+  <p class="lede" style="margin-top:34px">First shown at IIW 43. Next: a very similar workshop at a university in Amsterdam.</p>
+
+  <footer class="micro">hitchhikers.earth · mages.city · github.com/OpenVTC/vti-setup · Don't Panic</footer>
+</main>
+</body>
+</html>

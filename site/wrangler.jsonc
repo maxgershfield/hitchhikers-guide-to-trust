@@ -1,0 +1,18 @@
+// dontpanic.mages.city: The Hitchhiker's Guide to Trust. Pages in ./public; the small API in src/worker.js
+// (proverbs and new guides, held for the keeper; the gate).
+// Deploy (Mitch): npx wrangler kv namespace create PROVERBS  → paste the id below
+//                 npx wrangler secret put KEEPER_KEY          → a long passphrase only the keeper knows
+//                 npx wrangler deploy
+// Gate mode (a Pi holds the door): uncomment GATE_ORIGIN with the Pi's tunnel address and deploy again.
+// Every /api/* call then goes to the Pi; unplug it and submissions close while the pages stay up.
+{
+  "name": "mages-city-dontpanic",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-08-01",
+  "assets": { "directory": "./public", "binding": "ASSETS", "html_handling": "auto-trailing-slash", "run_worker_first": ["/api/*"] },
+  "kv_namespaces": [ { "binding": "PROVERBS", "id": "PASTE_KV_NAMESPACE_ID" } ],
+  "vars": {
+    // "GATE_ORIGIN": "https://gate.mages.city"
+  },
+  "routes": [ { "pattern": "dontpanic.mages.city", "custom_domain": true } ]
+}
