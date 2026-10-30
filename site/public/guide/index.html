@@ -57,7 +57,9 @@ svg text{font-family:var(--mono)}
 .prog{position:absolute;left:0;bottom:-1px;height:3px;background:var(--cobalt);transition:width .3s}
 .bottom{position:absolute;bottom:0;left:0;right:0;height:44px;display:flex;align-items:center;gap:12px;padding:0 28px;border-top:1px solid var(--ink);font-family:var(--mono);font-size:12px;text-transform:uppercase;color:var(--muted);background:var(--paper);z-index:6}
 .bottom .sp{flex:1}
-#deeper button{border-color:var(--cobalt);color:var(--cobalt);font-weight:700}
+#deeper button{border-color:var(--cobalt);color:var(--cobalt);font-weight:700;white-space:nowrap}
+#deeper{min-width:0;overflow:hidden}.bottom > *{flex-shrink:0}.bottom > #deeper{flex-shrink:1}
+.bottom button,.bottom a{white-space:nowrap}
 #deeper button:hover{background:var(--cobalt);color:#fff}
 .bottom button{font-family:var(--mono);font-size:12px;text-transform:uppercase;border:1px solid var(--ink);background:transparent;color:var(--ink);border-radius:3px;padding:4px 10px;cursor:pointer}
 .overview{display:none;position:absolute;inset:56px 0 44px 0;background:rgba(239,233,220,.97);z-index:5;padding:30px 60px;overflow:auto}
@@ -126,16 +128,6 @@ svg text{font-family:var(--mono)}
   <svg id="puddle" width="320" height="260" viewBox="0 0 320 260" style="left:1210px;top:300px"></svg>
   <div style="position:absolute;left:62px;top:720px"><button class="act" id="req-btn" onclick="reqStep()">Read on →</button></div>
   <aside class="notes">From "A Wildly Improbable Declaration and Invitation" (the Hitchhikers, fm.ide.earth/hitchhikers-declaration), for Douglas Adams. It quotes his puddle, the one that thinks the hole was made to fit it, then says: we are trying not to be the puddle; this is a Request for Guidance. It also names the ambition: "owning our own AI rather than renting our minds". This talk is one answer: guidance a community writes together, keeps on machines it owns, and anyone can check.</aside>
-</section>
-
-<!-- the name that died: the opening story -->
-<section class="scene dark" data-part="I" data-sec="Name">
-  <div class="kick" style="color:var(--off)">I · Why · a story</div>
-  <h1><span class="n">2.</span> The name that <b>died</b></h1>
-  <div class="sub" id="name-sub">A borrowed seminar room. A machine in a flight case, named together in week one: anemone.mesh.</div>
-  <svg id="name" width="1500" height="470" viewBox="0 0 1500 470" style="left:50px;top:250px"></svg>
-  <div style="position:absolute;left:62px;top:730px;display:flex;gap:14px;align-items:center"><button class="act" id="name-btn" onclick="nameStep()">Next beat →</button><span class="label" style="color:#8f8c84">From the Hitchhikers Workshop seed story, told three ways: a story, a poem, a white paper</span></div>
-  <aside class="notes">The seed story from the workshop (hh_workshop, "The Name That Died"). Fourteen laptops typed the name; thirteen found it. It had worked at home; the venue's router did not carry their gossip, and the raw address only answered a 502. Ilse, steward that week, cabled in the second box they always carried: their own resolver. Nobody was scanned; each offered their address and answered the gateway in their own words: the lock was the lesson. The room sealed: this room reached the shared mind together. The poem's line: carry your own names, and keep them good, never perfect; a trust that certifies itself is the one you can't trust. The mechanism is one touch deeper (one centre or many; what you keep and share).</aside>
 </section>
 
 <section class="scene" data-part="I" data-sec="Opportunity">
@@ -378,12 +370,12 @@ svg text{font-family:var(--mono)}
 /* ---------- paths through the guide: a main thread, with deeper scenes as branches of the scene they belong to ---------- */
 (function () {
   const PATHS = {
-    workshop: ['Cover', 'Request', 'Name', 'Thumb up', 'Field Guide', 'Local', 'Hitchhiker mage', 'Genesis', 'Close'],
+    workshop: ['Cover', 'Request', 'Thumb up', 'Field Guide', 'Local', 'Hitchhiker mage', 'Genesis', 'Close'],
     lightning: ['Cover', 'Request', 'Thumb up', 'Field Guide', 'Local', 'Genesis', 'Close'],
     // the whole guide: each part's story first, its deeper scenes after it
-    guide: ['Cover', 'Request', 'Opportunity', 'Built', 'Name', 'Why local', 'Privacy', 'Thumb up', 'Three graphs', 'Trust', 'Field Guide', 'The guide', 'Games', 'Local', 'Three nodes', 'A visit', 'The pathway', 'Cities', 'Hitchhiker mage', 'Evidence', 'Genesis', 'Close']};
+    guide: ['Cover', 'Request', 'Opportunity', 'Built', 'Why local', 'Privacy', 'Thumb up', 'Three graphs', 'Trust', 'Field Guide', 'The guide', 'Games', 'Local', 'Three nodes', 'A visit', 'The pathway', 'Cities', 'Hitchhiker mage', 'Evidence', 'Genesis', 'Close']};
   // where each scene belongs when it is not on the main thread
-  const PARENT = {'Opportunity': 'Request', 'Built': 'Request', 'Name': 'Request', 'Why local': 'Name', 'Privacy': 'Name', 'Three graphs': 'Thumb up', 'Trust': 'Thumb up',
+  const PARENT = {'Opportunity': 'Request', 'Built': 'Request', 'Why local': 'Request', 'Privacy': 'Request', 'Three graphs': 'Thumb up', 'Trust': 'Thumb up',
     'The guide': 'Field Guide', 'Games': 'Field Guide', 'Field Guide': 'Thumb up', 'Three nodes': 'Local', 'A visit': 'Hitchhiker mage', 'The pathway': 'Local', 'Cities': 'Local', 'Local': 'Field Guide',
     'Evidence': 'Hitchhiker mage', 'Hitchhiker mage': 'Local'};
   const path = new URLSearchParams(location.search).get('path'), list = PATHS[path], stage = document.getElementById('stage');
@@ -430,10 +422,12 @@ function branch(sec, from) { origin = from; go(idxOf(sec)); }
 function step(d) { const x = scenes[cur];
   if (x.dataset.branch) { go(origin != null ? origin : idxOf(x.dataset.branch)); origin = null; return; }
   let j = cur + d; while (j >= 0 && j < scenes.length && scenes[j].dataset.branch) j += d; if (j >= 0 && j < scenes.length) go(j); }
+// short names for the deeper scenes, so a part's branches fit on the bar
+const SHORT = {'Opportunity': 'The projects', 'Why local': 'One centre?', 'Privacy': 'Keep or share', 'Built': 'The pieces', 'Three graphs': 'Three graphs', 'Trust': 'Connection', 'The guide': 'Owning a guide', 'Games': 'Trust is earned', 'Three nodes': 'Three nodes', 'The pathway': 'One Pi to many', 'Cities': 'Cities', 'A visit': 'A visit', 'Evidence': 'Evidence'};
 function deeperBar() { const bar = $('#deeper'); if (!bar) return; const x = scenes[cur];
   if (x.dataset.branch) { const back = origin != null ? scenes[origin] : scenes[idxOf(x.dataset.branch)]; bar.innerHTML = `<button onclick="step(-1)">← back to ${titleOf(back).toLowerCase()}</button>`; return; }
   const kids = scenes.filter(y => y.dataset.branch === x.dataset.sec);
-  bar.innerHTML = kids.length ? '<span style="color:var(--cobalt)">Go deeper:</span>' + kids.map(y => `<button onclick="branch('${y.dataset.sec.replace(/'/g, "\\'")}', ${cur})">${titleOf(y)} ↳</button>`).join('') : ''; }
+  bar.innerHTML = kids.length ? '<span style="color:var(--cobalt)">Go deeper:</span>' + kids.map(y => `<button onclick="branch('${y.dataset.sec.replace(/'/g, "\\'")}', ${cur})">${SHORT[y.dataset.sec] || titleOf(y)} ↳</button>`).join('') : ''; }
 function fs() { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); }
 function fit() { const k = Math.min(innerWidth / 1600, innerHeight / 900); stage.style.transform = `scale(${k})`; stage.style.left = (innerWidth - 1600 * k) / 2 + 'px'; stage.style.top = (innerHeight - 900 * k) / 2 + 'px'; }
 addEventListener('keydown', e => { if (e.target.matches('input,[contenteditable]')) return;
@@ -833,6 +827,7 @@ function genDraw() {
   s.append(el('text', {x: 720, y: 420, 'text-anchor': 'middle', 'font-size': 22, fill: C.ink}, "DON'T PANIC: YOUR NOTES ARE PART OF THE GUIDE'S FIRST PAGE"));
 }
 genDraw();
+if (window.DP && DP.event === 'newspeak' || (!window.DP || !DP.event) && new Date().toISOString().slice(0, 10) === '2026-11-05') $('#gen-sub').textContent = "Tonight is a small Don't Panic Festival. You don't need to join anything to be part of its history.";
 
 /* ---------- a request for guidance ---------- */
 const REQ = [
@@ -854,37 +849,6 @@ function reqDraw() {
 }
 function reqStep() { reqN = reqN >= REQ.length - 1 ? 0 : reqN + 1; reqDraw(); }
 reqDraw();
-
-/* ---------- the name that died ---------- */
-const NAME = [
-  'A borrowed seminar room. A machine in a flight case, named together in week one: anemone.mesh.',
-  'Fourteen laptops typed the name. Thirteen found it.',
-  "It had worked at home. The venue's router didn't carry their gossip, and the raw address only answered a 502.",
-  'Ilse, steward that week, cabled in the second box they always carried: their own resolver. Every laptop got the same answer.',
-  'Nobody was scanned. Each offered their address, and answered the gateway in their own words. The lock was the lesson.',
-  'The room sealed: this room reached the shared mind together.'];
-let nameN = 0;
-function nameDraw() {
-  const s = $('#name'); s.innerHTML = ''; const cx = 750, cy = 190;
-  s.append(el('rect', {x: cx - 230, y: cy - 60, width: 460, height: 120, rx: 60, fill: '#16181c', stroke: '#2a2c2e'}));
-  s.append(el('rect', {x: cx - 50, y: cy - 30, width: 100, height: 60, rx: 6, fill: '#0B0B0D', stroke: nameN >= 5 ? '#E8C873' : '#8EA4FF', 'stroke-width': 2}));
-  s.append(el('text', {x: cx, y: cy + 5, 'text-anchor': 'middle', 'font-size': 12, fill: '#8EA4FF'}, 'ANEMONE.MESH'));
-  if (nameN >= 3) { s.append(el('rect', {x: cx + 70, y: cy - 14, width: 46, height: 28, rx: 4, fill: '#E8C873'})); s.append(el('text', {x: cx + 93, y: cy + 36, 'text-anchor': 'middle', 'font-size': 10, fill: '#E8C873'}, 'RESOLVER')); }
-  // the venue's router, above the door
-  s.append(el('rect', {x: 1260, y: 30, width: 70, height: 24, rx: 4, fill: 'none', stroke: nameN === 2 ? '#FF6B57' : '#3a3c40', 'stroke-width': 2}));
-  s.append(el('text', {x: 1295, y: 72, 'text-anchor': 'middle', 'font-size': 10, fill: nameN === 2 ? '#FF6B57' : '#5E5A50'}, "THE VENUE'S ROUTER"));
-  for (let i = 0; i < 14; i++) { const a = Math.PI * (1.08 + i * .84 / 13) - Math.PI * .04, x = cx + 430 * Math.cos(a) * -1, y = cy + 150 * Math.sin(a) * -1 + (i % 2) * 10;
-    const lost = i === 9 && nameN >= 1 && nameN < 3, on = nameN >= 1 && !lost, said = nameN >= 4;
-    if (on) s.append(el('line', {x1: x, y1: y, x2: cx, y2: cy, stroke: nameN >= 5 ? '#E8C873' : '#8EA4FF', 'stroke-width': 1.2, opacity: .6}));
-    s.append(el('rect', {x: x - 22, y: y - 14, width: 44, height: 28, rx: 3, fill: lost ? '#3a1714' : on ? '#1F4BFF' : '#2a2c2e', stroke: lost ? '#FF6B57' : 'none'}));
-    if (said) { const t = el('text', {x, y: y - 22, 'text-anchor': 'middle', 'font-size': 14}); t.textContent = '“”'; t.setAttribute('fill', '#E8C873'); s.append(t); } }
-  if (nameN >= 5) { s.append(el('circle', {cx, cy, r: 140, fill: 'none', stroke: '#E8C873', 'stroke-width': 2, 'stroke-dasharray': '4 6'}));
-    const p1 = el('text', {x: cx, y: 440, 'text-anchor': 'middle', 'font-size': 24, fill: '#F6F1E6'}); p1.style.fontFamily = 'var(--head)'; p1.textContent = 'CARRY YOUR OWN NAMES, AND KEEP THEM GOOD: NEVER PERFECT.'; s.append(p1);
-    s.append(el('text', {x: cx, y: 466, 'text-anchor': 'middle', 'font-size': 14, fill: '#8EA4FF'}, "A TRUST THAT CERTIFIES ITSELF IS THE ONE YOU CAN'T TRUST.")); }
-  $('#name-sub').textContent = NAME[nameN]; $('#name-btn').textContent = nameN >= NAME.length - 1 ? 'Tell it again' : 'Next beat →';
-}
-function nameStep() { nameN = nameN >= NAME.length - 1 ? 0 : nameN + 1; nameDraw(); }
-nameDraw();
 
 /* ---------- field guide: every place unlocks the next chapter ---------- */
 const FGS = [

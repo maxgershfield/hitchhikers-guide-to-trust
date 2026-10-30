@@ -45,7 +45,7 @@ footer a{color:var(--pale)}
   <p class="lede" id="tonight" style="color:var(--blue)"></p>
   <p class="lede">How a community's trust graph forms around guides and guidance, and why it should be kept locally. Read it, play with it, and add your own at the end, while the gate is open.</p>
   <div class="doors">
-    <a class="door" href="guide/?path=workshop"><div class="micro">IIW 43 · the workshop</div><h2>The <span>workshop</span></h2><p>Story first: a request for guidance, the name that died, the towel, Field Guide, embassies, the hitchhiker mage, tonight. The technical is one touch deeper.</p></a>
+    <a class="door" href="guide/?path=workshop"><div class="micro">IIW 43 · the workshop</div><h2>The <span>workshop</span></h2><p>Story first: a request for guidance, the towel, Field Guide, embassies, the hitchhiker mage, tonight. The technical is one touch deeper.</p></a>
     <a class="door" href="guide/?path=lightning"><div class="micro">Five minutes</div><h2>The <span>lightning</span> talk</h2><p>The fast way through: the request, the towel, Field Guide, embassies, and tonight's page of the guide.</p></a>
     <a class="door" href="guide/"><div class="micro">To read at your own pace</div><h2>The whole <span>guide</span></h2><p>Every scene, each part's story first and its deeper scenes after it.</p></a>
     <a class="door" href="chain/"><div class="micro">Live · the public face of the guide</div><h2>The evidence <span>chain</span></h2><p>Every thumb up, proverb and guide becomes a star. Its hash is public; what's behind it is sealed with your key. Load in, see yourself, start contributing.</p></a>
@@ -64,7 +64,7 @@ footer a{color:var(--pale)}
 // tonight's guide: which night this is, how far its chain has grown, and the other nights
 (async () => { try { const d = await (await fetch('/api/events', {cache: 'no-store'})).json(), cur = (window.DP && DP.event) || d.default, me = d.events.find(e => e.id === cur) || d.events[0], on = d.events.filter(e => e.stars);
   const others = d.events.filter(e => e.id !== me.id).map(e => `<a href="/${e.id}" style="color:inherit">${e.name} →</a>`).join(' · ');
-  document.getElementById('tonight').innerHTML = `Tonight: <b>${me.name}</b>, a new page of the Hitchhikers' guide · ${d.stars} star${d.stars === 1 ? '' : 's'} across ${on.length || 1} night${on.length === 1 || !on.length ? '' : 's'} · <a href="chain/?event=${me.id}" style="color:inherit">see the chain →</a>${others ? '<br><span style="opacity:.7">Other nights: ' + others + '</span>' : ''}`;
+  document.getElementById('tonight').innerHTML = `Tonight: <b>${me.name}</b>${me.note ? ', ' + me.note.charAt(0).toLowerCase() + me.note.slice(1) : ''}, a new page of the Hitchhikers' guide · ${d.stars} star${d.stars === 1 ? '' : 's'} across ${on.length || 1} night${on.length === 1 || !on.length ? '' : 's'} · <a href="chain/?event=${me.id}" style="color:inherit">see the chain →</a>${others ? '<br><span style="opacity:.7">Other nights: ' + others + '</span>' : ''}`;
   document.querySelectorAll('a.door[href^="guide/"]').forEach(a => a.href += (a.href.includes('?') ? '&' : '?') + 'event=' + me.id);
 } catch (e) {} })();
 </script>

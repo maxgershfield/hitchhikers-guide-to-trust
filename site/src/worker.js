@@ -53,7 +53,7 @@ function wikiPages(list, name) {
 // Override or add with EVENTS (JSON, same shape); DEFAULT_EVENT picks the night a bare address adds to. A night's
 // gathering link records it as first opened, so set its details before its first visitor arrives.
 const EVENTS_DEFAULT = {
-  newspeak: { name: 'The Guide to Newspeak House', date: '2026-11-05', place: 'Newspeak House, London', with: 'The Hitchhikers · Field Guide · Mages City' },
+  newspeak: { name: 'The Guide to Newspeak House', date: '2026-11-05', place: 'Newspeak House, London', with: 'The Hitchhikers · Field Guide · Mages City', note: "A small Don't Panic Festival" },
   iiw43: { name: 'The Guide to IIW 43', date: '2026-11-04', place: 'Internet Identity Workshop 43', with: 'The Hitchhikers · Mages City' },
   archive: { name: 'The Guide to the Internet Archive', date: '2026-11-05', place: 'Internet Archive', with: 'The Hitchhikers' } };
 const GUIDE = env => ({ id: env.GUIDE_ID || 'hitchhikers', name: env.GUIDE_NAME || "The Hitchhiker's Guide to Trust", with: 'The Hitchhikers' });
