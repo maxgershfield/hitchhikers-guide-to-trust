@@ -314,6 +314,17 @@ svg text{font-family:var(--mono)}
   <aside class="notes">OpenVTC is a Linux Foundation Decentralized Trust lab: the reference implementation of the Trust over IP Decentralized Trust Graph working group's specifications for a verifiable trust community (sponsors: the DTGWG co-chairs). VTI (verifiable trust infrastructure) is the spec (trustoverip.github.io/dtgwg-vti-spec) and its services, a Rust workspace under the OpenVTC org: the VTA, the VTC service, and the PNM/CNM tools. Live today: Mages City's community and the First VTC (first.openvtc.net, used for testing in the DTG working groups). Relationship credentials (two VRCs, one edge) are in the spec; we have not seen a live community issue one yet. The grassroots point: none of this needs a platform; a community can stand it up on its own Pi.</aside>
 </section>
 
+<!-- how information flows (ported from the v1 classroom workshop) -->
+<section class="scene" data-part="III" data-sec="Flow">
+  <div class="frame"></div>
+  <div class="kick">III · The technology</div>
+  <h1><span class="n">6.</span> How information <b>flows</b></h1>
+  <div class="sub" id="flow-cap">Pick something to follow: where it lives, and what, if anything, leaves.</div>
+  <div id="flow-chips" style="position:absolute;left:62px;top:250px;width:1480px;display:flex;flex-wrap:wrap;gap:8px"></div>
+  <svg id="flow-svg" width="1420" height="470" viewBox="0 0 1420 470" style="left:90px;top:320px"></svg>
+  <aside class="notes">Linger here. Information moves outward only as something checkable and minimal: the device holds what is personal, the community's node holds what is communal, the world receives proofs. Keys and who vouched for whom never leave the room. Marked honestly: stage proofs are a ZKP Task Force design, not built yet.</aside>
+</section>
+
 <!-- the hitchhiker mage -->
 <section class="scene dark" data-part="III" data-sec="Hitchhiker mage">
   <div class="kick" style="color:var(--off)">III · The technology</div>
@@ -378,13 +389,13 @@ svg text{font-family:var(--mono)}
 (function () {
   const PATHS = {
     // the IIW workshop: each story, then its technical telling (the rest stays one touch deeper)
-    iiw: ['Cover', 'Request', 'Opportunity', 'Local', 'OpenVTC', 'The pathway', 'Hitchhiker mage', 'Thumb up', 'Field Guide', 'Discussion', 'Close'],
+    iiw: ['Cover', 'Request', 'Opportunity', 'Local', 'OpenVTC', 'Flow', 'The pathway', 'Hitchhiker mage', 'Thumb up', 'Field Guide', 'Discussion', 'Close'],
     lightning: ['Cover', 'Request', 'Local', 'Thumb up', 'Field Guide', 'Genesis', 'Close'],
     // the whole guide: each part's story first, its deeper scenes after it
-    guide: ['Cover', 'Request', 'Why local', 'Privacy', 'Built', 'Opportunity', 'Local', 'Cities', 'OpenVTC', 'Three nodes', 'The pathway', 'Hitchhiker mage', 'A visit', 'Evidence', 'Thumb up', 'Three graphs', 'Trust', 'Field Guide', 'The guide', 'Games', 'Genesis', 'Close']};
+    guide: ['Cover', 'Request', 'Why local', 'Privacy', 'Built', 'Opportunity', 'Local', 'Cities', 'OpenVTC', 'Flow', 'Three nodes', 'The pathway', 'Hitchhiker mage', 'A visit', 'Evidence', 'Thumb up', 'Three graphs', 'Trust', 'Field Guide', 'The guide', 'Games', 'Genesis', 'Close']};
   // where each scene belongs when it is not on the main thread
   const PARENT = {'Opportunity': 'Local', 'Built': 'Request', 'Why local': 'Request', 'Privacy': 'Request', 'Cities': 'Local', 'Local': 'Request',
-    'OpenVTC': 'Local', 'Three nodes': 'OpenVTC', 'The pathway': 'OpenVTC', 'Hitchhiker mage': 'Local', 'A visit': 'Hitchhiker mage', 'Evidence': 'Hitchhiker mage',
+    'OpenVTC': 'Local', 'Flow': 'OpenVTC', 'Three nodes': 'OpenVTC', 'The pathway': 'OpenVTC', 'Hitchhiker mage': 'Local', 'A visit': 'Hitchhiker mage', 'Evidence': 'Hitchhiker mage',
     'Thumb up': 'Request', 'Three graphs': 'Thumb up', 'Trust': 'Thumb up', 'Field Guide': 'Thumb up', 'The guide': 'Field Guide', 'Games': 'Field Guide', 'Genesis': 'Close'};
   PATHS.workshop = PATHS.iiw; // older links
   const path = new URLSearchParams(location.search).get('path'), list = PATHS[path], stage = document.getElementById('stage');
@@ -432,7 +443,7 @@ function step(d) { const x = scenes[cur];
   if (x.dataset.branch) { go(origin != null ? origin : idxOf(x.dataset.branch)); origin = null; return; }
   let j = cur + d; while (j >= 0 && j < scenes.length && scenes[j].dataset.branch) j += d; if (j >= 0 && j < scenes.length) go(j); }
 // short names for the deeper scenes, so a part's branches fit on the bar
-const SHORT = {'Opportunity': 'The projects', 'Why local': 'One centre?', 'Privacy': 'Keep or share', 'Built': 'The pieces', 'Three graphs': 'Three graphs', 'Trust': 'Connection', 'OpenVTC': 'OpenVTC, plainly', 'Genesis': 'Tonight', 'The guide': 'Owning a guide', 'Games': 'Trust is earned', 'Three nodes': 'Three nodes', 'The pathway': 'One Pi to many', 'Cities': 'Cities', 'A visit': 'A visit', 'Evidence': 'Evidence'};
+const SHORT = {'Opportunity': 'The projects', 'Why local': 'One centre?', 'Privacy': 'Keep or share', 'Built': 'The pieces', 'Three graphs': 'Three graphs', 'Trust': 'Connection', 'OpenVTC': 'OpenVTC, plainly', 'Flow': 'Information flow', 'Genesis': 'Tonight', 'The guide': 'Owning a guide', 'Games': 'Trust is earned', 'Three nodes': 'Three nodes', 'The pathway': 'One Pi to many', 'Cities': 'Cities', 'A visit': 'A visit', 'Evidence': 'Evidence'};
 function deeperBar() { const bar = $('#deeper'); if (!bar) return; const x = scenes[cur];
   if (x.dataset.branch) { const back = origin != null ? scenes[origin] : scenes[idxOf(x.dataset.branch)]; bar.innerHTML = `<button onclick="step(-1)">← back to ${titleOf(back).toLowerCase()}</button>`; return; }
   const kids = scenes.filter(y => y.dataset.branch === x.dataset.sec);
@@ -928,6 +939,60 @@ function ovDraw() {
   s.append(el('text', {x: 0, y: 476, 'font-size': 12, fill: '#8f8c84'}, 'SPEC: TRUSTOVERIP.GITHUB.IO/DTGWG-VTI-SPEC · CODE: GITHUB.COM/OPENVTC · TRUST TASKS: TRUSTTASKS.ORG'));
 }
 ovDraw();
+
+/* ---------- how information flows: device, community node, the wider world ---------- */
+const COLS = [{x: 0, t: 'Your device', s: 'your towel: your trust agent'}, {x: 520, t: 'Community node (a Pi)', s: 'its agent, its community, its guide'}, {x: 1040, t: 'The wider world', s: 'other communities, IIW, the web'}];
+// [name, where it lives, where it goes (or null), what to say, then where (optional), live?]
+const ITEMS = [
+  ['Keys', 0, null, 'Keys stay on your device, or with the agent you chose to host them. Nothing on the node or in the kit asks for them.', null, true],
+  ['Your story', 0, null, 'Your own record of your path through the guides. Yours; shared only if you choose.', null, true],
+  ['Your terms', 0, 1, 'The terms you bring to a community\'s door (MyTerms, where the community offers it). They travel to the node, no further.', null, true],
+  ['Vouches', 1, null, 'Who vouched for whom stays with the community. It is the sensitive part of the graph, and it never leaves the room.', null, true],
+  ['Membership', 1, 0, 'The community issues a membership credential, and it comes back to your device to hold.', null, true],
+  ['Guide page', 0, 1, 'Your agent writes or forks a page. The community may choose to publish it.', 2, true],
+  ['Stage proof', 1, 2, 'Prove "I am a Contributor" without revealing who vouched: a proof crosses, the edges do not. A ZKP Task Force design; not built yet.', null, false],
+  ['Evidence root', 1, 2, 'A hash over the work. Anyone can check it; what is behind it stays with the community. The night\'s chain works this way.', null, true],
+  ['Community DID', 1, 2, 'The community\'s public identifier, so others can find its door.', null, true]];
+function flowDraw(sel) {
+  const s = $('#flow-svg'); s.innerHTML = '';
+  const defs = el('defs', {}), m = el('marker', {id: 'fa', viewBox: '0 0 10 10', refX: 9, refY: 5, markerWidth: 8, markerHeight: 8, orient: 'auto'}); m.append(el('path', {d: 'M0,0L10,5L0,10z', fill: C.ink})); defs.append(m); s.append(defs);
+  COLS.forEach((c, i) => {
+    s.append(el('rect', {x: c.x, y: 6, width: 380, height: 330, rx: 7, fill: i === 2 ? C.off : '#E8E1CF', stroke: C.cobalt, 'stroke-width': 2, 'stroke-dasharray': i === 2 ? '8 6' : ''}));
+    s.append(el('text', {x: c.x + 190, y: 40, 'text-anchor': 'middle', 'font-size': 24, 'font-weight': 700, fill: C.ink}, c.t));
+    s.append(el('text', {x: c.x + 190, y: 66, 'text-anchor': 'middle', 'font-size': 16, fill: '#5E5A50'}, c.s));
+    ITEMS.filter(it => it[1] === i).forEach((it, k) => { const on = sel === it[0], y = 90 + k * 46;
+      s.append(el('rect', {x: c.x + 30, y, width: 320, height: 36, rx: 18, fill: on ? C.cobalt : '#fff', stroke: on ? C.cobalt : '#CFC6AF', 'stroke-width': 2, 'stroke-dasharray': it[5] ? '' : '5 4'}));
+      s.append(el('text', {x: c.x + 190, y: y + 24, 'text-anchor': 'middle', 'font-size': 17, fill: on ? '#fff' : C.ink, 'font-weight': on ? 700 : 400}, it[0] + (it[5] ? '' : ' · planned'))); });
+  });
+  [[384, 516, 'signed writes'], [904, 1036, 'proofs only']].forEach(([x1, x2, t]) => { s.append(el('line', {x1, y1: 300, x2, y2: 300, stroke: C.ink, 'stroke-width': 3, 'marker-end': 'url(#fa)'})); s.append(el('text', {x: (x1 + x2) / 2, y: 290, 'text-anchor': 'middle', 'font-size': 15, fill: C.ink}, t)); });
+  s.append(el('line', {x1: 516, y1: 322, x2: 384, y2: 322, stroke: C.ink, 'stroke-width': 3, 'marker-end': 'url(#fa)'}));
+  s.append(el('text', {x: 450, y: 344, 'text-anchor': 'middle', 'font-size': 15, fill: C.ink}, 'credentials'));
+  s.append(el('rect', {x: 0, y: 380, width: 900, height: 80, rx: 7, fill: '#FBEAEA', stroke: '#C0504D'}));
+  s.append(el('text', {x: 450, y: 414, 'text-anchor': 'middle', 'font-size': 22, 'font-weight': 700, fill: '#9E3A38'}, 'Never leaves the room: keys, and who vouched for whom'));
+  s.append(el('text', {x: 450, y: 442, 'text-anchor': 'middle', 'font-size': 16, fill: '#9E3A38'}, 'members show stages, not relationships'));
+  s.append(el('rect', {x: 1040, y: 380, width: 380, height: 80, rx: 7, fill: '#EEF5E4', stroke: '#76923C'}));
+  s.append(el('text', {x: 1230, y: 414, 'text-anchor': 'middle', 'font-size': 22, 'font-weight': 700, fill: '#4F6228'}, 'Anyone can check'));
+  s.append(el('text', {x: 1230, y: 442, 'text-anchor': 'middle', 'font-size': 16, fill: '#4F6228'}, 'a root, a proof, a signature'));
+}
+let flowAnim = null;
+function flowPick(name) {
+  const it = ITEMS.find(i => i[0] === name); flowDraw(name);
+  $$('#flow-chips .act').forEach(c => c.classList.toggle('on', c.dataset.n === name));
+  $('#flow-cap').innerHTML = `<b>${name}${it[5] ? '' : ' (planned)'}.</b> ${it[3]}`;
+  if (flowAnim) cancelAnimationFrame(flowAnim);
+  const hops = [it[1]]; if (it[2] != null) hops.push(it[2]); if (it[4] != null) hops.push(it[4]);
+  if (hops.length < 2) { const c = COLS[it[1]]; $('#flow-svg').append(el('rect', {x: c.x + 4, y: 10, width: 372, height: 322, rx: 7, fill: 'none', stroke: '#C0504D', 'stroke-width': 4})); return; }
+  const dot = el('circle', {r: 13, fill: '#E36C09', stroke: '#fff', 'stroke-width': 3}); $('#flow-svg').append(dot);
+  let leg = 0, start = null;
+  const go2 = ts => { if (!start) start = ts; let f = (ts - start) / 1100;
+    if (f >= 1) { leg++; start = ts; f = 0; if (leg >= hops.length - 1) { const c = COLS[hops[hops.length - 1]]; dot.setAttribute('cx', c.x + 190); dot.setAttribute('cy', 220); return; } }
+    const a = COLS[hops[leg]].x + 190, b = COLS[hops[leg + 1]].x + 190, e = f < .5 ? 2 * f * f : 1 - Math.pow(-2 * f + 2, 2) / 2;
+    dot.setAttribute('cx', a + (b - a) * e); dot.setAttribute('cy', 220 - 60 * Math.sin(Math.PI * e)); flowAnim = requestAnimationFrame(go2); };
+  flowAnim = requestAnimationFrame(go2);
+}
+$('#flow-chips').innerHTML = ITEMS.map(i => `<button class="act" data-n="${i[0]}" style="padding:8px 14px;font-size:14px">${i[0]}</button>`).join('');
+$$('#flow-chips .act').forEach(c => c.onclick = () => flowPick(c.dataset.n));
+flowDraw(null);
 
 /* ---------- the hitchhiker mage: one agent, many communities ---------- */
 const VTCS = [
