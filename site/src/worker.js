@@ -54,14 +54,17 @@ function wikiPages(list, name) {
 // gathering link records it as first opened, so set its details before its first visitor arrives.
 const EVENTS_DEFAULT = {
   newspeak: { name: 'The Guide to Newspeak House', date: '2026-11-05', place: 'Newspeak House, London', with: 'The Hitchhikers · Field Guide · Mages City' },
-  iiw43: { name: 'The Guide to IIW 43', date: '', place: 'Internet Identity Workshop 43', with: 'The Hitchhikers · Mages City' },
-  archive: { name: 'The Guide to the Internet Archive', date: '', place: 'Internet Archive', with: 'The Hitchhikers' } };
+  iiw43: { name: 'The Guide to IIW 43', date: '2026-11-04', place: 'Internet Identity Workshop 43', with: 'The Hitchhikers · Mages City' },
+  archive: { name: 'The Guide to the Internet Archive', date: '2026-11-05', place: 'Internet Archive', with: 'The Hitchhikers' } };
 const GUIDE = env => ({ id: env.GUIDE_ID || 'hitchhikers', name: env.GUIDE_NAME || "The Hitchhiker's Guide to Trust", with: 'The Hitchhikers' });
 const CK = env => 'chain:' + GUIDE(env).id;
 const events = env => { try { return { ...EVENTS_DEFAULT, ...JSON.parse(env.EVENTS || '{}') }; } catch (e) { return EVENTS_DEFAULT; } };
+// the night a contribution belongs to: the address it came in on; otherwise tonight's (by date), preferring the default
 function eventOf(env, req, body) {
-  const e = String(new URL(req.url).searchParams.get('event') || (body && body.event) || env.DEFAULT_EVENT || 'newspeak').toLowerCase();
-  return events(env)[e] ? e : null;
+  const EV = events(env), asked = new URL(req.url).searchParams.get('event') || (body && body.event);
+  if (asked) { const e = String(asked).toLowerCase(); return EV[e] ? e : null; }
+  const today = new Date().toISOString().slice(0, 10), on = Object.keys(EV).filter(k => EV[k].date === today), def = env.DEFAULT_EVENT || 'newspeak';
+  return on.includes(def) ? def : on[0] || def;
 }
 
 // ---- the evidence chain ----

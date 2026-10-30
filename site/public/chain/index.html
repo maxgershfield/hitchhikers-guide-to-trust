@@ -47,7 +47,7 @@ canvas{cursor:grab}canvas:active{cursor:grabbing}
 .jq{display:flex;gap:1vw;align-items:flex-start}.jq img{width:clamp(110px,9vw,150px);height:auto;background:#fff;padding:6px;border-radius:4px}.jn{font-family:var(--head);text-transform:uppercase;font-size:clamp(20px,1.8vw,30px);color:var(--cream)}
 .jp{font-size:clamp(11px,.85vw,14px);line-height:1.6;color:#CFC9BB;margin:.6vh 0}.jl,.jb{display:inline-block;pointer-events:auto;margin-top:.6vh;font-family:var(--mono);font-size:clamp(10px,.8vw,13px);text-transform:uppercase;padding:6px 12px;border:1px solid #e8c873;color:#e8c873;background:transparent;border-radius:14px;text-decoration:none;cursor:pointer}
 .ji{display:block;width:100%;box-sizing:border-box;margin:.5vh 0;font-family:var(--mono);font-size:clamp(11px,.85vw,14px);background:transparent;color:var(--cream);border:1px solid rgba(246,241,230,.35);border-radius:3px;padding:6px 8px}
-.nights{display:flex;flex-wrap:wrap;gap:6px;margin:1vh 0 .4vh}.nights span{font-size:clamp(10px,.75vw,12px);text-transform:uppercase;padding:3px 9px;border:1px solid rgba(142,164,255,.45);border-radius:12px;color:#CFC9BB}.nights span.on{border-color:#e8c873;color:#e8c873}
+.nights{display:flex;flex-wrap:wrap;gap:6px;margin:1vh 0 .4vh}.nights span{font-size:clamp(10px,.75vw,12px);text-transform:uppercase;padding:3px 9px;border:1px solid rgba(142,164,255,.45);border-radius:12px;color:#CFC9BB}.nights span.on{border-color:#e8c873;color:#e8c873}.nights span{cursor:pointer;pointer-events:auto}.nights span.focus{background:rgba(142,164,255,.22);color:var(--cream)}
 .jd{font-size:clamp(9px,.7vw,11px);color:#8EA4FF;word-break:break-all;margin-top:1vh}.jw{list-style:none;margin:.6vh 0 1vh;padding:0;font-size:clamp(11px,.85vw,14px);line-height:1.7;color:var(--cream)}.jw b{color:#e8c873}.jm{color:#8f8c84}.jr{color:#e8c873}
 #join-wrap{pointer-events:auto}#join{max-height:calc(100vh - 330px);overflow-y:auto;padding-right:8px}
 .tabs button.on{background:rgba(232,200,115,.15);border-color:#e8c873;color:#e8c873}
@@ -112,12 +112,17 @@ const shortNight = n => String(n || '').replace(/^The Guide to (the )?/i, '');
 function guideHead() { const g = GUIDE || {}, t = NIGHTS[TONIGHT];
   $('#guide-k').textContent = (g.name || "The Hitchhiker's Guide to Trust") + (t ? ' · tonight: ' + shortNight(t.name) : ' · the evidence chain'); }
 // the nights on this guide: how many stars each has added
+let FOCUS = '';
+const FADE = l => FOCUS && l.event !== FOCUS && !(l.genesis && !l.genesis.event) ? .12 : 1;
+const countN = () => { $('#n').textContent = links.filter(l => l.kind !== 'genesis' && (!FOCUS || l.event === FOCUS)).length; };
 function drawNights() { const ids = Object.keys(NIGHTS); if (!ids.length) return;
-  $('#nights').innerHTML = ids.map(id => { const n = links.filter(l => l.event === id && l.kind !== 'genesis').length; return `<span class="${id === TONIGHT ? 'on' : ''}">${esc(shortNight(NIGHTS[id].name))} · ${n}</span>`; }).join(''); }
+  $('#nights').innerHTML = ids.map(id => { const n = links.filter(l => l.event === id && l.kind !== 'genesis').length; return `<span data-id="${id}" class="${id === TONIGHT ? 'on' : ''} ${id === FOCUS ? 'focus' : ''}" title="show only this night">${esc(shortNight(NIGHTS[id].name))} · ${n}</span>`; }).join('')
+    + `<span data-id="" class="${FOCUS ? '' : 'focus'}">all nights</span>`;
+  document.querySelectorAll('#nights span').forEach(x => x.onclick = () => { FOCUS = x.dataset.id; drawNights(); feed(); countN(); }); }
 async function poll() {
   try { const r = await fetch(U('/api/chain?since=' + links.length), {cache: 'no-store'}); if (!r.ok) return; const d = await r.json(); if (d.guide && !GUIDE) { GUIDE = d.guide; NIGHTS = d.nights || {}; TONIGHT = d.event; guideHead(); } drawNights();
     d.links.forEach(l => { links.push(l); born.set(l.hash, performance.now()); }); head = d.head;
-    if (d.links.length) feed(); $('#n').textContent = links.filter(l => l.kind !== 'genesis').length; $('#head').textContent = head ? 'head ' + head : '';
+    if (d.links.length) feed(); countN(); $('#head').textContent = head ? 'head ' + head : '';
   } catch (e) {} }
 /* ---------- the scroll: every link in the sigil script ---------- */
 const SCRIPT = new Map(), scriptOf = h => { let x = SCRIPT.get(h); if (x === undefined) { try { x = SigilCode.encode(Uint8Array.from(h.match(/../g).map(c => parseInt(c, 16)))); } catch (e) { x = h; } SCRIPT.set(h, x); } return x; };
@@ -163,7 +168,7 @@ async function joinDraw() {
 if (location.hash === '#join') setTimeout(() => tab('join'));
 if (new URLSearchParams(location.search).has('scroll')) tab('scroll');
 function feed() { writeScroll();
-  $('#feed').innerHTML = links.slice(-7).reverse().map(l => `<div class="row ${MINE.has(l.hash) ? 'mine' : ''}"><span class="sg">${DP.sigil(l.hash)}</span><span class="sp">${esc(DP.spell(l.hash))}</span>
+  $('#feed').innerHTML = links.filter(l => !FOCUS || l.event === FOCUS).slice(-7).reverse().map(l => `<div class="row ${MINE.has(l.hash) ? 'mine' : ''}"><span class="sg">${DP.sigil(l.hash)}</span><span class="sp">${esc(DP.spell(l.hash))}</span>
     <span class="meta">#${l.seq} · ${KIND(l)}${l.mark ? ' · mark ' + DP.sigil(l.mark) : ''}${MINE.has(l.hash) ? ' · yours' : ''}</span></div>`).join('');
   const mine = links.filter(l => MINE.has(l.hash));
   if (mine.length && window.DP) DP.mark().then(async mk => { const rt = await rootOf(mk); $('#you').innerHTML = `You are in the guide · <b>${DP.sigil(mk)}</b> · ${esc(DP.spell(mk))} · ${mine.length} star${mine.length === 1 ? '' : 's'} · your root ${rt.slice(0, 12)}…`; });
@@ -208,8 +213,8 @@ function frame(now) {
     sameMark.forEach(j => { if (j !== HOT) { g.moveTo(Q[HOT].x, Q[HOT].y); g.lineTo(Q[j].x, Q[j].y); } }); g.stroke(); }
   links.map((l, i) => i).sort((a, b) => Q[b].z - Q[a].z).forEach(i => { const l = links[i], q = Q[i], c = COLOR[l.kind] || COLOR.chat, fresh = Math.max(0, 1 - (now - (born.get(l.hash) || 0)) / 4000);
     const depth = .55 + .45 * Math.max(0, Math.min(1, .62 - q.z * .3)), lit = sameMark.has(i) || MINE.has(l.hash), near = 1 / (1 + q.z * .18), r = (l.kind === 'genesis' ? 9 : l.kind === 'guide' ? 7 : l.kind === 'voice' ? 6 : l.kind === 'claim' ? 6.2 : l.kind === 'proverb' ? 5.6 : 4.4) * D * near * (1 + 1.6 * fresh);
-    { const gr = r * (fresh > 0 || lit ? 4.5 : 3.2), gl = g.createRadialGradient(q.x, q.y, 0, q.x, q.y, gr); gl.addColorStop(0, `rgba(${c},${(fresh > 0 || lit ? .38 : .2) * depth + .45 * fresh})`); gl.addColorStop(1, `rgba(${c},0)`); g.fillStyle = gl; g.beginPath(); g.arc(q.x, q.y, gr, 0, 6.283); g.fill(); }
-    g.globalAlpha = lit ? 1 : depth * .85; g.fillStyle = sameMark.has(i) ? '#e8c873' : `rgb(${c})`; g.beginPath();
+    g.globalAlpha = FADE(l); { const gr = r * (fresh > 0 || lit ? 4.5 : 3.2), gl = g.createRadialGradient(q.x, q.y, 0, q.x, q.y, gr); gl.addColorStop(0, `rgba(${c},${(fresh > 0 || lit ? .38 : .2) * depth + .45 * fresh})`); gl.addColorStop(1, `rgba(${c},0)`); g.fillStyle = gl; g.beginPath(); g.arc(q.x, q.y, gr, 0, 6.283); g.fill(); }
+    g.globalAlpha = (lit ? 1 : depth * .85) * FADE(l); g.fillStyle = sameMark.has(i) ? '#e8c873' : `rgb(${c})`; g.beginPath();
     if (l.kind === 'thumb' || l.kind === 'chat') g.rect(q.x - r * .7, q.y - r * .7, r * 1.4, r * 1.4); else g.arc(q.x, q.y, r, 0, 6.283); g.fill(); g.globalAlpha = 1;
     if (MINE.has(l.hash)) { g.strokeStyle = 'rgba(255,255,255,.9)'; g.lineWidth = 1.4 * D; g.beginPath(); g.arc(q.x, q.y, r + 5 * D + 2 * D * Math.sin(t * 3), 0, 6.283); g.stroke(); } });
   if (hot) { g.strokeStyle = '#fff'; g.lineWidth = 1 * D; g.beginPath(); g.arc(Q[HOT].x, Q[HOT].y, 14 * D, 0, 6.283); g.stroke(); }
@@ -259,11 +264,11 @@ if (DEMO) {
     if (mark === you && kind !== 'genesis') MINE.add(hash);
     drawNights();
   }
-  (async () => { for (let i = 0; i < 160; i++) await addDemo(); head = links[links.length - 1].hash; feed(); $('#n').textContent = links.filter(l => l.kind !== 'genesis').length; $('#head').textContent = 'head ' + head;
+  (async () => { for (let i = 0; i < 160; i++) await addDemo(); head = links[links.length - 1].hash; feed(); countN(); $('#head').textContent = 'head ' + head;
     // the "you" line reads from the demo visitor's mark
     window.DP.mark = async () => you;
     feed();
-    setInterval(async () => { await addDemo(); head = links[links.length - 1].hash; feed(); $('#n').textContent = links.filter(l => l.kind !== 'genesis').length; $('#head').textContent = 'head ' + head; }, 2500); })();
+    setInterval(async () => { await addDemo(); head = links[links.length - 1].hash; feed(); countN(); $('#head').textContent = 'head ' + head; }, 2500); })();
 } else { poll(); setInterval(poll, 4000); }
 /* ---------- the rooms feeding this scroll ---------- */
 function drawRooms(list) { $('#rooms').innerHTML = list.length ? list.map(r => `<span><i class="${r.open ? 'on' : ''}"></i>${esc(r.room)} · ${r.count}</span>`).join('') : ''; }
