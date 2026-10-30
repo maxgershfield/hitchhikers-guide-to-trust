@@ -50,6 +50,9 @@ function wikiPages(list) {
 // Content never enters the chain in the clear: only its hash, and a box sealed with the visitor's own key. mark = sha256 of a secret the visitor's phone keeps (or '').
 const hex = async s => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)))].map(b => b.toString(16).padStart(2, '0')).join('');
 const isMark = m => /^[0-9a-f]{64}$/.test(String(m || ''));
+// The OpenVTC community this guide leads into (Mages City by default): its daemon's public API and join page.
+const cityApi = env => (env.CITY_API || 'https://vtc.mages.city').replace(/\/$/, '');
+const MANIFEST = 'https://trusttasks.org/spec/vtc/join-requests/manifest/0.3';
 const isSealed = b => b && typeof b.iv === 'string' && typeof b.ct === 'string' && b.iv.length <= 24 && b.ct.length <= 2400 && /^[A-Za-z0-9+/=]+$/.test(b.iv + b.ct);
 async function addLink(env, kind, content, mark, sealed, claim) {
   const chain = await load(env, 'chain'); if (chain.length >= CHAIN_MAX) return null;
@@ -104,6 +107,26 @@ async function api(req, env, path, body) {
     return json(Object.keys(roomKeys(env)).concat(Object.keys(rooms)).filter((r, i, a) => a.indexOf(r) === i).map(r => ({ room: r, count: (rooms[r] || {}).count || 0, open: !!rooms[r] && now - rooms[r].last < 90000 })));
   }
   if (path === '/api/approved' && req.method === 'GET') return json(shown(await load(env, 'approved')));
+
+  // the community to join: its DID, its QR, and the ways in, read live from its own join manifest
+  if (path === '/api/city' && req.method === 'GET') {
+    const base = cityApi(env), H = { accept: 'application/json', 'user-agent': 'hitchhikers-guide-to-trust' };
+    try {
+      const prof = await (await fetch(base + '/v1/community/public-profile', { headers: H })).json();
+      const task = { id: 'urn:uuid:' + crypto.randomUUID(), type: MANIFEST, issuedAt: new Date().toISOString().replace(/\.\d+Z$/, 'Z'), recipient: prof.communityDid, payload: {} };
+      const man = await (await fetch(base + '/v1/trust-tasks', { method: 'POST', headers: { ...H, 'content-type': 'application/json' }, body: JSON.stringify(task) })).json();
+      return json({ name: prof.name, did: prof.communityDid, publicUrl: prof.publicUrl, joinUrl: env.CITY_JOIN || 'https://join.mages.city/', qr: base + '/v1/community/did-qr.svg',
+        criteria: ((man.payload || {}).criteria || []).map(c => ({ id: c.id, description: c.description, admission: c.admission })) });
+    } catch (e) { return json({ error: 'The community is not answering right now.' }, 502); }
+  }
+  // one person's evidence: their stars (same mark) in order, chained into a root anyone can recompute
+  if (path === '/api/evidence' && req.method === 'GET') {
+    const mark = new URL(req.url).searchParams.get('mark'); if (!isMark(mark)) return json({ error: 'Give a mark.' }, 400);
+    const chain = await load(env, 'chain'), mine = chain.filter(l => l.mark === mark);
+    let root = '0'.repeat(64); for (const l of mine) root = await hex(root + '|' + l.hash);
+    return json({ mark, stars: mine.length, root, rule: 'root = sha256(root + "|" + hash), from 64 zeros, over these links in order',
+      links: mine.map(l => ({ seq: l.seq, kind: l.kind, at: l.at, hash: l.hash, room: l.room })), chainLength: chain.length, chainHead: chain.length ? chain[chain.length - 1].hash : null });
+  }
 
   if (path === '/api/chain' && req.method === 'GET') {
     const chain = await load(env, 'chain'), since = Math.max(0, parseInt(new URL(req.url).searchParams.get('since') || '0', 10) || 0);

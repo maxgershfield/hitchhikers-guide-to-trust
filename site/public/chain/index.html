@@ -44,6 +44,10 @@ canvas{cursor:grab}canvas:active{cursor:grabbing}
 .feed .k{font-size:clamp(11px,.9vw,14px);text-transform:uppercase;color:var(--muted);margin-bottom:1vh}
 .feed{pointer-events:auto}
 .tabs{display:flex;gap:6px;margin-bottom:1.4vh}.tabs button{font-family:var(--mono);font-size:clamp(10px,.8vw,13px);text-transform:uppercase;letter-spacing:.04em;padding:5px 12px;border:1px solid rgba(246,241,230,.3);border-radius:14px;background:transparent;color:#CFC9BB;cursor:pointer}
+.jq{display:flex;gap:1vw;align-items:flex-start}.jq img{width:clamp(110px,9vw,150px);height:auto;background:#fff;padding:6px;border-radius:4px}.jn{font-family:var(--head);text-transform:uppercase;font-size:clamp(20px,1.8vw,30px);color:var(--cream)}
+.jp{font-size:clamp(11px,.85vw,14px);line-height:1.6;color:#CFC9BB;margin:.6vh 0}.jl,.jb{display:inline-block;pointer-events:auto;margin-top:.6vh;font-family:var(--mono);font-size:clamp(10px,.8vw,13px);text-transform:uppercase;padding:6px 12px;border:1px solid #e8c873;color:#e8c873;background:transparent;border-radius:14px;text-decoration:none;cursor:pointer}
+.jd{font-size:clamp(9px,.7vw,11px);color:#8EA4FF;word-break:break-all;margin-top:1vh}.jw{list-style:none;margin:.6vh 0 1vh;padding:0;font-size:clamp(11px,.85vw,14px);line-height:1.7;color:var(--cream)}.jw b{color:#e8c873}.jm{color:#8f8c84}.jr{color:#e8c873}
+#join-wrap{pointer-events:auto}
 .tabs button.on{background:rgba(232,200,115,.15);border-color:#e8c873;color:#e8c873}
 #scroll{max-height:62vh;overflow-y:auto;padding-right:8px;font-family:serif;font-size:clamp(14px,1.15vw,19px);line-height:1.75;color:#b9a46a;word-break:break-all;scrollbar-width:thin;scrollbar-color:#3a3c40 transparent}
 #scroll span{cursor:pointer;transition:color .2s}#scroll span:hover,#scroll span.hl{color:#fff;text-shadow:0 0 10px rgba(232,200,115,.8)}
@@ -68,12 +72,13 @@ canvas{cursor:grab}canvas:active{cursor:grabbing}
 <canvas id="c"></canvas>
 <div class="hud title"><div class="k">The Hitchhiker's Guide to Trust · the evidence chain</div><a class="back" href="../guide/?path=workshop">← back to the guide</a><h1>A galaxy<br>of <b>guides</b></h1>
   <p>The public face of this community's guide: an evidence chain anyone can load into. Every thumb up, proverb and guide becomes a star. Its hash is public; what's behind it is sealed with your own key.</p>
-  <p style="color:#8EA4FF">Don't panic: you own your own perspective in the trust graph.</p>
-  <div class="steps"><div><b>1</b>Thumb up: your mark on the chain</div><div><b>2</b>Contribute: proverbs and guides, sealed</div><div><b>3</b>Claim it in the night's group chat: a proverb comes back</div><div><b>4</b>Later: your string is your invitation into any OpenVTC community</div></div>
+  <p style="color:#8EA4FF">Don't panic: every task you share builds trust.</p>
+  <div class="steps"><div><b>1</b>Thumb up: your mark on the chain</div><div><b>2</b>Contribute: proverbs and guides, sealed</div><div><b>3</b>Claim it in the night's group chat: a proverb comes back</div><div><b>4</b>Join Mages City by DID, with your stars as evidence <a href="#join" onclick="tab('join');return false" style="color:#e8c873;pointer-events:auto">→</a></div></div>
 <div class="hud count"><div id="demo-tag" style="display:none;font-size:clamp(10px,.8vw,13px);text-transform:uppercase;color:#0B0B0D;background:#8EA4FF;padding:3px 8px;border-radius:3px;margin-bottom:1vh;width:max-content">Example night · simulated visitors</div><b id="n">0</b><span>stars on the chain</span><div class="head" id="head"></div></div>
-<div class="hud feed"><div class="tabs"><button class="on" id="t-latest">Latest</button><button id="t-scroll">The scroll</button></div>
+<div class="hud feed"><div class="tabs"><button class="on" id="t-latest">Latest</button><button id="t-scroll">The scroll</button><button id="t-join">Join the City</button></div>
   <div id="feed-wrap"><div class="k">Latest on the chain · sigil and spell</div><div id="feed"></div></div>
-  <div id="scroll-wrap" style="display:none"><div class="k">The scroll · every star, written in the sigil script</div><div id="scroll"></div></div></div>
+  <div id="scroll-wrap" style="display:none"><div class="k">The scroll · every star, written in the sigil script</div><div id="scroll"></div></div>
+  <div id="join-wrap" style="display:none"><div class="k">Join the community · by DID, on OpenVTC</div><div id="join">Reading the community…</div></div></div>
 <div class="hud you" id="you"></div>
 <div class="hud rooms" id="rooms"></div>
 <div class="hud tip" id="tip"></div>
@@ -112,8 +117,27 @@ function writeScroll() { const box = $('#scroll'); if (!box) return; const follo
 function markPassage(i) { if (PASSAGE === i) return; const box = $('#scroll'); if (!box) return; if (PASSAGE >= 0 && box.children[PASSAGE]) box.children[PASSAGE].classList.remove('hl'); PASSAGE = i; if (i >= 0 && box.children[i]) box.children[i].classList.add('hl'); }
 $('#scroll').addEventListener('pointerover', e => { const sp = e.target.closest('span'); if (sp) HOT = +sp.dataset.i; });
 $('#scroll').addEventListener('pointerleave', () => { HOT = -1; });
-const tab = m => { $('#t-latest').classList.toggle('on', m === 'latest'); $('#t-scroll').classList.toggle('on', m === 'scroll'); $('#feed-wrap').style.display = m === 'latest' ? '' : 'none'; $('#scroll-wrap').style.display = m === 'scroll' ? '' : 'none'; if (m === 'scroll') { const b = $('#scroll'); b.scrollTop = b.scrollHeight; } };
-$('#t-latest').onclick = () => tab('latest'); $('#t-scroll').onclick = () => tab('scroll');
+const tab = m => { $('#t-latest').classList.toggle('on', m === 'latest'); $('#t-scroll').classList.toggle('on', m === 'scroll'); $('#t-join').classList.toggle('on', m === 'join'); $('#feed-wrap').style.display = m === 'latest' ? '' : 'none'; $('#scroll-wrap').style.display = m === 'scroll' ? '' : 'none'; $('#join-wrap').style.display = m === 'join' ? '' : 'none'; if (m === 'join') joinDraw(); if (m === 'scroll') { const b = $('#scroll'); b.scrollTop = b.scrollHeight; } };
+$('#t-latest').onclick = () => tab('latest'); $('#t-scroll').onclick = () => tab('scroll'); $('#t-join').onclick = () => tab('join');
+/* ---------- join the City: its live DID QR and ways in, and your evidence to bring ---------- */
+let CITY = null;
+async function joinDraw() {
+  const box = $('#join');
+  try { if (!CITY) { const r = await fetch(API + '/api/city', {cache: 'no-store'}); CITY = await r.json(); if (!r.ok) throw new Error(CITY.error); } }
+  catch (e) { box.innerHTML = `<p class="jp">${esc(e.message || 'The community is not answering right now.')}</p>`; CITY = null; return; }
+  const ways = CITY.criteria.map((c, i) => `<li><b>${i + 1}.</b> ${esc(c.description)} <span class="jm">· ${c.admission === 'automatic' ? 'admitted at once' : 'a keeper reviews'}</span></li>`).join('');
+  let ev = '<p class="jp">Put your thumb up first: your stars become the evidence you bring.</p>';
+  if (MINE.size && window.DP) { const mk = await DP.mark(); try { const e = await (await fetch(API + '/api/evidence?mark=' + mk, {cache: 'no-store'})).json();
+    const url = SITE.replace(/\/$/, '') + '/api/evidence?mark=' + mk, note = `Hitchhiker's Guide to Trust · evidence: ${e.stars} star${e.stars === 1 ? '' : 's'} · root ${e.root} · check ${url}`;
+    ev = `<p class="jp">Your evidence · <b>${DP.sigil(mk)}</b> · ${e.stars} star${e.stars === 1 ? '' : 's'}<br><span class="jr">root ${e.root.slice(0, 24)}…</span></p>
+      <p class="jp">Bring it with your application: the keeper who reviews can recompute it from the chain.</p>
+      <button class="jb" id="j-copy">Copy your evidence note</button>`;
+    setTimeout(() => { const b = $('#j-copy'); if (b) b.onclick = () => { navigator.clipboard && navigator.clipboard.writeText(note); b.textContent = 'Copied'; }; }); } catch (x) {} }
+  box.innerHTML = `<div class="jq"><img src="${esc(CITY.qr)}" alt="${esc(CITY.name)} community DID"><div><div class="jn">${esc(CITY.name)}</div>
+    <p class="jp">Scan the DID with Keyring or Star Key (🤝 join a community), or open the join page.</p><a class="jl" href="${esc(CITY.joinUrl)}" target="_blank" rel="noopener">Join ${esc(CITY.name)} →</a></div></div>
+    <div class="jd">${esc(CITY.did)}</div><div class="k" style="margin-top:1.4vh">Ways in · read live from the community</div><ul class="jw">${ways}</ul>${ev}`;
+}
+if (location.hash === '#join') setTimeout(() => tab('join'));
 if (new URLSearchParams(location.search).has('scroll')) tab('scroll');
 function feed() { writeScroll();
   $('#feed').innerHTML = links.slice(-7).reverse().map(l => `<div class="row ${MINE.has(l.hash) ? 'mine' : ''}"><span class="sg">${DP.sigil(l.hash)}</span><span class="sp">${esc(DP.spell(l.hash))}</span>

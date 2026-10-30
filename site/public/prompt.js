@@ -55,7 +55,7 @@
         m.textContent = kind === 'thumb' ? 'Thumb up. A ride stopped: you are on the chain.' : kind === 'guide' ? 'Received. Its star is on the chain, sealed with your key; the keeper will launch the guide.' : 'Received. Its star is on the chain, sealed with your key; it shows on the guide once approved.';
         you(d.link);
         if (kind === 'thumb' && window.DP) { const c = await DP.claimCode();
-          $('.dp-you').insertAdjacentHTML('beforeend', `<div class="dp-claim"><div>Your claim code, for the night's group chat:</div><b>${c.sigil} ${esc(c.words)}</b> <button type="button" class="dp-copy">copy</button><div style="text-transform:none;opacity:.85">Paste it in the chat: the bot writes your claim onto the community's chain and answers with a proverb. Only you have this code.</div></div>`);
+          $('.dp-you').insertAdjacentHTML('beforeend', `<div style="margin-top:10px"><a href="${chainUrl}#join" target="_blank" rel="noopener">Join Mages City by DID, bringing your stars as evidence →</a></div><div class="dp-claim"><div>Your claim code, for the night's group chat:</div><b>${c.sigil} ${esc(c.words)}</b> <button type="button" class="dp-copy">copy</button><div style="text-transform:none;opacity:.85">Paste it in the chat: the bot writes your claim onto the community's chain and answers with a proverb. Only you have this code.</div></div>`);
           const cp = $('.dp-copy'); if (cp) cp.onclick = () => { try { navigator.clipboard.writeText(c.sigil + ' ' + c.words); cp.textContent = 'copied'; } catch (e) {} }; }
       } catch (e) { m.textContent = 'No connection. Try again in a moment.'; } };
   });
