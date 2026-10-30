@@ -43,7 +43,7 @@ room with a live light, kept fresh by a heartbeat; unplug a room's Pi and only t
 ROOM_KEYS='{"Main hall":"<key>","Library":"<key>"}' node serve.mjs
 
 # each room's Pi
-SCROLL_ORIGIN=https://dontpanic.mages.city ROOM_NAME="Library" ROOM_KEY=<key> NODE_NAME="Library Pi" node serve.mjs
+SCROLL_ORIGIN=https://hitchhiker.mages.city ROOM_NAME="Library" ROOM_KEY=<key> NODE_NAME="Library Pi" node serve.mjs
 ```
 
 Each central link records the room link's own hash, so a room's chain and the central scroll can be checked
@@ -59,7 +59,7 @@ handle only as a salted hash), and the bot answers with a proverb from the appro
 `bot/claim-bot.mjs` is a reference Telegram bot (no database; the site does the matching):
 
 ```
-TELEGRAM_BOT_TOKEN=... SITE=https://dontpanic.mages.city KEEPER_KEY=... node bot/claim-bot.mjs
+TELEGRAM_BOT_TOKEN=... SITE=https://hitchhiker.mages.city KEEPER_KEY=... node bot/claim-bot.mjs
 ```
 
 Add it to the group and turn off its privacy mode (BotFather: /setprivacy → Disable). The site's claim endpoint

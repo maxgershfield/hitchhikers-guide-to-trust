@@ -82,8 +82,8 @@ canvas{cursor:grab}canvas:active{cursor:grabbing}
 <div class="hud join"><div><div class="s">Put your thumb up</div><div class="u" id="url"></div><div class="s">and start contributing</div></div><div class="qr" id="qr"></div></div>
 <script>
 const $ = s => document.querySelector(s), esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
-const SITE = (new URLSearchParams(location.search).get('site') || (location.protocol.startsWith('http') ? location.origin : 'https://dontpanic.mages.city')).replace(/\/$/, '');
-const API = location.protocol.startsWith('http') ? '' : 'https://dontpanic.mages.city';
+const SITE = (new URLSearchParams(location.search).get('site') || (location.protocol.startsWith('http') ? location.origin : 'https://hitchhiker.mages.city')).replace(/\/$/, '');
+const API = location.protocol.startsWith('http') ? '' : 'https://hitchhiker.mages.city';
 $('#url').textContent = SITE.replace(/^https?:\/\//, '');
 try { const q = qrcode(0, 'M'); q.addData(SITE + '/'); q.make(); $('#qr').innerHTML = q.createSvgTag({cellSize: 4, margin: 0}); } catch (e) {}
 

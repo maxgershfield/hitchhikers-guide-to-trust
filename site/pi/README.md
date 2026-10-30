@@ -6,7 +6,7 @@ Works on a Pi 4 or Pi 5 with Raspberry Pi OS or Ubuntu, on any Wi-Fi (it only di
 ## Before the night
 
 1. **Node.js 20 or newer**: `node --version`. If older, install from nodejs.org (arm64 or armv7 build to match the OS).
-2. **The site**: copy the whole `dontpanic.mages.city` folder to the Pi, e.g. `~/dontpanic`.
+2. **The site**: copy the `site` folder to the Pi, e.g. `~/dontpanic`.
 3. **Wi-Fi**: save the venue's network, or your phone's hotspot, so the Pi joins it by itself.
 4. **The tunnel**: install `cloudflared` (Cloudflare's arm package), then once:
    ```

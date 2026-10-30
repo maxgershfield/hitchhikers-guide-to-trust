@@ -27,6 +27,6 @@
   window.DP = {
     mark: () => hex('mark|' + secret()), sigil, spell, mine, seal, open, claimCode, claimHash,
     remember: hash => { const m = mine(); if (!m.includes(hash)) { m.push(hash); set(MINE, JSON.stringify(m.slice(-200))); } },
-    api: location.protocol.startsWith('http') ? '' : 'https://dontpanic.mages.city'
+    api: location.protocol.startsWith('http') ? '' : 'https://hitchhiker.mages.city'
   };
 })();

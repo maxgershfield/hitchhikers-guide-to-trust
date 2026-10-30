@@ -1,4 +1,4 @@
-// dontpanic.mages.city: The Hitchhiker's Guide to Trust, hosted. Serves the pages (./public) and one small API:
+// hitchhiker.mages.city: The Hitchhiker's Guide to Trust, hosted. Serves the pages (./public) and one small API:
 // visitors leave a "Don't Panic" proverb or launch a guide at the end of a presentation; the keeper approves
 // each one before it appears. Keeper calls carry Bearer KEEPER_KEY. Storage: KV keys "queue" and "approved".
 //

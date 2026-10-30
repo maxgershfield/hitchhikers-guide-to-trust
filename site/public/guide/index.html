@@ -859,15 +859,15 @@ if ($('#disc-q')) {
   const DEEP = [['Three graphs', 'Three graphs'], ['Trust', 'Connection is not trust'], ['A visit', 'A visit becomes trust'], ['The pathway', 'One Pi to a network'], ['Cities', 'Connected cities'], ['Evidence', 'Guidance you can check'], ['Games', 'Trust is earned'], ["Don't Panic", "Don't Panic"], ['Local', 'Local nodes'], ['Built', 'How the pieces fit']];
   $('#disc-deep').innerHTML = DEEP.filter(([k]) => scenes.some(x => x.dataset.sec === k && x.dataset.branch)).map(([k, l]) => `<button class="act" data-sec="${k}">${l} →</button>`).join('');
   $$('#disc-deep .act').forEach(b => b.onclick = () => branch(b.dataset.sec, idxOf('Discussion')));
-  const site = (location.protocol.startsWith('http') ? location.origin : 'https://dontpanic.mages.city').replace(/^https?:\/\//, '');
+  const site = (location.protocol.startsWith('http') ? location.origin : 'https://hitchhiker.mages.city').replace(/^https?:\/\//, '');
   $('#disc-site').innerHTML = `Put your thumb up while we talk: <b style="color:var(--pale)">${site}</b>`;
 }
 
 /* ---------- the chain, live: how many stars, one touch away ---------- */
-(function () { const api = location.protocol.startsWith('http') ? '' : 'https://dontpanic.mages.city', chip = $('#stars');
+(function () { const api = location.protocol.startsWith('http') ? '' : 'https://hitchhiker.mages.city', chip = $('#stars');
   const tick = async () => { try { const r = await fetch(api + '/api/chain?since=99999999', {cache: 'no-store'}); if (!r.ok) return; const d = await r.json();
     chip.textContent = `✦ ${d.length} star${d.length === 1 ? '' : 's'} on the chain ↗`; chip.style.display = ''; } catch (e) {} };
-  if (!location.protocol.startsWith('http')) chip.href = 'https://dontpanic.mages.city/chain/';
+  if (!location.protocol.startsWith('http')) chip.href = 'https://hitchhiker.mages.city/chain/';
   tick(); setInterval(tick, 8000); })();
 
 fit(); go(Math.max(0, parseInt(location.hash.slice(1)) || 0));

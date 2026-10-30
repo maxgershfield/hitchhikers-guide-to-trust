@@ -18,8 +18,8 @@
 .dp-approved{font-family:"Space Grotesk","Segoe UI",Arial,sans-serif}.dp-item{border-left:3px solid #1F4BFF;padding:6px 12px;margin:0 0 8px;font-size:18px}
 .dp-item small{display:block;font-family:"Space Mono",Consolas,monospace;font-size:12px;text-transform:uppercase;opacity:.7}`;
   const st = document.createElement('style'); st.textContent = css; document.head.append(st);
-  const api = (location.protocol.startsWith('http') ? '' : 'https://dontpanic.mages.city');
-  const chainUrl = (location.protocol.startsWith('http') ? '/chain/' : 'https://dontpanic.mages.city/chain/');
+  const api = (location.protocol.startsWith('http') ? '' : 'https://hitchhiker.mages.city');
+  const chainUrl = (location.protocol.startsWith('http') ? '/chain/' : 'https://hitchhiker.mages.city/chain/');
 
   document.querySelectorAll('[data-prompt]').forEach(box => {
     box.className = 'dp-prompt'; let kind = 'thumb';
