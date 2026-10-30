@@ -43,7 +43,7 @@
       $('.dp-text').placeholder = g ? 'Its first clue: where to go, what to look for' : "Don't panic; …";
       $('.dp-msg').textContent = w ? (g ? 'A guide drafted here can become a Field Guide: a name, a place, a first clue. Its star joins the chain now; the keeper launches it.' : 'Its star joins the chain now, sealed with your key; the keeper reads it before it shows on the guide.') : ''; };
     box.querySelectorAll('.dp-tabs button').forEach(b => b.classList.toggle('on', b.dataset.k === kind));
-    if (W) box.querySelector(':scope > .dp-thumb').textContent = "You're here, in the room. Your thumb up is witnessed: you stood here tonight. Your towel keeps the receipt.";
+    if (W) box.querySelector(':scope > .dp-thumb').textContent = "You scanned the room's screen. Your thumb up will be marked as witnessed here tonight (the code proves you could see the screen, no more).";
     box.querySelectorAll('.dp-tabs button').forEach(b => b.onclick = () => { kind = b.dataset.k; box.querySelectorAll('.dp-tabs button').forEach(x => x.classList.toggle('on', x === b)); mode(); });
     box.addEventListener('keydown', e => e.stopPropagation());
     // Morse 42 (....- ..---): Hitchhiker FM's motif, played when something is offered to the station
@@ -57,7 +57,7 @@
     // the Meet Rite: one phone opens a meeting, the other says yes, the first confirms; then the edge is written
     const sigil = h => window.DP ? DP.sigil(h) : '';
     const loadQR = () => window.qrcode ? Promise.resolve() : new Promise(r => { const sc = document.createElement('script'); sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js'; sc.onload = r; sc.onerror = r; document.head.append(sc); });
-    const met = link => { DP.remember(link.hash); $('.dp-mbox').innerHTML = '<p class="dp-thumb">You met. Two yeses, one edge: it is on the chain, a receipt both your towels keep.</p>'; you(link); };
+    const met = link => { DP.remember(link.hash); $('.dp-mbox').innerHTML = '<p class="dp-thumb">You met. Two yeses, one edge: it is recorded on tonight\'s guide. Claim it with your DID later, and your agent can carry it as a credential once that is built.</p>'; you(link); };
     const watch = (code, mine) => { const t = setInterval(async () => { try { const d = await (await fetch(U('/api/meet/status?code=' + code), { cache: 'no-store' })).json();
       if (d.error) { clearInterval(t); $('.dp-mbox').innerHTML = `<p class="dp-thumb">${esc(d.error)}</p>`; return; }
       if (d.link) { clearInterval(t); met(d.link); return; }
@@ -88,7 +88,7 @@
         tick = setInterval(() => { secs++; $('.dp-secs').textContent = secs + ' s'; if (secs >= 45) stopRec(); }, 1000);
       } catch (e) { $('.dp-msg').textContent = 'No microphone here (or it was not allowed).'; } };
     const you = async link => { if (!link || !window.DP) return; DP.remember(link.hash); const mk = await DP.mark();
-      $('.dp-you').innerHTML = `Your mark <b>${DP.sigil(mk)}</b> · ${esc(DP.spell(mk))}<br>a receipt your towel keeps · link #${link.seq}: ${DP.sigil(link.hash)} ${esc(DP.spell(link.hash))} · <a href="${chainUrl}" target="_blank" rel="noopener">see yourself in the guide →</a>`; };
+      $('.dp-you').innerHTML = `Your mark <b>${DP.sigil(mk)}</b> · ${esc(DP.spell(mk))}<br>recorded on tonight's guide · link #${link.seq}: ${DP.sigil(link.hash)} ${esc(DP.spell(link.hash))} · <a href="${chainUrl}" target="_blank" rel="noopener">see yourself in the guide →</a>`; };
     $('.dp-send').onclick = async () => { const m = $('.dp-msg'), fm = $('.dp-fmc').checked;
       if (kind === 'voice') { if (!blob || !window.DP) { m.textContent = 'Record a note first.'; return; } m.textContent = 'Sealing and sending…';
         try { const type = new TextEncoder().encode((blob.type || 'audio/webm') + '\n'), audio = new Uint8Array(await blob.arrayBuffer()), all = new Uint8Array(type.length + audio.length); all.set(type); all.set(audio, type.length);
@@ -104,7 +104,7 @@
           : await fetch(U('/api/submit'), { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ kind, title: $('.dp-title').value, place: $('.dp-place').value, text: $('.dp-text').value, by: $('.dp-by').value, fm: kind === 'proverb' && fm, mark, sealed }) });
         const d = await r.json(); if (!r.ok) { m.textContent = d.error || 'That did not go through.'; return; }
         $('.dp-text').value = ''; $('.dp-title').value = ''; $('.dp-place').value = ''; if (kind === 'proverb' && fm) morse42();
-        m.textContent = kind === 'thumb' ? (d.witnessed ? "Witnessed: you stood here tonight. You're part of tonight's guide." : d.expired ? "Thumb up. (The room's code had changed; scan the screen again to be witnessed.)" : "Thumb up. You're part of tonight's guide.") : kind === 'proverb' && fm ? 'Received, and offered to Hitchhiker FM. Its star is on the chain; it shows on the guide once approved.' : kind === 'guide' ? 'Received. Its star is on the chain, sealed with your key; the keeper will launch the guide.' : 'Received. Its star is on the chain, sealed with your key; it shows on the guide once approved.';
+        m.textContent = kind === 'thumb' ? (d.witnessed ? "Witnessed: you could see the room's screen tonight. You're part of tonight's guide." : d.expired ? "Thumb up. (The room's code had changed; scan the screen again to be witnessed.)" : "Thumb up. You're part of tonight's guide.") : kind === 'proverb' && fm ? 'Received, and offered to Hitchhiker FM. Its star is on the chain; it shows on the guide once approved.' : kind === 'guide' ? 'Received. Its star is on the chain, sealed with your key; the keeper will launch the guide.' : 'Received. Its star is on the chain, sealed with your key; it shows on the guide once approved.';
         you(d.link);
         if (kind === 'thumb' && window.DP) { const c = await DP.claimCode();
           $('.dp-you').insertAdjacentHTML('beforeend', `<div style="margin-top:10px"><a href="${chainUrl}#join" target="_blank" rel="noopener">Join Mages City, and claim your stars →</a></div><div class="dp-claim"><div>Your claim code. Keep it: it proves these stars are yours.</div><b>${c.sigil} ${esc(c.words)}</b> <button type="button" class="dp-copy">copy</button><div style="text-transform:none;opacity:.85">Paste it in the night's group chat for a proverb back, or, once you have joined (no DID yet? vta.farm makes one), claim your stars with it and your DID on the chain page. Only you have this code.</div></div>`);

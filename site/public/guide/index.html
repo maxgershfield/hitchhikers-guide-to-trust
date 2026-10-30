@@ -565,9 +565,9 @@ function netDraw() {
     g.append(el('text', {x, y: y + 54, 'text-anchor': 'middle', fill: C.off, 'font-size': 15, 'font-weight': 700}, n[0].toUpperCase()));
     g.append(el('text', {x, y: y + 73, 'text-anchor': 'middle', fill: '#8f8c84', 'font-size': 12}, n[4].toUpperCase()));
     g.onclick = () => { netSel = i; netDraw(); }; s.append(g); });
-  // Field Guide plays over the towels: it reads your trust graph and adds place
+  // Field Guide: guides played in real places; reading a member's towel is an idea, not built
   s.append(el('rect', {x: 15, y: 2, width: 1130, height: 26, rx: 13, fill: '#E8C873', opacity: .14}));
-  s.append(el('text', {x: 580, y: 20, 'text-anchor': 'middle', 'font-size': 12, 'font-weight': 700, fill: '#E8C873'}, 'FIELD GUIDE · PLAYS GUIDES IN REAL PLACES, OVER YOUR TOWEL'));
+  s.append(el('text', {x: 580, y: 20, 'text-anchor': 'middle', 'font-size': 12, 'font-weight': 700, fill: '#E8C873'}, 'FIELD GUIDE · GUIDES PLAYED IN REAL PLACES · READING YOUR TOWEL IS AN IDEA, NOT BUILT'));
   // the hitchhiker mage's path between embassies
   { const pts = [3, 4, 9].map(netAt); s.append(el('path', {d: 'M' + pts.map(p => p.join(',')).join(' L'), fill: 'none', stroke: '#E8C873', 'stroke-width': 1.6, 'stroke-dasharray': '2 7', opacity: .8}));
     s.append(el('text', {x: (pts[1][0] + pts[2][0]) / 2, y: pts[1][1] - 40, 'text-anchor': 'middle', 'font-size': 11, fill: '#E8C873'}, "THE MAGE'S PATH")); }
@@ -812,8 +812,8 @@ $$('#why-check .act').forEach(b => b.onclick = () => { $$('#why-check .act').for
 const GEN = [
   ['Genesis', "One Hitchhikers' guide, from its genesis. Each night opens its own page: Newspeak House, IIW 43, the Internet Archive. Tonight's stars are its history.", 'now', '✦'],
   ['Thumb up', 'Your towel puts its thumb up: your mark joins the guide. No account, no joining.', 'now', '👍'],
-  ['Witness', "Scan the room's screen: you stood here tonight. The code changes every ten minutes.", 'now', '📍'],
-  ['Meet', 'Two phones, two yeses, one edge. A scan is only a meeting; an edge needs you both to agree.', 'now', '🤝'],
+  ['Witness', "Scan the room's screen: your star is marked as witnessed here. The code changes every ten minutes, so it shows you could see the screen tonight, no more.", 'now', '📍'],
+  ['Meet', 'Two phones, two yeses, one edge, recorded on the guide. Not yet a credential: claim it with your DID later.', 'now', '🤝'],
   ['Cast', 'A proverb, a guide (a name, a place, a first clue), a voice note: sealed with your key. Offer one to Hitchhiker FM if you like.', 'now', '📻'],
   ['Your claim', 'Keep your claim code. Join when you are ready (no DID? vta.farm makes one) and claim your stars with your DID.', 'now', '🗝'],
   ['Next: recognised', 'Claims signed by your DID, and a community that reads them as a credential: the night becomes part of a VTC.', 'next', '✧']];
@@ -862,7 +862,7 @@ reqDraw();
 const FGS = [
   'Field Guide turns real places into playable stories. Discover, download, play, return.',
   'Every place unlocks the next chapter.',
-  'Each place you reach is witnessed: you stood here. Your towel keeps the receipt.',
+  'Each place you reach becomes a moment you can show: you were here. Tonight we try the same idea as a star on the guide.',
   'Walk it with others and the guide becomes guidance: who walked it, what they found, what to fix.',
   'From play to trust: the guide a community walks together is the first thing it owns.'];
 const PINS = [[300, 300], [560, 170], [860, 250], [1120, 120]];
@@ -879,7 +879,7 @@ function fgDraw() {
     if (on && fgN >= 2) { s.append(el('line', {x1: x, y1: y + 30, x2: 300 + i * 60, y2: 420, stroke: '#E8C873', 'stroke-width': 1.2, 'stroke-dasharray': '2 5'})); } });
   if (fgN >= 2) { s.append(el('rect', {x: 250, y: 405, width: 300, height: 34, rx: 17, fill: '#0B0B0D'}));
     PINS.slice(0, walked).forEach((p, i) => s.append(el('circle', {cx: 300 + i * 60, cy: 422, r: 7, fill: '#E8C873'})));
-    s.append(el('text', {x: 570, y: 427, 'font-size': 13, fill: C.ink}, 'YOUR TOWEL: RECEIPTS OF WHERE YOU STOOD')); }
+    s.append(el('text', {x: 570, y: 427, 'font-size': 13, fill: C.ink}, 'MOMENTS YOU CAN SHOW: WHERE YOU WERE')); }
   if (fgN >= 3) [[1000, 330], [1180, 300], [1300, 360]].forEach(([x, y], k) => { s.append(el('circle', {cx: x, cy: y, r: 16, fill: C.off, stroke: C.ink})); s.append(el('line', {x1: x, y1: y, x2: PINS[3][0], y2: PINS[3][1] + 6, stroke: C.muted, 'stroke-dasharray': '3 5'})); });
   if (fgN >= 4) { const t = el('text', {x: 1440, y: 440, 'text-anchor': 'end', 'font-size': 24, fill: C.cobalt}); t.style.fontFamily = 'var(--head)'; t.textContent = 'A GUIDE IS THE FIRST THING A COMMUNITY OWNS'; s.append(t); }
   $('#fg-sub').textContent = FGS[fgN]; $('#fg-btn').textContent = fgN >= FGS.length - 1 ? 'Walk it again' : 'Walk on →';
