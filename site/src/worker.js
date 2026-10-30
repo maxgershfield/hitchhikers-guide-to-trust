@@ -37,7 +37,7 @@ function isKeeper(env, req) {
   return d === 0;
 }
 
-const shown = list => list.filter(x => !x.hidden).map(({ id, kind, title, text, by, event }) => ({ id, kind, title, text, by, event }));
+const shown = list => list.filter(x => !x.hidden).map(({ id, kind, title, text, by, event, place }) => ({ id, kind, title, text, by, event, place }));
 
 // Approved guides and proverbs as Federated Wiki pages, ready for a community node's wiki to import.
 function wikiPages(list, name) {
@@ -84,6 +84,14 @@ async function push(chain, kind, content, mark, extra) {
   const link = { seq, kind, at, leaf, mark: m, prev, hash: await hex([prev, leaf, m, seq].join('|')), ...(extra || {}) };
   chain.push(link); return link;
 }
+// ---- witness: a code only the room's own screen shows, changing every 10 minutes ----
+// The screen gets the witness key in its address fragment (from the keeper page); scanning its QR proves you could
+// see the room's screen. A light proof of presence, not a guarantee.
+const WINDOW_MS = 600000;
+const witnessKey = async env => env.WITNESS_KEY || hex('wk|' + (env.KEEPER_KEY || ''));
+async function witnessOk(env, ev, code) { const k = await witnessKey(env), w = Math.floor(Date.now() / WINDOW_MS);
+  for (const win of [w, w - 1]) if ((await hex('witness|' + k + '|' + ev + '|' + win)).slice(0, 10) === String(code || '')) return true; return false; }
+const MEET_TTL = 600, meetCode = () => [...crypto.getRandomValues(new Uint8Array(5))].map(b => 'abcdefghjkmnpqrstuvwxyz23456789'[b % 31]).join('');
 async function chainOf(env) {
   const chain = await load(env, CK(env)); if (chain.length) return chain;
   const genesis = GUIDE(env); await push(chain, 'genesis', genesis, '', { genesis });
@@ -109,7 +117,7 @@ function roomOf(env, req, room) { const k = roomKeys(env)[room], got = (req.head
 const words4 = t => String(t || '').toLowerCase().normalize('NFKC').replace(/[^a-z\s-]/g, ' ').split(/\s+/).filter(Boolean);
 // find whose thumb up a claim code belongs to: any four words in a row whose hash matches a committed claim
 async function findClaim(chain, text) {
-  const words = words4(text), byClaim = new Map(chain.filter(l => l.kind === 'thumb' && l.claim).map(l => [l.claim, l]));
+  const words = words4(text), byClaim = new Map(chain.filter(l => (l.kind === 'thumb' || l.kind === 'witness') && l.claim).map(l => [l.claim, l]));
   for (let i = 0; i + 4 <= words.length; i++) { const c = await hex('claimcode|' + words.slice(i, i + 4).join(' ')); if (byClaim.has(c)) return byClaim.get(c); }
   return null;
 }
@@ -176,7 +184,7 @@ async function api(req, env, path, body) {
   // one person's evidence: their stars (same mark) in order, chained into a root anyone can recompute
   if (path === '/api/evidence' && req.method === 'GET') {
     const mark = url.searchParams.get('mark'); if (!isMark(mark)) return json({ error: 'Give a mark.' }, 400);
-    const chain = await chainOf(env), mine = chain.filter(l => l.mark === mark);
+    const chain = await chainOf(env), mine = chain.filter(l => l.mark === mark || l.meet === mark);
     let root = '0'.repeat(64); for (const l of mine) root = await hex(root + '|' + l.hash);
     return json({ guide: GUIDE(env).name, nights: [...new Set(mine.map(l => l.event).filter(Boolean))].map(e => (EV[e] || {}).name || e), mark, stars: mine.length, root, rule: 'root = sha256(root + "|" + hash), from 64 zeros, over these links in order',
       links: mine.map(l => ({ seq: l.seq, kind: l.kind, at: l.at, hash: l.hash, event: l.event, room: l.room, did: l.did })), genesis: chain[0].hash, chainLength: chain.length, chainHead: chain[chain.length - 1].hash });
@@ -192,8 +200,40 @@ async function api(req, env, path, body) {
     if (!isMark(body.mark)) return json({ error: 'Open the page again to make your mark.' }, 400);
     if (await limited(env, req)) return json({ error: 'Slow down a moment, then try again.' }, 429);
     const claim = /^[0-9a-f]{64}$/.test(String(body.claim || '')) ? body.claim : null;
-    const link = await addLink(env, ev, 'thumb', body.mark, body.mark, body.sealed, claim ? { claim } : null);
-    return link ? json({ ok: true, link }) : json({ error: 'The chain is full tonight.' }, 503);
+    const seen = body.w && await witnessOk(env, ev, body.w), place = seen ? (events(env)[ev] || {}).place || '' : '';
+    const link = await addLink(env, ev, seen ? 'witness' : 'thumb', seen ? { mark: body.mark, place } : body.mark, body.mark, body.sealed, { ...(claim ? { claim } : {}), ...(seen ? { place } : {}) });
+    return link ? json({ ok: true, link, witnessed: !!seen, expired: !!body.w && !seen }) : json({ error: 'The chain is full tonight.' }, 503);
+  }
+
+  // ---- the Meet Rite: two phones, two yeses, one edge. A scan is a meeting; an edge needs both to agree. ----
+  if (path === '/api/meet/open' && req.method === 'POST') {
+    if (!isMark(body.mark)) return json({ error: 'Open the page again to make your mark.' }, 400);
+    if (await limited(env, req)) return json({ error: 'Slow down a moment, then try again.' }, 429);
+    const code = meetCode(); await env.PROVERBS.put('meet:' + code, JSON.stringify({ a: body.mark, ev, at: Date.now() }), { expirationTtl: MEET_TTL });
+    return json({ ok: true, code });
+  }
+  if (path === '/api/meet/accept' && req.method === 'POST') {
+    const code = String(body.code || '').toLowerCase().replace(/[^a-z0-9]/g, ''), m = await env.PROVERBS.get('meet:' + code, 'json');
+    if (!isMark(body.mark)) return json({ error: 'Open the page again to make your mark.' }, 400);
+    if (!m) return json({ error: 'That meeting has closed (codes last ten minutes).' }, 404);
+    if (m.a === body.mark) return json({ error: 'That is your own meeting: show it to the person you are meeting.' }, 400);
+    if (m.b && m.b !== body.mark) return json({ error: 'Someone else already said yes to this one.' }, 409);
+    m.b = body.mark; await env.PROVERBS.put('meet:' + code, JSON.stringify(m), { expirationTtl: MEET_TTL });
+    return json({ ok: true, a: m.a });
+  }
+  if (path === '/api/meet/status' && req.method === 'GET') {
+    const m = await env.PROVERBS.get('meet:' + String(url.searchParams.get('code') || '').toLowerCase(), 'json');
+    return m ? json({ a: m.a, b: m.b || null, link: m.link || null }) : json({ error: 'That meeting has closed.' }, 404);
+  }
+  if (path === '/api/meet/confirm' && req.method === 'POST') {
+    const code = String(body.code || '').toLowerCase(), m = await env.PROVERBS.get('meet:' + code, 'json');
+    if (!m) return json({ error: 'That meeting has closed.' }, 404);
+    if (m.a !== body.mark || !m.b) return json({ error: 'Only the person who started it can confirm, once the other has said yes.' }, 400);
+    if (m.link) return json({ ok: true, link: m.link });
+    const link = await addLink(env, m.ev || ev, 'meet', { a: m.a, b: m.b }, m.a, null, { meet: m.b });
+    if (!link) return json({ error: 'The chain is full tonight.' }, 503);
+    m.link = link; await env.PROVERBS.put('meet:' + code, JSON.stringify(m), { expirationTtl: MEET_TTL });
+    return json({ ok: true, link });
   }
 
   if (path === '/api/submit' && req.method === 'POST') {
@@ -204,9 +244,10 @@ async function api(req, env, path, body) {
     if (await limited(env, req)) return json({ error: 'Slow down a moment, then try again.' }, 429);
     const queue = await load(env, Q);
     if (queue.length >= QUEUE_MAX) return json({ error: 'The keeper is catching up. Try again later.' }, 503);
-    queue.push({ id: Date.now() * 100 + Math.floor(Math.random() * 100), kind, title: kind === 'guide' ? title : '', text, by, event: ev, at: new Date().toISOString() });
+    const place = kind === 'guide' ? clean(body.place, 60) : '', fm = !!body.fm;
+    queue.push({ id: Date.now() * 100 + Math.floor(Math.random() * 100), kind, title: kind === 'guide' ? title : '', text, by, place, fm, event: ev, at: new Date().toISOString() });
     await save(env, Q, queue);
-    const link = await addLink(env, ev, kind, { title, text, by }, body.mark, body.sealed);
+    const link = await addLink(env, ev, kind, { title, text, by, place }, body.mark, body.sealed, fm ? { fm: true } : null);
     return json({ ok: true, held: true, link });
   }
 
@@ -220,7 +261,9 @@ async function api(req, env, path, body) {
     const n = parseInt(await env.PROVERBS.get('voices:' + ev) || '0', 10); if (n >= VOICES_MAX) return json({ error: 'The guide has all the voice notes it can hold tonight.' }, 503);
     const id = await hex('voice|' + iv + '|' + ct);
     await env.PROVERBS.put('voice:' + id, JSON.stringify({ iv, ct })); await env.PROVERBS.put('voices:' + ev, String(n + 1));
-    const link = await addLink(env, ev, 'voice', id, body.mark, null, { voice: id, secs });
+    const offer = body.fm && typeof body.open === 'string' && body.open.length <= VOICE_MAX_B64 && /^[A-Za-z0-9+/=]+$/.test(body.open);
+    if (offer) { await env.PROVERBS.put('fm:' + id, JSON.stringify({ type: clean(body.type, 40) || 'audio/webm', b64: body.open })); const q = await load(env, 'fmq'); q.push({ id, secs, event: ev, at: new Date().toISOString() }); await save(env, 'fmq', q.slice(-300)); }
+    const link = await addLink(env, ev, 'voice', id, body.mark, null, { voice: id, secs, ...(offer ? { fm: true } : {}) });
     return link ? json({ ok: true, link }) : json({ error: 'The chain is full tonight.' }, 503);
   }
   if (path === '/api/voice' && req.method === 'GET') {
@@ -248,6 +291,11 @@ async function api(req, env, path, body) {
     const action = path.slice('/api/keeper/'.length), id = Number(body.id);
     if (action === 'state') return json({ guide: GUIDE(env).name, nights: Object.fromEntries(Object.entries(EV).map(([k, v]) => [k, v.name])), queue, approved, host: env.NODE_NAME || 'worker' });
     if (action === 'export') return json(wikiPages(approved, GUIDE(env).name));
+    if (action === 'screen') return json({ key: await witnessKey(env), nights: Object.keys(EV) });
+    if (action === 'fm') return json({ proverbs: queue.concat(approved).filter(x => x.fm && !x.hidden), voices: await load(env, 'fmq') });
+    if (action === 'fmvoice') { const v = await env.PROVERBS.get('fm:' + String(body.id || ''), 'json'); return v ? json(v) : json({ error: 'Not found.' }, 404); }
+    // guides as Field Guide drafts: a name, a place, a first clue; ready to import once the studio's format is agreed
+    if (action === 'drafts') return json(approved.filter(x => x.kind === 'guide' && !x.hidden).map(x => ({ title: x.title, place: x.place || '', firstClue: x.text, by: x.by || '', night: (EV[x.event] || {}).name || '', at: x.at })));
     // the invitation trust task: the group chat's bot sends a message; if it holds someone's claim code, their claim
     // is written onto the guide (the chat handle only as a salted hash), on the night of their thumb up, and a proverb comes back
     if (action === 'claim') {
@@ -287,6 +335,8 @@ export default {
     // short addresses for each night: /newspeak → that guide's home
     const short = path.replace(/^\/|\/$/g, '').toLowerCase();
     if (short && !short.includes('/') && events(env)[short]) return Response.redirect(u.origin + '/?event=' + short, 302);
+    let mm = short.match(/^w\/([a-z0-9-]+)\/([0-9a-f]{10})$/); if (mm && events(env)[mm[1]]) return Response.redirect(u.origin + '/?event=' + mm[1] + '&w=' + mm[2], 302);
+    mm = short.match(/^m\/([a-z0-9]{5})$/); if (mm) return Response.redirect(u.origin + '/?meet=' + mm[1], 302);
     if (!path.startsWith('/api/')) return env.ASSETS.fetch(req);
     if (env.GATE_ORIGIN) return viaGate(req, env, path);
     if (ctx && ctx.waitUntil && !env.waitUntil) env = { ...env, waitUntil: p => ctx.waitUntil(p) };

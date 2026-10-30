@@ -75,7 +75,7 @@ canvas{cursor:grab}canvas:active{cursor:grabbing}
 <div class="hud title"><div class="k" id="guide-k" style="max-width:40vw">The Hitchhiker's Guide to Trust · the evidence chain</div><a class="back" href="../guide/?path=workshop">← back to the guide</a><h1>A galaxy<br>of <b>guides</b></h1>
   <div class="nights" id="nights"></div>
   <p id="guide-p">One guide, many nights. Every thumb up, proverb, guide and voice note is a star: its hash public, what's behind it sealed with your own key. No joining needed.</p>
-  <p style="color:#8EA4FF">Don't panic: every task you share builds trust.</p>
+  <p style="color:#8EA4FF">“Prove the contribution, not the person.” <span style="opacity:.7">· the Hitchhikers</span><br>Every star is a receipt your towel keeps.</p>
   <div class="steps"><div><b>1</b>Thumb up: your mark on tonight's guide</div><div><b>2</b>Add proverbs, guides, voice notes: sealed</div><div><b>3</b>Keep your claim code; the group chat answers it with a proverb</div><div><b>4</b>Join when you're ready, and claim your stars with your DID <a href="#join" onclick="tab('join');return false" style="color:#e8c873;pointer-events:auto">→</a></div></div>
 <div class="hud count"><div id="demo-tag" style="display:none;font-size:clamp(10px,.8vw,13px);text-transform:uppercase;color:#0B0B0D;background:#8EA4FF;padding:3px 8px;border-radius:3px;margin-bottom:1vh;width:max-content">Example night · simulated visitors</div><b id="n">0</b><span>stars on the chain</span><div class="head" id="head"></div></div>
 <div class="hud feed"><div class="tabs"><button class="on" id="t-latest">Latest</button><button id="t-scroll">The scroll</button><button id="t-join">Join the City</button></div>
@@ -94,16 +94,21 @@ const SITE = (new URLSearchParams(location.search).get('site') || (location.prot
 const API = location.protocol.startsWith('http') ? '' : 'https://hitchhiker.mages.city', U = p => window.DP ? DP.u(p) : API + p, EVID = window.DP && DP.event || '';
 $('#url').textContent = SITE.replace(/^https?:\/\//, '');
 if (EVID) $('#url').textContent += '/' + EVID;
-try { const q = qrcode(0, 'M'); q.addData(SITE + '/' + (EVID ? EVID : '')); q.make(); $('#qr').innerHTML = q.createSvgTag({cellSize: 4, margin: 0}); } catch (e) {}
+const SCREEN = (location.hash.match(/screen=([0-9a-f]{64})/) || [])[1];
+async function drawQR() { let url = SITE + '/' + (EVID ? EVID : '');
+  if (SCREEN && EVID) { const win = Math.floor(Date.now() / 600000), h = [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode('witness|' + SCREEN + '|' + EVID + '|' + win)))].map(b => b.toString(16).padStart(2, '0')).join('');
+    url = SITE + '/w/' + EVID + '/' + h.slice(0, 10); document.querySelector('.join .s').textContent = 'Scan to be witnessed here'; document.querySelectorAll('.join .s')[1].textContent = 'the code changes every ten minutes'; }
+  try { const q = qrcode(0, 'M'); q.addData(url); q.make(); $('#qr').innerHTML = q.createSvgTag({cellSize: 4, margin: 0}); } catch (e) {} }
+drawQR(); if (SCREEN) setInterval(drawQR, 30000);
 
 /* ---------- the chain ---------- */
 let links = [], head = null, born = new Map();
 let MINE = new Set(window.DP ? DP.mine() : []);
-const COLOR = {thumb: [246, 241, 230], proverb: [142, 164, 255], guide: [31, 75, 255], chat: [255, 255, 255], claim: [232, 200, 115], voice: [120, 220, 190], genesis: [255, 214, 120]};
-const KIND = l => (l.kind === 'claim' ? (l.did ? 'claimed with a DID' : 'claimed in the group chat') : l.kind === 'voice' ? 'voice note' + (l.secs ? ' · ' + l.secs + ' s' : '') : l.kind === 'genesis' ? (l.genesis && l.genesis.event ? 'a night opens · ' + shortNight(l.genesis.name) : 'genesis · ' + ((l.genesis || {}).name || 'the guide begins')) : l.kind) + (l.event && l.kind !== 'genesis' && NIGHTS[l.event] ? ' · ' + shortNight(NIGHTS[l.event].name) : '');
+const COLOR = {witness: [255, 160, 90], meet: [255, 120, 190], thumb: [246, 241, 230], proverb: [142, 164, 255], guide: [31, 75, 255], chat: [255, 255, 255], claim: [232, 200, 115], voice: [120, 220, 190], genesis: [255, 214, 120]};
+const KIND = l => (l.kind === 'witness' ? 'witnessed in the room' + (l.place ? ' · ' + l.place : '') : l.kind === 'meet' ? 'a meeting · two yeses' : l.kind === 'claim' ? (l.did ? 'claimed with a DID' : 'claimed in the group chat') : l.kind === 'voice' ? 'voice note' + (l.secs ? ' · ' + l.secs + ' s' : '') : l.kind === 'genesis' ? (l.genesis && l.genesis.event ? 'a night opens · ' + shortNight(l.genesis.name) : 'genesis · ' + ((l.genesis || {}).name || 'the guide begins')) : l.kind) + (l.event && l.kind !== 'genesis' && NIGHTS[l.event] ? ' · ' + shortNight(NIGHTS[l.event].name) : '');
 // a person's evidence root: their stars (same mark), chained in order
 const ROOTS = new Map();
-async function rootOf(mark) { const ls = links.filter(l => l.mark === mark), key = mark + ':' + ls.length; if (ROOTS.has(key)) return ROOTS.get(key);
+async function rootOf(mark) { const ls = links.filter(l => l.mark === mark || l.meet === mark), key = mark + ':' + ls.length; if (ROOTS.has(key)) return ROOTS.get(key);
   let r = '0'.repeat(64); for (const l of ls) r = [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(r + '|' + l.hash)))].map(b => b.toString(16).padStart(2, '0')).join('');
   ROOTS.set(key, r); return r; }
 const angle = (h, i) => parseInt(h.slice(i, i + 4), 16) / 65536 * Math.PI * 2;
@@ -208,6 +213,8 @@ function frame(now) {
   // constellations: each person's stars joined in order (their personal evidence chain)
   const lastOf = new Map(); g.lineWidth = 1 * D; g.strokeStyle = 'rgba(246,241,230,.13)'; g.beginPath(); const mineLines = [];
   links.forEach((l, i) => { if (!l.mark) return; const j = lastOf.get(l.mark); if (j != null) { if (MINE.has(l.hash) || MINE.has(links[j].hash)) mineLines.push([j, i]); else { g.moveTo(Q[j].x, Q[j].y); g.lineTo(Q[i].x, Q[i].y); } } lastOf.set(l.mark, i); }); g.stroke();
+  { const last = new Map(); g.lineWidth = 1.6 * D; g.strokeStyle = 'rgba(255,120,190,.55)'; g.beginPath();
+    links.forEach((l, i) => { if (l.meet && last.has(l.meet)) { const j = last.get(l.meet); g.moveTo(Q[i].x, Q[i].y); g.lineTo(Q[j].x, Q[j].y); } if (l.mark) last.set(l.mark, i); }); g.stroke(); }
   if (mineLines.length) { g.lineWidth = 1.2 * D; g.strokeStyle = 'rgba(232,200,115,.45)'; g.beginPath(); mineLines.forEach(([j, i]) => { g.moveTo(Q[j].x, Q[j].y); g.lineTo(Q[i].x, Q[i].y); }); g.stroke(); }
   if (hot) { g.lineWidth = 1.4 * D; g.strokeStyle = 'rgba(232,200,115,.85)'; g.beginPath(); [HOT - 1, HOT + 1].forEach(j => { if (j >= 0 && j < Q.length) { g.moveTo(Q[HOT].x, Q[HOT].y); g.lineTo(Q[j].x, Q[j].y); } });
     sameMark.forEach(j => { if (j !== HOT) { g.moveTo(Q[HOT].x, Q[HOT].y); g.lineTo(Q[j].x, Q[j].y); } }); g.stroke(); }
@@ -215,7 +222,7 @@ function frame(now) {
     const depth = .55 + .45 * Math.max(0, Math.min(1, .62 - q.z * .3)), lit = sameMark.has(i) || MINE.has(l.hash), near = 1 / (1 + q.z * .18), r = (l.kind === 'genesis' ? 9 : l.kind === 'guide' ? 7 : l.kind === 'voice' ? 6 : l.kind === 'claim' ? 6.2 : l.kind === 'proverb' ? 5.6 : 4.4) * D * near * (1 + 1.6 * fresh);
     g.globalAlpha = FADE(l); { const gr = r * (fresh > 0 || lit ? 4.5 : 3.2), gl = g.createRadialGradient(q.x, q.y, 0, q.x, q.y, gr); gl.addColorStop(0, `rgba(${c},${(fresh > 0 || lit ? .38 : .2) * depth + .45 * fresh})`); gl.addColorStop(1, `rgba(${c},0)`); g.fillStyle = gl; g.beginPath(); g.arc(q.x, q.y, gr, 0, 6.283); g.fill(); }
     g.globalAlpha = (lit ? 1 : depth * .85) * FADE(l); g.fillStyle = sameMark.has(i) ? '#e8c873' : `rgb(${c})`; g.beginPath();
-    if (l.kind === 'thumb' || l.kind === 'chat') g.rect(q.x - r * .7, q.y - r * .7, r * 1.4, r * 1.4); else g.arc(q.x, q.y, r, 0, 6.283); g.fill(); g.globalAlpha = 1;
+    if (l.kind === 'thumb' || l.kind === 'chat' || l.kind === 'witness') g.rect(q.x - r * .7, q.y - r * .7, r * 1.4, r * 1.4); else g.arc(q.x, q.y, r, 0, 6.283); g.fill(); g.globalAlpha = 1;
     if (MINE.has(l.hash)) { g.strokeStyle = 'rgba(255,255,255,.9)'; g.lineWidth = 1.4 * D; g.beginPath(); g.arc(q.x, q.y, r + 5 * D + 2 * D * Math.sin(t * 3), 0, 6.283); g.stroke(); } });
   if (hot) { g.strokeStyle = '#fff'; g.lineWidth = 1 * D; g.beginPath(); g.arc(Q[HOT].x, Q[HOT].y, 14 * D, 0, 6.283); g.stroke(); }
   markPassage(HOT);

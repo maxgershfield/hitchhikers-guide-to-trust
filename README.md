@@ -55,7 +55,7 @@ are public only once the keeper approves them. Addresses are never stored.
 ## Status
 
 Built and tested locally: the guide and its paths, the evidence chain, sealing, the claim trust task (site side),
-rooms feeding a central scroll, the gate. Also tested: one chain across nights (genesis, a gathering link per night, one root per person), sealed voice notes (recorded, sent, played back by the owner), claiming
+rooms feeding a central scroll, the gate. Also tested: one chain across nights (genesis, a gathering link per night, one root per person), witness stars from a room screen's rotating code, the Meet Rite (two yeses), offers to Hitchhiker FM (keeper-only audio), Field Guide drafts, sealed voice notes (recorded, sent, played back by the owner), claiming
 after joining (claim code + DID, the DID kept only as a hash). Not yet: a live deployment, the bot run against
 Telegram, the hosting agent signing the chain, DID-signed claims, and the City turning a claim into an invitation or credential.
 

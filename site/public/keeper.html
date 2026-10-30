@@ -36,8 +36,13 @@ button.no{border-color:var(--red);color:var(--red)}
   <div class="micro" id="msg"></div>
   <h2>Waiting <span id="nq"></span></h2>
   <div id="queue"></div>
+  <h2>Room screens</h2>
+  <p class="micro">Open one on each room's screen: its QR witnesses whoever scans it (the code changes every ten minutes). Keep these links to the keeper.</p>
+  <div id="screens"></div>
+  <h2>Offered to Hitchhiker FM</h2>
+  <div id="fm"></div>
   <h2>Approved <span id="na"></span></h2>
-  <p><button onclick="exportWiki()">Export as wiki pages</button> <span class="micro">Federated Wiki JSON: a "Don't Panic" page plus one page per new guide</span></p>
+  <p><button onclick="exportWiki()">Export as wiki pages</button> <button onclick="exportDrafts()">Export Field Guide drafts</button> <span class="micro">Federated Wiki JSON: a "Don't Panic" page plus one page per new guide</span></p>
   <div id="approved"></div>
 </main>
 <script>
@@ -52,7 +57,7 @@ function login() { KEY = $('#key').value; try { sessionStorage.setItem('dp-key',
 async function refresh() {
   if (!KEY) return;
   try {
-    const {queue, approved, host, nights} = await api('state'); NIGHTS = nights || {}; $('#msg').textContent = ''; $('#login').style.display = 'none'; $('#host').textContent = '· held by ' + host;
+    const {queue, approved, host, nights} = await api('state'); NIGHTS = nights || {}; extras(); $('#msg').textContent = ''; $('#login').style.display = 'none'; $('#host').textContent = '· held by ' + host;
     $('#nq').textContent = `(${queue.length})`; $('#na').textContent = `(${approved.length})`;
     $('#queue').innerHTML = queue.map(x => `<div class="row"><div><div class="kind">${x.kind === 'guide' ? 'new guide' : 'proverb'}${x.event ? ' · ' + esc(NIGHTS[x.event] || x.event) : ''}</div>${x.kind === 'guide' ? `<input id="tt${x.id}" value="${esc(x.title)}">` : ''}<textarea id="t${x.id}" rows="2">${esc(x.text)}</textarea><small>${x.by ? esc(x.by) + ' · ' : ''}${esc(x.at || '')}</small></div><div class="acts"><button class="go" onclick="act('approve',${x.id})">Approve</button><button class="no" onclick="act('reject',${x.id})">Reject</button></div></div>`).join('') || '<p class="micro">Nothing waiting.</p>';
     $('#approved').innerHTML = approved.slice().reverse().map(x => `<div class="row ${x.hidden ? 'hidden' : ''}"><div><div class="kind">${x.kind === 'guide' ? 'guide' : 'proverb'}${x.event ? ' · ' + esc(NIGHTS[x.event] || x.event) : ''}${x.hidden ? ' · hidden' : ''}</div>${x.kind === 'guide' ? '<b>' + esc(x.title) + '</b>: ' : ''}${esc(x.text)}<small>${x.by ? esc(x.by) : ''}</small></div><div class="acts"><button onclick="act('${x.hidden ? 'show' : 'hide'}',${x.id})">${x.hidden ? 'Show' : 'Hide'}</button></div></div>`).join('') || '<p class="micro">Nothing approved yet.</p>';
@@ -62,6 +67,13 @@ async function act(action, id) {
   try { const body = {id}; if (action === 'approve') { body.text = $('#t' + id).value; const tt = $('#tt' + id); if (tt) body.title = tt.value; } await api(action, body); } catch (e) { $('#msg').textContent = e.message; }
   refresh();
 }
+async function extras() {
+  try { const sc = await api('screen'); $('#screens').innerHTML = sc.nights.map(n => `<div class="row"><div><b>${esc(NIGHTS[n] || n)}</b><br><a href="/chain/?event=${n}#screen=${sc.key}" target="_blank">open the room screen →</a></div></div>`).join(''); } catch (e) {}
+  try { const f = await api('fm'); $('#fm').innerHTML = (f.proverbs.map(x => `<div class="row"><div><div class="kind">proverb · ${esc(NIGHTS[x.event] || x.event || '')}</div>${esc(x.text)}${x.by ? ' · ' + esc(x.by) : ''}</div></div>`).join('')
+      + f.voices.map(v => `<div class="row"><div><div class="kind">voice note · ${v.secs} s · ${esc(NIGHTS[v.event] || v.event || '')}</div><button onclick="playFm('${v.id}', this)">▶ listen</button></div></div>`).join('')) || '<p class="micro">Nothing offered yet.</p>'; } catch (e) {}
+}
+async function playFm(id, b) { try { const v = await api('fmvoice', {id}); const a = new Audio('data:' + v.type + ';base64,' + v.b64); a.play(); b.textContent = '▶ playing'; } catch (e) { b.textContent = 'could not play'; } }
+async function exportDrafts() { try { const d = await api('drafts'); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(d, null, 1)], {type: 'application/json'})); a.download = 'field-guide-drafts.json'; a.click(); } catch (e) { $('#msg').textContent = e.message; } }
 async function exportWiki() { try { const pages = await api('export'); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(pages, null, 1)], {type: 'application/json'})); a.download = 'hitchhiker-guides-wiki-pages.json'; a.click(); } catch (e) { $('#msg').textContent = e.message; } }
 $('#key').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
 refresh(); setInterval(refresh, 10000);
