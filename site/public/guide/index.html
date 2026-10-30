@@ -359,18 +359,20 @@ svg text{font-family:var(--mono)}
   <div class="label" style="position:absolute;left:820px;bottom:62px;color:#8f8c84;font-size:15px">hitchhikers.earth · mages.city · <a href="../chain/" style="color:#8EA4FF">the scroll →</a> · <a href="../notes" style="color:#8EA4FF">work notes →</a></div>
   <svg id="close-star" width="190" height="190" viewBox="-180 -180 360 360" style="left:560px;top:560px"></svg>
   <div style="position:absolute;left:62px;top:560px;width:470px;max-height:230px;overflow:hidden;color:var(--off)"><div class="label" style="color:#8f8c84;margin-bottom:10px">From visitors</div><div data-approved="3"></div></div>
-  <aside class="notes">Leave the two questions up for discussion.</aside>
+  <div class="label" style="position:absolute;left:820px;bottom:96px;color:#8EA4FF;font-size:14px">Next: a workshop on privacy and the Hitchhikers · Amsterdam · December</div>
+  <aside class="notes">Leave the two questions up for discussion. Next stop: the December workshop at the University of Amsterdam, with David Bovill.</aside>
 </section>
 
 <div class="overview" id="overview"></div>
-<div class="bottom"><span id="where"></span><span id="deeper" style="display:flex;gap:6px;align-items:center;margin-left:14px"></span><a id="stars" href="../chain/" target="_blank" rel="noopener" style="display:none;margin-left:14px;color:var(--cobalt);text-decoration:none;font-weight:700"></a><span class="sp"></span><span id="timer">00:00</span><button onclick="document.body.classList.toggle('shownotes')">Notes (N)</button><button onclick="document.body.classList.toggle('showov')">Overview (O)</button><button onclick="fs()">Full screen (F)</button><button onclick="step(-1)">←</button><button onclick="step(1)">→</button></div>
+<div class="bottom"><span id="where"></span><span id="deeper" style="display:flex;gap:6px;align-items:center;margin-left:14px"></span><a id="teleport" style="display:none;margin-left:14px;color:var(--ink);font-weight:700;text-decoration:none;border:1px solid var(--ink);padding:3px 8px"></a><a id="stars" href="../chain/" target="_blank" rel="noopener" style="display:none;margin-left:14px;color:var(--cobalt);text-decoration:none;font-weight:700"></a><span class="sp"></span><span id="timer">00:00</span><button onclick="document.body.classList.toggle('shownotes')">Notes (N)</button><button onclick="document.body.classList.toggle('showov')">Overview (O)</button><button onclick="fs()">Full screen (F)</button><button onclick="step(-1)">←</button><button onclick="step(1)">→</button></div>
 </div>
 
 <script>
 /* ---------- paths through the guide: a main thread, with deeper scenes as branches of the scene they belong to ---------- */
 (function () {
   const PATHS = {
-    workshop: ['Cover', 'Request', 'Thumb up', 'Field Guide', 'Local', 'Hitchhiker mage', 'Genesis', 'Close'],
+    // the IIW workshop: each story, then its technical telling (the rest stays one touch deeper)
+    iiw: ['Cover', 'Request', 'Why local', 'Thumb up', 'Trust', 'Field Guide', 'The guide', 'Local', 'The pathway', 'Hitchhiker mage', 'A visit', 'Evidence', 'Genesis', 'Close'],
     lightning: ['Cover', 'Request', 'Thumb up', 'Field Guide', 'Local', 'Genesis', 'Close'],
     // the whole guide: each part's story first, its deeper scenes after it
     guide: ['Cover', 'Request', 'Opportunity', 'Built', 'Why local', 'Privacy', 'Thumb up', 'Three graphs', 'Trust', 'Field Guide', 'The guide', 'Games', 'Local', 'Three nodes', 'A visit', 'The pathway', 'Cities', 'Hitchhiker mage', 'Evidence', 'Genesis', 'Close']};
@@ -378,6 +380,7 @@ svg text{font-family:var(--mono)}
   const PARENT = {'Opportunity': 'Request', 'Built': 'Request', 'Why local': 'Request', 'Privacy': 'Request', 'Three graphs': 'Thumb up', 'Trust': 'Thumb up',
     'The guide': 'Field Guide', 'Games': 'Field Guide', 'Field Guide': 'Thumb up', 'Three nodes': 'Local', 'A visit': 'Hitchhiker mage', 'The pathway': 'Local', 'Cities': 'Local', 'Local': 'Field Guide',
     'Evidence': 'Hitchhiker mage', 'Hitchhiker mage': 'Local'};
+  PATHS.workshop = PATHS.iiw; // older links
   const path = new URLSearchParams(location.search).get('path'), list = PATHS[path], stage = document.getElementById('stage');
   const all = [...stage.querySelectorAll('.scene')], bySec = n => all.find(x => x.dataset.sec === n), anchor = document.getElementById('overview');
   document.body.dataset.path = list ? path : 'guide';
@@ -414,7 +417,7 @@ $$('.ov').forEach(o => o.onclick = () => { document.body.classList.remove('showo
 setInterval(() => { if (!t0) return; const now = pausedAt || Date.now(), q = Math.floor((now - t0 - paused) / 1000); $('#timer').textContent = String(Math.floor(q / 60)).padStart(2, '0') + ':' + String(q % 60).padStart(2, '0') + (pausedAt ? ' (paused)' : ''); }, 500);
 function go(n) { cur = Math.max(0, Math.min(scenes.length - 1, n)); scenes.forEach((x, i) => x.classList.toggle('on', i === cur)); settle(scenes[cur]);
   const part = scenes[cur].dataset.part; $$('.tab').forEach(b => b.classList.toggle('on', b.dataset.p === part)); const mainIdx = scenes.filter(y => !y.dataset.branch), at = mainIdx.indexOf(scenes[cur].dataset.branch ? scenes[idxOf(scenes[cur].dataset.branch)] : scenes[cur]); $('#prog').style.width = (100 * at / Math.max(1, mainIdx.length - 1)) + '%';
-  $('#where').textContent = `${{workshop: 'Workshop · ', lightning: 'Lightning · '}[document.body.dataset.path] || ''}${at + 1} / ${mainIdx.length}${scenes[cur].dataset.branch ? ' ↳' : ''} · ${scenes[cur].dataset.sec}`; deeperBar(); if (cur > 0 && !t0) t0 = Date.now();
+  $('#where').textContent = `${{iiw: 'IIW workshop · ', workshop: 'IIW workshop · ', lightning: 'Lightning · '}[document.body.dataset.path] || ''}${at + 1} / ${mainIdx.length}${scenes[cur].dataset.branch ? ' ↳' : ''} · ${scenes[cur].dataset.sec}`; deeperBar(); if (cur > 0 && !t0) t0 = Date.now();
   history.replaceState(null, '', location.pathname + location.search + '#' + cur); }
 let origin = null;
 const idxOf = sec => scenes.findIndex(x => x.dataset.sec === sec), titleOf = x => (x.querySelector('h1') ? x.querySelector('h1').textContent.replace(/^\s*[\d]+[a-h]?\.\s*/, '') : x.dataset.sec);
@@ -536,13 +539,14 @@ const NET = [
   ['Mages City', 1, 120, 'agent', 'agent first', 'Open autoresearch and agentic privacy: an agent-first embassy, live on OpenVTC, on a home node reached through a tunnel.'],
   ['Bonfires', 1, 250, 'spec', 'knowledge from chat', 'A specialist agent: turns a group chat into a knowledge graph the community keeps.'],
   ['Chathackers', 1, 250, 'spec', 'agents in chats', 'Specialist agents that live in the group chats and help, like the bot that answers a claim with a proverb.'],
-  ['The local co-op', 1, 380, 'human', 'owns the hardware', 'Members co-own the nodes: the Pi is the co-op\'s, not a platform\'s.'],
+  ['The local co-op', 1, 380, 'human', 'owns the hardware', 'Members co-own the hardware and pool its compute for local AI: the Pi is the co-op\'s, not a platform\'s.'],
   ['A room\'s Pi', 1, 380, 'spec', 'one per room', 'Each room at Newspeak House can hold its own gate and chain, feeding the night\'s guide.'],
   ['First Person network', 2, 120, 'human', 'human first', 'People, each with their own trust graph, recognised across communities. It began with the First VTC (first.openvtc.net).'],
   ['VTA Farm', 2, 250, 'spec', 'trust agents, hosted', 'Sets up a Trust Agent for you in minutes: a DID that is yours, for anyone without a node of their own (vta.farm).'],
+  ['Hitchhiker FM', 2, 250, 'spec', 'a voice for nature', "The Hitchhikers' station: fork, cast, transmit. Its Rights of Nature spell puts Ecuador's constitutional rights of Pacha Mama on air, in Morse."],
   ['This guide\'s chain', 2, 380, 'spec', 'hitchhiker.mages.city', 'The night\'s evidence chain, hosted; its gate can move to a Pi, and close when the Pi is unplugged.']];
 const NET_COL = [[160, 'Towels · your devices'], [590, 'Embassies · local nodes'], [1000, 'Hosted']];
-const NET_EDGES = [[0, 3], [1, 4], [10, 0], [10, 1], [4, 9], [5, 3], [6, 3], [7, 3], [8, 11], [2, 3], [3, 9]];
+const NET_EDGES = [[0, 3], [1, 4], [10, 0], [10, 1], [4, 9], [5, 3], [6, 3], [7, 3], [8, 12], [2, 3], [3, 9], [11, 3]];
 const NET_TYPE = {human: ['Human-first embassy', '#F6F1E6'], agent: ['Agent-first embassy', '#1F4BFF'], spec: ['Specialist trust agent', '#8EA4FF'], own: ['Your towel', '#E8C873']};
 let netSel = -1;
 const netAt = i => { const n = NET[i], col = NET_COL[n[1]][0], pair = NET.filter(m => m[1] === n[1] && m[2] === n[2]), k = pair.indexOf(n); return [pair.length > 1 ? col + (k ? 110 : -110) : col, n[2] - 30 - (n[2] - 120) * .1]; };
@@ -649,7 +653,7 @@ const OPP = [
   {name: 'OpenVTC', role: 'Trust graphs', col: C.cobalt, card: {tag: 'Trust graphs', title: 'OpenVTC', body: 'The trust layer, from the DTG working group.', list: ['Members join a community by DID', 'Promises and vouches become credentials', 'Each community holds its own graph']}},
   {name: 'Mages City', pre: 'agentprivacy', role: 'Open autoresearch · agentic privacy', col: '#6B665C', card: {tag: 'agentprivacy · open autoresearch · agentic privacy', title: 'Mages City', body: 'From agentprivacy: agents that do research in the open, and act on your behalf without giving you away.', list: ['Open autoresearch: every run sealed, anyone can re-check it', 'Agentic privacy: one agent protects, one connects', 'Hitchhiker mages that travel between communities and help']}},
   {name: 'Bonfires', role: 'Knowledge graphs from chat', col: '#B5651D', card: {tag: 'Knowledge graphs from chat', title: 'Bonfires', body: "Turns a group chat's conversation into a shared knowledge graph.", list: ['What a community learns in chat becomes knowledge it keeps', 'Talk becomes guidance the guide can hold']}},
-  {name: 'The local co-op', role: 'Cooperative ownership', col: '#3E7A3A', card: {tag: 'Cooperative ownership', title: 'The local co-op', body: 'Members co-own the hardware and the local infrastructure: the nodes that hold the community\'s trust.', list: ["The Pi is the co-op's, not a platform's", 'Who hosts, and how, is decided together']}},
+  {name: 'The local co-op', role: 'Cooperative ownership', col: '#3E7A3A', card: {tag: 'Cooperative ownership', title: 'The local co-op', body: 'Members co-own the hardware and the local infrastructure: the nodes that hold the community\'s trust.', list: ["The Pi is the co-op's, not a platform's", 'Pooled compute: local AI the members run together', 'Who hosts, and how, is decided together']}},
   {name: 'Chathackers', role: 'Agents in group chats', col: '#7A4FB5', card: {tag: 'Agents in group chats', title: 'Chathackers', body: "Bots and agents that live in a community's chats and help it.", list: ['Like the bot that welcomes your claim with a proverb', 'Help in the chat, without taking the chat away']}}];
 const oppOn = new Set();
 function oppDraw() {
@@ -1024,7 +1028,13 @@ if ($('#disc-q')) {
   if (!location.protocol.startsWith('http')) chip.href = 'https://hitchhiker.mages.city/chain/';
   tick(); setInterval(tick, 8000); })();
 
-fit(); go(Math.max(0, parseInt(location.hash.slice(1)) || 0));
+// teleport: the lightning talk and the IIW workshop live on the same site; jump from one to the other in place
+(function () { const q = new URLSearchParams(location.search), t = $('#teleport'), p = document.body.dataset.path, to = p === 'lightning' ? 'iiw' : p === 'iiw' || p === 'workshop' ? 'lightning' : null;
+  if (!to) return; t.style.display = '';
+  t.textContent = to === 'iiw' ? '⇢ Teleport into the IIW workshop' : '⇢ Back to the lightning talk';
+  t.onclick = () => { const u = new URLSearchParams(location.search); u.set('path', to); u.set('at', scenes[cur].dataset.branch || scenes[cur].dataset.sec); location.search = u.toString(); }; })();
+{ const at = new URLSearchParams(location.search).get('at'), i = at ? idxOf(at) : -1;
+  fit(); go(i >= 0 ? i : Math.max(0, parseInt(location.hash.slice(1)) || 0)); }
 </script>
 </body>
 </html>
