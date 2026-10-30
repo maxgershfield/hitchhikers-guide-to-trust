@@ -1,9 +1,9 @@
 // hitchhiker.mages.city: The Hitchhiker's Guide to Trust, hosted. Serves the pages (./public) and one small API.
-// Each event is a guide of its own (the guide to Newspeak House, the guide to IIW 43): its own evidence chain,
-// begun by a genesis link, where presence, proverbs, guides and voice notes are recorded as hashes, sealed with
-// each visitor's own key. Nobody has to join anything to be part of the night's history; a claim code (or, after
+// One Hitchhikers guide, many nights (Newspeak House, IIW 43, the Internet Archive): a single evidence chain,
+// begun by the guide's genesis, where each night opens with a gathering link and presence, proverbs, guides and
+// voice notes are recorded as hashes, sealed with each visitor's own key. Nobody has to join anything to be part of the night's history; a claim code (or, after
 // joining a community, the code plus a DID) later shows the stars were theirs. The keeper approves proverbs and
-// guides before they show. Keeper calls carry Bearer KEEPER_KEY. Storage (KV), per event: chain:, queue:, approved:.
+// guides before they show. Keeper calls carry Bearer KEEPER_KEY. Storage (KV): chain:<guide>, queue, approved.
 //
 // Gate mode: set GATE_ORIGIN to a community node's address (a Pi running serve.mjs behind a tunnel) and every
 // /api/* call is handed to that node instead. The pages stay up here; when the node is unplugged, the gate is
@@ -37,7 +37,7 @@ function isKeeper(env, req) {
   return d === 0;
 }
 
-const shown = list => list.filter(x => !x.hidden).map(({ id, kind, title, text, by }) => ({ id, kind, title, text, by }));
+const shown = list => list.filter(x => !x.hidden).map(({ id, kind, title, text, by, event }) => ({ id, kind, title, text, by, event }));
 
 // Approved guides and proverbs as Federated Wiki pages, ready for a community node's wiki to import.
 function wikiPages(list, name) {
@@ -49,12 +49,15 @@ function wikiPages(list, name) {
     .concat(live.filter(x => x.kind === 'guide').map(x => page(x.title, [`A Hitchhiker guide, launched at ${name}.`, x.text + credit(x)])));
 }
 
-// ---- the events: each night is its own guide, with its own chain ----
-// Override or add with EVENTS (JSON, same shape); DEFAULT_EVENT picks the one a bare address opens. A genesis link
-// records the event as it was first opened, so set the details before the first visitor arrives.
+// ---- the nights: each event is a chapter of the one guide ----
+// Override or add with EVENTS (JSON, same shape); DEFAULT_EVENT picks the night a bare address adds to. A night's
+// gathering link records it as first opened, so set its details before its first visitor arrives.
 const EVENTS_DEFAULT = {
   newspeak: { name: 'The Guide to Newspeak House', date: '2026-11-05', place: 'Newspeak House, London', with: 'The Hitchhikers · Field Guide · Mages City' },
-  iiw43: { name: 'The Guide to IIW 43', date: '', place: 'Internet Identity Workshop 43', with: 'The Hitchhikers · Mages City' } };
+  iiw43: { name: 'The Guide to IIW 43', date: '', place: 'Internet Identity Workshop 43', with: 'The Hitchhikers · Mages City' },
+  archive: { name: 'The Guide to the Internet Archive', date: '', place: 'Internet Archive', with: 'The Hitchhikers' } };
+const GUIDE = env => ({ id: env.GUIDE_ID || 'hitchhikers', name: env.GUIDE_NAME || "The Hitchhiker's Guide to Trust", with: 'The Hitchhikers' });
+const CK = env => 'chain:' + GUIDE(env).id;
 const events = env => { try { return { ...EVENTS_DEFAULT, ...JSON.parse(env.EVENTS || '{}') }; } catch (e) { return EVENTS_DEFAULT; } };
 function eventOf(env, req, body) {
   const e = String(new URL(req.url).searchParams.get('event') || (body && body.event) || env.DEFAULT_EVENT || 'newspeak').toLowerCase();
@@ -64,7 +67,7 @@ function eventOf(env, req, body) {
 // ---- the evidence chain ----
 // Each link: leaf = sha256 of what was done (kind + content + time); hash = sha256(prev | leaf | mark | seq).
 // Content never enters the chain in the clear: only its hash, and a box sealed with the visitor's own key. mark = sha256 of a secret the visitor's phone keeps (or '').
-// Link 0 is the genesis: the event itself, in the clear.
+// Link 0 is the guide's genesis; each night begins with a gathering link (kind 'genesis' too); both in the clear.
 const hex = async s => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)))].map(b => b.toString(16).padStart(2, '0')).join('');
 const isMark = m => /^[0-9a-f]{64}$/.test(String(m || ''));
 const isDid = d => /^did:[a-z0-9]+:[A-Za-z0-9._:%-]{3,300}$/.test(String(d || ''));
@@ -72,20 +75,24 @@ const isDid = d => /^did:[a-z0-9]+:[A-Za-z0-9._:%-]{3,300}$/.test(String(d || ''
 const cityApi = env => (env.CITY_API || 'https://vtc.mages.city').replace(/\/$/, '');
 const MANIFEST = 'https://trusttasks.org/spec/vtc/join-requests/manifest/0.3';
 const isSealed = b => b && typeof b.iv === 'string' && typeof b.ct === 'string' && b.iv.length <= 24 && b.ct.length <= 2400 && /^[A-Za-z0-9+/=]+$/.test(b.iv + b.ct);
-async function chainOf(env, ev) {
-  const chain = await load(env, 'chain:' + ev); if (chain.length) return chain;
-  const at = new Date().toISOString(), genesis = { event: ev, ...events(env)[ev] }, prev = '0'.repeat(64);
-  const leaf = await hex(JSON.stringify({ kind: 'genesis', content: genesis, at }));
-  chain.push({ seq: 0, kind: 'genesis', at, leaf, mark: '', prev, hash: await hex([prev, leaf, '', 0].join('|')), genesis });
-  await save(env, 'chain:' + ev, chain); return chain;
-}
-async function addLink(env, ev, kind, content, mark, sealed, extra) {
-  const chain = await chainOf(env, ev); if (chain.length >= CHAIN_MAX) return null;
-  const at = new Date().toISOString(), prev = chain[chain.length - 1].hash, seq = chain.length;
+async function push(chain, kind, content, mark, extra) {
+  const at = new Date().toISOString(), prev = chain.length ? chain[chain.length - 1].hash : '0'.repeat(64), seq = chain.length;
   const leaf = await hex(JSON.stringify({ kind, content, at })), m = isMark(mark) ? mark : '';
   const link = { seq, kind, at, leaf, mark: m, prev, hash: await hex([prev, leaf, m, seq].join('|')), ...(extra || {}) };
+  chain.push(link); return link;
+}
+async function chainOf(env) {
+  const chain = await load(env, CK(env)); if (chain.length) return chain;
+  const genesis = GUIDE(env); await push(chain, 'genesis', genesis, '', { genesis });
+  await save(env, CK(env), chain); return chain;
+}
+const gathered = (chain, ev) => chain.some(l => l.kind === 'genesis' && l.genesis && l.genesis.event === ev);
+async function addLink(env, ev, kind, content, mark, sealed, extra) {
+  const chain = await chainOf(env); if (chain.length >= CHAIN_MAX) return null;
+  if (ev && !gathered(chain, ev)) { const g = { event: ev, ...events(env)[ev] }; await push(chain, 'genesis', g, '', { event: ev, genesis: g }); } // the night opens
+  const link = await push(chain, kind, content, mark, { event: ev, ...(extra || {}) });
   if (isSealed(sealed)) link.sealed = { iv: sealed.iv, ct: sealed.ct }; // only its owner's key opens it
-  chain.push(link); await save(env, 'chain:' + ev, chain);
+  await save(env, CK(env), chain);
   if (env.SCROLL_ORIGIN && env.ROOM_NAME && env.ROOM_KEY && !link.room) { // a room node: pass the star up to the scroll
     const up = fetch(env.SCROLL_ORIGIN.replace(/\/$/, '') + '/api/room/link', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + env.ROOM_KEY },
       body: JSON.stringify({ room: env.ROOM_NAME, event: ev, kind, ref: link.hash, mark: m }) }).catch(() => {});
@@ -123,8 +130,8 @@ async function api(req, env, path, body) {
 
   // the events: each one's name, date, place, and how far its chain has grown
   if (path === '/api/events' && req.method === 'GET') {
-    const out = []; for (const id of Object.keys(EV)) { const c = await load(env, 'chain:' + id); out.push({ id, ...EV[id], stars: Math.max(0, c.length - 1), genesis: c.length ? c[0].hash : null }); }
-    return json({ default: env.DEFAULT_EVENT || 'newspeak', events: out });
+    const c = await load(env, CK(env)), out = Object.keys(EV).map(id => ({ id, ...EV[id], stars: c.filter(l => l.event === id && l.kind !== 'genesis').length, opened: (c.find(l => l.kind === 'genesis' && l.genesis && l.genesis.event === id) || {}).hash || null }));
+    return json({ guide: GUIDE(env), default: env.DEFAULT_EVENT || 'newspeak', stars: c.filter(l => l.kind !== 'genesis').length, events: out });
   }
 
   // ---- rooms: each room's Pi passes its stars up to this scroll, and says it is alive ----
@@ -160,21 +167,21 @@ async function api(req, env, path, body) {
   }
 
   if (!ev) return json({ error: 'Unknown guide.' }, 400);
-  const Q = 'queue:' + ev, A = 'approved:' + ev;
-  if (path === '/api/approved' && req.method === 'GET') return json(shown(await load(env, A)));
+  const Q = 'queue', A = 'approved';
+  if (path === '/api/approved' && req.method === 'GET') { const only = url.searchParams.get('only'); return json(shown((await load(env, A)).filter(x => !only || x.event === only))); }
 
   // one person's evidence: their stars (same mark) in order, chained into a root anyone can recompute
   if (path === '/api/evidence' && req.method === 'GET') {
     const mark = url.searchParams.get('mark'); if (!isMark(mark)) return json({ error: 'Give a mark.' }, 400);
-    const chain = await chainOf(env, ev), mine = chain.filter(l => l.mark === mark);
+    const chain = await chainOf(env), mine = chain.filter(l => l.mark === mark);
     let root = '0'.repeat(64); for (const l of mine) root = await hex(root + '|' + l.hash);
-    return json({ event: ev, guide: EV[ev].name, mark, stars: mine.length, root, rule: 'root = sha256(root + "|" + hash), from 64 zeros, over these links in order',
-      links: mine.map(l => ({ seq: l.seq, kind: l.kind, at: l.at, hash: l.hash, room: l.room, did: l.did })), genesis: chain[0].hash, chainLength: chain.length, chainHead: chain[chain.length - 1].hash });
+    return json({ guide: GUIDE(env).name, nights: [...new Set(mine.map(l => l.event).filter(Boolean))].map(e => (EV[e] || {}).name || e), mark, stars: mine.length, root, rule: 'root = sha256(root + "|" + hash), from 64 zeros, over these links in order',
+      links: mine.map(l => ({ seq: l.seq, kind: l.kind, at: l.at, hash: l.hash, event: l.event, room: l.room, did: l.did })), genesis: chain[0].hash, chainLength: chain.length, chainHead: chain[chain.length - 1].hash });
   }
 
   if (path === '/api/chain' && req.method === 'GET') {
-    const chain = await chainOf(env, ev), since = Math.max(0, parseInt(url.searchParams.get('since') || '0', 10) || 0);
-    return json({ event: ev, guide: EV[ev], genesis: chain[0], length: chain.length, head: chain[chain.length - 1].hash, links: chain.slice(since, since + 500) });
+    const chain = await chainOf(env), since = Math.max(0, parseInt(url.searchParams.get('since') || '0', 10) || 0);
+    return json({ event: ev, tonight: EV[ev], guide: GUIDE(env), nights: EV, genesis: chain[0], length: chain.length, head: chain[chain.length - 1].hash, links: chain.slice(since, since + 500) });
   }
 
   // a thumb up: the first trust task. Joins the chain with nothing but your mark.
@@ -194,7 +201,7 @@ async function api(req, env, path, body) {
     if (await limited(env, req)) return json({ error: 'Slow down a moment, then try again.' }, 429);
     const queue = await load(env, Q);
     if (queue.length >= QUEUE_MAX) return json({ error: 'The keeper is catching up. Try again later.' }, 503);
-    queue.push({ id: Date.now() * 100 + Math.floor(Math.random() * 100), kind, title: kind === 'guide' ? title : '', text, by, at: new Date().toISOString() });
+    queue.push({ id: Date.now() * 100 + Math.floor(Math.random() * 100), kind, title: kind === 'guide' ? title : '', text, by, event: ev, at: new Date().toISOString() });
     await save(env, Q, queue);
     const link = await addLink(env, ev, kind, { title, text, by }, body.mark, body.sealed);
     return json({ ok: true, held: true, link });
@@ -223,7 +230,7 @@ async function api(req, env, path, body) {
   if (path === '/api/claim' && req.method === 'POST') {
     const did = String(body.did || '').trim(); if (!isDid(did)) return json({ error: 'Paste the DID you joined with (it starts with did:).' }, 400);
     if (await limited(env, req)) return json({ error: 'Slow down a moment, then try again.' }, 429);
-    const chain = await chainOf(env, ev), hit = await findClaim(chain, body.code);
+    const chain = await chainOf(env), hit = await findClaim(chain, body.code);
     if (!hit) return json({ error: 'That claim code is not on this guide.' }, 404);
     const didHash = await hex('did|' + did), proverb = aProverb(await load(env, A));
     const done = chain.find(l => l.kind === 'claim' && l.mark === hit.mark && l.did);
@@ -236,19 +243,16 @@ async function api(req, env, path, body) {
     if (!isKeeper(env, req)) return json({ error: 'Keeper key needed.' }, 401);
     const queue = await load(env, Q), approved = await load(env, A);
     const action = path.slice('/api/keeper/'.length), id = Number(body.id);
-    if (action === 'state') return json({ event: ev, guide: EV[ev].name, events: Object.keys(EV), queue, approved, host: env.NODE_NAME || 'worker' });
-    if (action === 'export') return json(wikiPages(approved, EV[ev].name));
-    // the invitation trust task: the group chat's bot sends a message; if it holds someone's claim code (on any
-    // event's guide), their claim is written onto that chain (the chat handle only as a salted hash) and a proverb comes back
+    if (action === 'state') return json({ guide: GUIDE(env).name, nights: Object.fromEntries(Object.entries(EV).map(([k, v]) => [k, v.name])), queue, approved, host: env.NODE_NAME || 'worker' });
+    if (action === 'export') return json(wikiPages(approved, GUIDE(env).name));
+    // the invitation trust task: the group chat's bot sends a message; if it holds someone's claim code, their claim
+    // is written onto the guide (the chat handle only as a salted hash), on the night of their thumb up, and a proverb comes back
     if (action === 'claim') {
-      for (const e of Object.keys(EV)) {
-        const chain = await load(env, 'chain:' + e), hit = await findClaim(chain, body.text); if (!hit) continue;
-        const proverb = aProverb(await load(env, 'approved:' + e)), done = chain.find(l => l.kind === 'claim' && l.mark === hit.mark && !l.did);
-        if (done) return json({ ok: true, already: true, event: e, seq: done.seq, mark: hit.mark, proverb });
-        const link = await addLink(env, e, 'claim', await hex('who|' + (env.KEEPER_KEY || '') + '|' + clean(body.who, 120)), hit.mark);
-        return link ? json({ ok: true, event: e, seq: link.seq, mark: hit.mark, hash: link.hash, proverb }) : json({ error: 'The chain is full.' }, 503);
-      }
-      return json({ error: 'No claim code in that message.' }, 404);
+      const chain = await chainOf(env), hit = await findClaim(chain, body.text); if (!hit) return json({ error: 'No claim code in that message.' }, 404);
+      const proverb = aProverb(approved), done = chain.find(l => l.kind === 'claim' && l.mark === hit.mark && !l.did);
+      if (done) return json({ ok: true, already: true, event: done.event, seq: done.seq, mark: hit.mark, proverb });
+      const link = await addLink(env, hit.event || ev, 'claim', await hex('who|' + (env.KEEPER_KEY || '') + '|' + clean(body.who, 120)), hit.mark);
+      return link ? json({ ok: true, event: link.event, seq: link.seq, mark: hit.mark, hash: link.hash, proverb }) : json({ error: 'The chain is full.' }, 503);
     }
     // the Pi's chat agent commits a chat contribution: it sends only a digest (and the member's mark, if known)
     if (action === 'commit') {

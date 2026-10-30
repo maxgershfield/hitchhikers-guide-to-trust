@@ -61,9 +61,9 @@ footer a{color:var(--pale)}
   g.innerHTML = open ? `<span class="dot on"></span>Gate open${host && host !== 'worker' ? ' · held by ' + host.replace(/[<>&"]/g, '') : ''}` : '<span class="dot"></span>Gate closed: the node holding this site is offline; you can still read'; })();
 
 // tonight's guide: which night this is, how far its chain has grown, and the other nights
-(async () => { try { const d = await (await fetch('/api/events', {cache: 'no-store'})).json(), cur = (window.DP && DP.event) || d.default, me = d.events.find(e => e.id === cur) || d.events[0];
+(async () => { try { const d = await (await fetch('/api/events', {cache: 'no-store'})).json(), cur = (window.DP && DP.event) || d.default, me = d.events.find(e => e.id === cur) || d.events[0], on = d.events.filter(e => e.stars);
   const others = d.events.filter(e => e.id !== me.id).map(e => `<a href="/${e.id}" style="color:inherit">${e.name} →</a>`).join(' · ');
-  document.getElementById('tonight').innerHTML = `Tonight: <b>${me.name}</b> · ${me.stars} star${me.stars === 1 ? '' : 's'} since its genesis · <a href="chain/?event=${me.id}" style="color:inherit">see the chain →</a>${others ? '<br><span style="opacity:.7">Also: ' + others + '</span>' : ''}`;
+  document.getElementById('tonight').innerHTML = `Tonight: <b>${me.name}</b>, a new page of the Hitchhikers' guide · ${d.stars} star${d.stars === 1 ? '' : 's'} across ${on.length || 1} night${on.length === 1 || !on.length ? '' : 's'} · <a href="chain/?event=${me.id}" style="color:inherit">see the chain →</a>${others ? '<br><span style="opacity:.7">Other nights: ' + others + '</span>' : ''}`;
   document.querySelectorAll('a.door[href^="guide/"]').forEach(a => a.href += (a.href.includes('?') ? '&' : '?') + 'event=' + me.id);
 } catch (e) {} })();
 </script>

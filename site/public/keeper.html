@@ -33,7 +33,6 @@ button.no{border-color:var(--red);color:var(--red)}
   <h1>Keeper</h1>
   <p>Proverbs and new guides wait here until you approve them. You can fix a typo or a guide's name first.</p>
   <div id="login"><input id="key" type="password" placeholder="keeper key" autocomplete="current-password"><button class="go" onclick="login()">Open</button></div>
-  <div class="micro">Guide: <select id="ev" onchange="EV = this.value; refresh()" style="font:inherit"></select></div>
   <div class="micro" id="msg"></div>
   <h2>Waiting <span id="nq"></span></h2>
   <div id="queue"></div>
@@ -44,19 +43,19 @@ button.no{border-color:var(--red);color:var(--red)}
 <script>
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
-let KEY = '', EV = new URLSearchParams(location.search).get('event') || ''; try { KEY = sessionStorage.getItem('dp-key') || ''; } catch (e) {}
+let KEY = '', NIGHTS = {}; try { KEY = sessionStorage.getItem('dp-key') || ''; } catch (e) {}
 async function api(action, body = {}) {
-  const r = await fetch('/api/keeper/' + action + (EV ? '?event=' + EV : ''), {method: 'POST', headers: {'content-type': 'application/json', authorization: 'Bearer ' + KEY}, body: JSON.stringify(body)});
+  const r = await fetch('/api/keeper/' + action, {method: 'POST', headers: {'content-type': 'application/json', authorization: 'Bearer ' + KEY}, body: JSON.stringify(body)});
   const d = await r.json(); if (!r.ok) throw new Error(d.error || r.status); return d;
 }
 function login() { KEY = $('#key').value; try { sessionStorage.setItem('dp-key', KEY); } catch (e) {} refresh(); }
 async function refresh() {
   if (!KEY) return;
   try {
-    const {queue, approved, host, event, events} = await api('state'); EV = event; $('#ev').innerHTML = events.map(e => `<option ${e === event ? 'selected' : ''}>${e}</option>`).join(''); $('#msg').textContent = ''; $('#login').style.display = 'none'; $('#host').textContent = '· held by ' + host;
+    const {queue, approved, host, nights} = await api('state'); NIGHTS = nights || {}; $('#msg').textContent = ''; $('#login').style.display = 'none'; $('#host').textContent = '· held by ' + host;
     $('#nq').textContent = `(${queue.length})`; $('#na').textContent = `(${approved.length})`;
-    $('#queue').innerHTML = queue.map(x => `<div class="row"><div><div class="kind">${x.kind === 'guide' ? 'new guide' : 'proverb'}</div>${x.kind === 'guide' ? `<input id="tt${x.id}" value="${esc(x.title)}">` : ''}<textarea id="t${x.id}" rows="2">${esc(x.text)}</textarea><small>${x.by ? esc(x.by) + ' · ' : ''}${esc(x.at || '')}</small></div><div class="acts"><button class="go" onclick="act('approve',${x.id})">Approve</button><button class="no" onclick="act('reject',${x.id})">Reject</button></div></div>`).join('') || '<p class="micro">Nothing waiting.</p>';
-    $('#approved').innerHTML = approved.slice().reverse().map(x => `<div class="row ${x.hidden ? 'hidden' : ''}"><div><div class="kind">${x.kind === 'guide' ? 'guide' : 'proverb'}${x.hidden ? ' · hidden' : ''}</div>${x.kind === 'guide' ? '<b>' + esc(x.title) + '</b>: ' : ''}${esc(x.text)}<small>${x.by ? esc(x.by) : ''}</small></div><div class="acts"><button onclick="act('${x.hidden ? 'show' : 'hide'}',${x.id})">${x.hidden ? 'Show' : 'Hide'}</button></div></div>`).join('') || '<p class="micro">Nothing approved yet.</p>';
+    $('#queue').innerHTML = queue.map(x => `<div class="row"><div><div class="kind">${x.kind === 'guide' ? 'new guide' : 'proverb'}${x.event ? ' · ' + esc(NIGHTS[x.event] || x.event) : ''}</div>${x.kind === 'guide' ? `<input id="tt${x.id}" value="${esc(x.title)}">` : ''}<textarea id="t${x.id}" rows="2">${esc(x.text)}</textarea><small>${x.by ? esc(x.by) + ' · ' : ''}${esc(x.at || '')}</small></div><div class="acts"><button class="go" onclick="act('approve',${x.id})">Approve</button><button class="no" onclick="act('reject',${x.id})">Reject</button></div></div>`).join('') || '<p class="micro">Nothing waiting.</p>';
+    $('#approved').innerHTML = approved.slice().reverse().map(x => `<div class="row ${x.hidden ? 'hidden' : ''}"><div><div class="kind">${x.kind === 'guide' ? 'guide' : 'proverb'}${x.event ? ' · ' + esc(NIGHTS[x.event] || x.event) : ''}${x.hidden ? ' · hidden' : ''}</div>${x.kind === 'guide' ? '<b>' + esc(x.title) + '</b>: ' : ''}${esc(x.text)}<small>${x.by ? esc(x.by) : ''}</small></div><div class="acts"><button onclick="act('${x.hidden ? 'show' : 'hide'}',${x.id})">${x.hidden ? 'Show' : 'Hide'}</button></div></div>`).join('') || '<p class="micro">Nothing approved yet.</p>';
   } catch (e) { $('#msg').textContent = 'Could not open: ' + e.message; $('#login').style.display = 'flex'; }
 }
 async function act(action, id) {

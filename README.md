@@ -23,7 +23,7 @@ On the site:
 | `/guide/?path=workshop` | **the workshop**: a short guide, then "Over to you" (questions, and every deeper scene one touch away) |
 | `/guide/?path=lightning` | **the lightning talk**: five scenes and the call to action |
 | `/guide/` | the whole guide, 18 scenes |
-| `/newspeak`, `/iiw43` | each night's own guide: its chain begins with a genesis link naming the night (set names and dates with `EVENTS` before the first visitor) |
+| `/newspeak`, `/iiw43`, `/archive` | add to that night: one guide, one chain from its genesis, each night opening its own page (set nights' names, dates and places with `EVENTS` before each night's first visitor) |
 | `/chain/` | **the evidence chain**: the public face of the guide. Every thumb up, proverb and guide is a star on the Star's 64 states; drag to turn it; point to see a star's threads and its owner's evidence root; *The scroll* writes the whole chain in the sigil script. `?demo` shows an example night |
 | `/notes` | work notes: the technical side, written plainly |
 | `/keeper` | the keeper's page: approve, hide, export guides as wiki pages |
@@ -55,7 +55,7 @@ are public only once the keeper approves them. Addresses are never stored.
 ## Status
 
 Built and tested locally: the guide and its paths, the evidence chain, sealing, the claim trust task (site side),
-rooms feeding a central scroll, the gate. Also tested: a chain per event with its genesis, sealed voice notes (recorded, sent, played back by the owner), claiming
+rooms feeding a central scroll, the gate. Also tested: one chain across nights (genesis, a gathering link per night, one root per person), sealed voice notes (recorded, sent, played back by the owner), claiming
 after joining (claim code + DID, the DID kept only as a hash). Not yet: a live deployment, the bot run against
 Telegram, the hosting agent signing the chain, DID-signed claims, and the City turning a claim into an invitation or credential.
 

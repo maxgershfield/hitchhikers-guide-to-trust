@@ -187,11 +187,11 @@ svg text{font-family:var(--mono)}
 <section class="scene dark" data-part="III" data-sec="Local">
   <div class="frame"></div>
   <div class="kick">Part III · Local nodes</div>
-  <h1><span class="n">7.</span> A shared world, <b>local nodes</b></h1>
-  <div class="sub">Each community hosts its own guides and its own trust, locally, on hardware it owns.</div>
-  <svg id="net" width="1300" height="540" viewBox="0 0 1300 540" style="left:150px;top:260px"></svg>
-  <div class="hint">Touch a node</div>
-  <aside class="notes">Keep it high level: a community node is a small computer the community owns, running the OpenVTC services and its guides. We have a kit for it; the first Hitchhikers node is being stood up (not yet proven end to end, if asked).</aside>
+  <h1><span class="n">7.</span> A map of the <b>trust network</b></h1>
+  <div class="sub" id="net-sub">OpenVTC runs on every node. Some are communities, some are specialist trust agents that make the network work.</div>
+  <svg id="net" width="1500" height="500" viewBox="0 0 1500 500" style="left:50px;top:300px"></svg>
+  <div class="hint" style="left:auto;right:62px;bottom:auto;top:640px">A potential map, not a census · touch a node</div>
+  <aside class="notes">A potential VTI implementation map, not a census. Every node runs an expression of OpenVTC: a community node or a trust agent. Some communities are human first (the Hitchhikers, the First Person network), some agent first (Mages City). Specialist agents make the network work: VTA Farm hosts trust agents (a DID in minutes), Bonfires turns chat into knowledge graphs, Chathackers put agents in group chats. Personal devices carry their own VTA: Keyring on the phone, Star Key in the browser. They run on personal devices, local nodes the community owns (a Pi per room, the co-op's hardware), or hosted. Under all of them: OpenVTC and VTI, and the Trust Spanning Protocol; Trust Stackers' open P2P Trust Stack is another implementation. The first Hitchhikers node is being stood up (not yet proven end to end, if asked).</aside>
 </section>
 
 <!-- three kinds of node -->
@@ -319,11 +319,11 @@ svg text{font-family:var(--mono)}
 <!-- tonight's guide, from its genesis -->
 <section class="scene" data-part="Close" data-sec="Genesis">
   <div class="kick">Tonight</div>
-  <h1><span class="n">18.</span> The genesis of <b>tonight's guide</b></h1>
+  <h1><span class="n">18.</span> Tonight, a new page of <b>the guide</b></h1>
   <div class="sub" id="gen-sub">You don't need to join anything to be part of its history.</div>
   <svg id="gen" width="1440" height="470" viewBox="0 0 1440 470" style="left:80px;top:290px"></svg>
   <div class="hint">Touch each step</div>
-  <aside class="notes">Tonight's guide has a genesis: the first link of its evidence chain names the night. Every thumb up, proverb, guide and voice note after it is a star: its hash on the chain, what's behind it sealed with the visitor's own key. No account and no joining. Each visitor keeps a claim code. Later, when they join a community (Mages City today; a DID from vta.farm if they need one), the code and their DID claim their stars; the guide records the DID only as a hash. What comes next, and is not built yet: claims signed by your DID, and a community recognising them as a credential, so the night's history becomes part of a VTC.</aside>
+  <aside class="notes">The Hitchhikers' guide has one evidence chain, from its genesis; each night (Newspeak House, IIW 43, the Internet Archive) opens its own page with a gathering link, and a person's stars across nights make one root. Every thumb up, proverb, guide and voice note after it is a star: its hash on the chain, what's behind it sealed with the visitor's own key. No account and no joining. Each visitor keeps a claim code. Later, when they join a community (Mages City today; a DID from vta.farm if they need one), the code and their DID claim their stars; the guide records the DID only as a hash. What comes next, and is not built yet: claims signed by your DID, and a community recognising them as a credential, so the night's history becomes part of a VTC.</aside>
 </section>
 
 <section class="scene dark" data-part="Close" data-sec="Close">
@@ -496,18 +496,49 @@ function ct(stepN) {
 ct(0);
 
 /* ---------- 05 local network ---------- */
-const NET = [['Your community', 600, 260, 'Its own Pi: its guides, its trust graph, its members. The other nodes connect; they do not take over'], ['The Hitchhikers', 220, 90, 'Guides and guidance, the timebank and the local exchange, hosted on a node of their own'], ['OpenVTC', 600, 50, 'The trust graph services each node runs, from the DTG working group'], ['Mages City', 980, 90, 'Open autoresearch and agentic privacy: agents with checkable work, already live on OpenVTC'], ['Bonfires', 1120, 300, 'Knowledge graphs from the community\'s chat, kept on the community\'s machine'], ['Local AI', 940, 450, 'A local model on the community\'s own machine: it answers from the guides, and the data never leaves'], ['Chathackers', 260, 450, 'Agents that live in the group chats and help, without taking the chat away'], ['The local co-op', 90, 290, 'Members co-own the hardware: the Pi is the co-op\'s, not a platform\'s']];
+// [name, column (0 personal device · 1 local node · 2 hosted), y, type, one line, what it is]
+// types: human = human-first community · agent = agent-first community · spec = specialist trust agent · own = personal VTA
+const NET = [
+  ['Keyring', 0, 120, 'own', 'your phone', 'A phone app from the DTG working group with the VTA built in: your keys, your DID, your communities, in your pocket. Available now.'],
+  ['Star Key', 0, 250, 'own', 'your browser', 'A browser extension: join a community by DID (paste, QR or camera) and bring your own terms (MyTerms).'],
+  ['Local AI', 0, 380, 'spec', 'your own machine', 'A model on your own machine that answers from the guides you hold; the data never leaves.'],
+  ['The Hitchhikers', 1, 120, 'human', 'human first', 'Guides and guidance, the timebank and the local exchange: a human-first community on a node of its own.'],
+  ['Mages City', 1, 120, 'agent', 'agent first', 'Open autoresearch and agentic privacy: an agent-first community, on a home node reached through a tunnel.'],
+  ['Bonfires', 1, 250, 'spec', 'knowledge from chat', 'A specialist agent: turns a group chat into a knowledge graph the community keeps.'],
+  ['Chathackers', 1, 250, 'spec', 'agents in chats', 'Specialist agents that live in the group chats and help, like the bot that answers a claim with a proverb.'],
+  ['The local co-op', 1, 380, 'human', 'owns the hardware', 'Members co-own the nodes: the Pi is the co-op\'s, not a platform\'s.'],
+  ['A room\'s Pi', 1, 380, 'spec', 'one per room', 'Each room at Newspeak House can hold its own gate and chain, feeding the night\'s guide.'],
+  ['First Person network', 2, 120, 'human', 'human first', 'People, each with their own trust graph, recognised across communities. It began with the First VTC (first.openvtc.net).'],
+  ['VTA Farm', 2, 250, 'spec', 'trust agents, hosted', 'Sets up a Trust Agent for you in minutes: a DID that is yours, for anyone without a node of their own (vta.farm).'],
+  ['This guide\'s chain', 2, 380, 'spec', 'hitchhiker.mages.city', 'The night\'s evidence chain, hosted; its gate can move to a Pi, and close when the Pi is unplugged.']];
+const NET_COL = [[160, 'Personal devices'], [590, 'Local nodes'], [1000, 'Hosted nodes']];
+const NET_EDGES = [[0, 3], [1, 4], [10, 0], [10, 1], [4, 9], [5, 3], [6, 3], [7, 3], [8, 11], [2, 3], [3, 9]];
+const NET_TYPE = {human: ['Human-first community', '#F6F1E6'], agent: ['Agent-first community', '#1F4BFF'], spec: ['Specialist trust agent', '#8EA4FF'], own: ['Personal VTA', '#E8C873']};
 let netSel = -1;
+const netAt = i => { const n = NET[i], col = NET_COL[n[1]][0], pair = NET.filter(m => m[1] === n[1] && m[2] === n[2]), k = pair.indexOf(n); return [pair.length > 1 ? col + (k ? 110 : -110) : col, n[2] - 30 - (n[2] - 120) * .1]; };
 function netDraw() {
   const s = $('#net'); s.innerHTML = '';
-  [[0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 1]].forEach(([a, b]) => s.append(el('line', {x1: NET[a][1], y1: NET[a][2], x2: NET[b][1], y2: NET[b][2], stroke: C.pale, 'stroke-width': 1.5, 'stroke-dasharray': '3 7', opacity: .8})));
-  NET.forEach((n, i) => { const g = el('g', {class: 'click'}); const on = netSel === i;
-    g.append(el('circle', {cx: n[1], cy: n[2], r: i ? 40 : 58, fill: '#0c0d0e', stroke: on ? C.off : i ? '#2a2c2e' : C.cobalt, 'stroke-width': 2}));
-    g.append(el('circle', {cx: n[1], cy: n[2], r: 28, fill: 'none', stroke: C.pale, 'stroke-width': 1.5}));
-    g.append(el('circle', {cx: n[1], cy: n[2], r: on ? 12 : 9, fill: on ? '#FFFFFF' : C.pale}));
-    g.append(el('text', {x: n[1], y: n[2] + (i ? 66 : 84), 'text-anchor': 'middle', fill: C.off, 'font-size': 15}, n[0].toUpperCase()));
+  // where each node runs
+  NET_COL.forEach(([x, name], c) => { s.append(el('rect', {x: x - (c === 1 ? 220 : 145), y: 34, width: c === 1 ? 440 : 290, height: 360, rx: 8, fill: '#ffffff', opacity: .035}));
+    s.append(el('text', {x, y: 28, 'text-anchor': 'middle', 'font-size': 14, 'font-weight': 700, fill: '#8EA4FF', 'letter-spacing': '.08em'}, name.toUpperCase())); });
+  NET_EDGES.forEach(([a, b]) => { const [x1, y1] = netAt(a), [x2, y2] = netAt(b), on = netSel === a || netSel === b;
+    s.append(el('line', {x1, y1, x2, y2, stroke: on ? '#F6F1E6' : C.pale, 'stroke-width': on ? 2 : 1.2, 'stroke-dasharray': '3 7', opacity: on ? .9 : .45})); });
+  NET.forEach((n, i) => { const [x, y] = netAt(i), on = netSel === i, col = NET_TYPE[n[3]][1], g = el('g', {class: 'click'});
+    if (n[3] === 'agent') g.append(el('rect', {x: x - 26, y: y - 26, width: 52, height: 52, transform: `rotate(45 ${x} ${y})`, fill: on ? col : '#0c0d0e', stroke: col, 'stroke-width': 2.5}));
+    else if (n[3] === 'spec') g.append(el('rect', {x: x - 22, y: y - 22, width: 44, height: 44, rx: 4, fill: on ? col : '#0c0d0e', stroke: col, 'stroke-width': 2}));
+    else g.append(el('circle', {cx: x, cy: y, r: n[3] === 'own' ? 22 : 30, fill: on ? col : '#0c0d0e', stroke: col, 'stroke-width': n[3] === 'own' ? 2 : 3}));
+    g.append(el('circle', {cx: x, cy: y, r: 5, fill: on ? '#0c0d0e' : col}));
+    g.append(el('text', {x, y: y + 54, 'text-anchor': 'middle', fill: C.off, 'font-size': 15, 'font-weight': 700}, n[0].toUpperCase()));
+    g.append(el('text', {x, y: y + 73, 'text-anchor': 'middle', fill: '#8f8c84', 'font-size': 12}, n[4].toUpperCase()));
     g.onclick = () => { netSel = i; netDraw(); }; s.append(g); });
-  if (netSel >= 0) pop(sceneOf('#net'), 1150, 130, {tag: 'A node', title: NET[netSel][0], body: NET[netSel][3] + '.'});
+  // under all of them: the open trust stack
+  s.append(el('rect', {x: 15, y: 408, width: 1130, height: 52, rx: 6, fill: '#1F4BFF', opacity: .9}));
+  s.append(el('text', {x: 580, y: 431, 'text-anchor': 'middle', 'font-size': 15, 'font-weight': 700, fill: '#FFFFFF'}, 'UNDER EVERY NODE: OPENVTC · VTI · THE TRUST SPANNING PROTOCOL'));
+  s.append(el('text', {x: 580, y: 450, 'text-anchor': 'middle', 'font-size': 11, fill: '#DCE3FF'}, "AND OTHER OPEN STACKS, LIKE TRUST STACKERS' P2P TRUST STACK (TSP, CRAFTED VTAS, CREDENTIALS)"));
+  // the legend
+  Object.values(NET_TYPE).forEach(([name, col], k) => { const x = 30 + k * 280; s.append(el('rect', {x: x - 7, y: 477, width: 14, height: 14, fill: col, transform: k === 1 ? `rotate(45 ${x} 484)` : ''}));
+    s.append(el('text', {x: x + 16, y: 489, 'font-size': 12, fill: '#CFC9BB'}, name.toUpperCase())); });
+  if (netSel >= 0) { const n = NET[netSel]; pop(sceneOf('#net'), 1150, 130, {tag: NET_TYPE[n[3]][0] + ' · ' + NET_COL[n[1]][1].toLowerCase(), title: n[0], body: n[5]}); }
 }
 netDraw();
 
@@ -739,7 +770,7 @@ $$('#why-check .act').forEach(b => b.onclick = () => { $$('#why-check .act').for
 
 /* ---------- tonight's guide: genesis, contributions, the claim, and what comes next ---------- */
 const GEN = [
-  ['Genesis', 'The first link names the night: the guide to this place, on this date. Everything after it is its history.', 'now', '✦'],
+  ['Genesis', "One Hitchhikers' guide, from its genesis. Each night opens its own page: Newspeak House, IIW 43, the Internet Archive. Tonight's stars are its history.", 'now', '✦'],
   ['Presence', 'A thumb up: your mark joins the guide. No account, no joining.', 'now', '👍'],
   ['Proverbs and guides', 'What you write is sealed with your own key; the keeper shows proverbs and guides once approved.', 'now', '📖'],
   ['Voice notes', 'Up to 45 seconds, sealed on your phone before it leaves. Only you can play it back.', 'now', '🎙'],

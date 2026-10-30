@@ -24,7 +24,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%}
 .title h1 b{font-weight:400;color:var(--blue)}
 .title p{font-size:clamp(11px,.95vw,15px);text-transform:uppercase;line-height:1.6;max-width:28vw;margin:1.6vh 0 0;color:#CFC9BB}
 .count{left:3vw;bottom:4vh}
-.rooms{left:50%;transform:translateX(-50%);top:3.4vh;display:flex;gap:1.2vw;font-size:clamp(10px,.8vw,13px);text-transform:uppercase;color:#CFC9BB}
+.rooms{left:50%;transform:translateX(-50%);bottom:calc(12vh + 64px);display:flex;gap:1.2vw;font-size:clamp(10px,.8vw,13px);text-transform:uppercase;color:#CFC9BB}
 .rooms span{display:flex;align-items:center;gap:6px}.rooms i{width:8px;height:8px;border-radius:50%;background:#C0504D;display:inline-block}.rooms i.on{background:#3FCB6B}
 .back{pointer-events:auto;display:inline-block;margin-left:1.2vw;font-size:clamp(10px,.8vw,13px);text-transform:uppercase;color:var(--pale);text-decoration:none}
 .back:hover{color:var(--cream)}
@@ -47,6 +47,7 @@ canvas{cursor:grab}canvas:active{cursor:grabbing}
 .jq{display:flex;gap:1vw;align-items:flex-start}.jq img{width:clamp(110px,9vw,150px);height:auto;background:#fff;padding:6px;border-radius:4px}.jn{font-family:var(--head);text-transform:uppercase;font-size:clamp(20px,1.8vw,30px);color:var(--cream)}
 .jp{font-size:clamp(11px,.85vw,14px);line-height:1.6;color:#CFC9BB;margin:.6vh 0}.jl,.jb{display:inline-block;pointer-events:auto;margin-top:.6vh;font-family:var(--mono);font-size:clamp(10px,.8vw,13px);text-transform:uppercase;padding:6px 12px;border:1px solid #e8c873;color:#e8c873;background:transparent;border-radius:14px;text-decoration:none;cursor:pointer}
 .ji{display:block;width:100%;box-sizing:border-box;margin:.5vh 0;font-family:var(--mono);font-size:clamp(11px,.85vw,14px);background:transparent;color:var(--cream);border:1px solid rgba(246,241,230,.35);border-radius:3px;padding:6px 8px}
+.nights{display:flex;flex-wrap:wrap;gap:6px;margin:1vh 0 .4vh}.nights span{font-size:clamp(10px,.75vw,12px);text-transform:uppercase;padding:3px 9px;border:1px solid rgba(142,164,255,.45);border-radius:12px;color:#CFC9BB}.nights span.on{border-color:#e8c873;color:#e8c873}
 .jd{font-size:clamp(9px,.7vw,11px);color:#8EA4FF;word-break:break-all;margin-top:1vh}.jw{list-style:none;margin:.6vh 0 1vh;padding:0;font-size:clamp(11px,.85vw,14px);line-height:1.7;color:var(--cream)}.jw b{color:#e8c873}.jm{color:#8f8c84}.jr{color:#e8c873}
 #join-wrap{pointer-events:auto}#join{max-height:calc(100vh - 330px);overflow-y:auto;padding-right:8px}
 .tabs button.on{background:rgba(232,200,115,.15);border-color:#e8c873;color:#e8c873}
@@ -71,8 +72,9 @@ canvas{cursor:grab}canvas:active{cursor:grabbing}
 </head>
 <body>
 <canvas id="c"></canvas>
-<div class="hud title"><div class="k" id="guide-k">The Hitchhiker's Guide to Trust · the evidence chain</div><a class="back" href="../guide/?path=workshop">← back to the guide</a><h1>A galaxy<br>of <b>guides</b></h1>
-  <p id="guide-p">The guide to this night, from its genesis: every thumb up, proverb, guide and voice note is a star. Its hash is public; what's behind it is sealed with your own key. You don't need to join anything to be part of its history.</p>
+<div class="hud title"><div class="k" id="guide-k" style="max-width:40vw">The Hitchhiker's Guide to Trust · the evidence chain</div><a class="back" href="../guide/?path=workshop">← back to the guide</a><h1>A galaxy<br>of <b>guides</b></h1>
+  <div class="nights" id="nights"></div>
+  <p id="guide-p">One guide, many nights. Every thumb up, proverb, guide and voice note is a star: its hash public, what's behind it sealed with your own key. No joining needed.</p>
   <p style="color:#8EA4FF">Don't panic: every task you share builds trust.</p>
   <div class="steps"><div><b>1</b>Thumb up: your mark on tonight's guide</div><div><b>2</b>Add proverbs, guides, voice notes: sealed</div><div><b>3</b>Keep your claim code; the group chat answers it with a proverb</div><div><b>4</b>Join when you're ready, and claim your stars with your DID <a href="#join" onclick="tab('join');return false" style="color:#e8c873;pointer-events:auto">→</a></div></div>
 <div class="hud count"><div id="demo-tag" style="display:none;font-size:clamp(10px,.8vw,13px);text-transform:uppercase;color:#0B0B0D;background:#8EA4FF;padding:3px 8px;border-radius:3px;margin-bottom:1vh;width:max-content">Example night · simulated visitors</div><b id="n">0</b><span>stars on the chain</span><div class="head" id="head"></div></div>
@@ -98,18 +100,22 @@ try { const q = qrcode(0, 'M'); q.addData(SITE + '/' + (EVID ? EVID : '')); q.ma
 let links = [], head = null, born = new Map();
 let MINE = new Set(window.DP ? DP.mine() : []);
 const COLOR = {thumb: [246, 241, 230], proverb: [142, 164, 255], guide: [31, 75, 255], chat: [255, 255, 255], claim: [232, 200, 115], voice: [120, 220, 190], genesis: [255, 214, 120]};
-const KIND = l => l.kind === 'claim' ? (l.did ? 'claimed with a DID' : 'claimed in the group chat') : l.kind === 'voice' ? 'voice note' + (l.secs ? ' · ' + l.secs + ' s' : '') : l.kind === 'genesis' ? 'genesis · ' + ((l.genesis || {}).name || 'the guide begins') : l.kind;
+const KIND = l => (l.kind === 'claim' ? (l.did ? 'claimed with a DID' : 'claimed in the group chat') : l.kind === 'voice' ? 'voice note' + (l.secs ? ' · ' + l.secs + ' s' : '') : l.kind === 'genesis' ? (l.genesis && l.genesis.event ? 'a night opens · ' + shortNight(l.genesis.name) : 'genesis · ' + ((l.genesis || {}).name || 'the guide begins')) : l.kind) + (l.event && l.kind !== 'genesis' && NIGHTS[l.event] ? ' · ' + shortNight(NIGHTS[l.event].name) : '');
 // a person's evidence root: their stars (same mark), chained in order
 const ROOTS = new Map();
 async function rootOf(mark) { const ls = links.filter(l => l.mark === mark), key = mark + ':' + ls.length; if (ROOTS.has(key)) return ROOTS.get(key);
   let r = '0'.repeat(64); for (const l of ls) r = [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(r + '|' + l.hash)))].map(b => b.toString(16).padStart(2, '0')).join('');
   ROOTS.set(key, r); return r; }
 const angle = (h, i) => parseInt(h.slice(i, i + 4), 16) / 65536 * Math.PI * 2;
-let GUIDE = null;
-function guideHead() { const g = GUIDE || {}, d = g.date ? new Date(g.date + 'T12:00:00Z').toLocaleDateString('en-GB', {day: 'numeric', month: 'short', year: 'numeric'}) : '';
-  $('#guide-k').textContent = (g.name || "The Hitchhiker's Guide to Trust") + ' · genesis' + (d ? ' · ' + d : '') + (g.place ? ' · ' + g.place : ''); }
+let GUIDE = null, NIGHTS = {}, TONIGHT = '';
+const shortNight = n => String(n || '').replace(/^The Guide to (the )?/i, '');
+function guideHead() { const g = GUIDE || {}, t = NIGHTS[TONIGHT];
+  $('#guide-k').textContent = (g.name || "The Hitchhiker's Guide to Trust") + (t ? ' · tonight: ' + shortNight(t.name) : ' · the evidence chain'); }
+// the nights on this guide: how many stars each has added
+function drawNights() { const ids = Object.keys(NIGHTS); if (!ids.length) return;
+  $('#nights').innerHTML = ids.map(id => { const n = links.filter(l => l.event === id && l.kind !== 'genesis').length; return `<span class="${id === TONIGHT ? 'on' : ''}">${esc(shortNight(NIGHTS[id].name))} · ${n}</span>`; }).join(''); }
 async function poll() {
-  try { const r = await fetch(U('/api/chain?since=' + links.length), {cache: 'no-store'}); if (!r.ok) return; const d = await r.json(); if (d.guide && !GUIDE) { GUIDE = d.guide; guideHead(); }
+  try { const r = await fetch(U('/api/chain?since=' + links.length), {cache: 'no-store'}); if (!r.ok) return; const d = await r.json(); if (d.guide && !GUIDE) { GUIDE = d.guide; NIGHTS = d.nights || {}; TONIGHT = d.event; guideHead(); } drawNights();
     d.links.forEach(l => { links.push(l); born.set(l.hash, performance.now()); }); head = d.head;
     if (d.links.length) feed(); $('#n').textContent = links.filter(l => l.kind !== 'genesis').length; $('#head').textContent = head ? 'head ' + head : '';
   } catch (e) {} }
@@ -134,7 +140,7 @@ async function joinDraw() {
   const ways = CITY.criteria.map((c, i) => `<li><b>${i + 1}.</b> ${esc(c.description)} <span class="jm">· ${c.admission === 'automatic' ? 'admitted at once' : 'a keeper reviews'}</span></li>`).join('');
   let ev = '<p class="jp">Put your thumb up first: your stars become the evidence you bring.</p>';
   if (MINE.size && window.DP) { const mk = await DP.mark(); try { const e = await (await fetch(U('/api/evidence?mark=' + mk), {cache: 'no-store'})).json();
-    const url = SITE.replace(/\/$/, '') + '/api/evidence?mark=' + mk + (EVID ? '&event=' + EVID : ''), note = `${e.guide || "Hitchhiker's Guide to Trust"} · evidence: ${e.stars} star${e.stars === 1 ? '' : 's'} · root ${e.root} · check ${url}`;
+    const url = SITE.replace(/\/$/, '') + '/api/evidence?mark=' + mk + (EVID ? '&event=' + EVID : ''), note = `${e.guide || "Hitchhiker's Guide to Trust"}${e.nights && e.nights.length ? ' (' + e.nights.map(shortNight).join(', ') + ')' : ''} · evidence: ${e.stars} star${e.stars === 1 ? '' : 's'} · root ${e.root} · check ${url}`;
     ev = `<p class="jp">Your evidence · <b>${DP.sigil(mk)}</b> · ${e.stars} star${e.stars === 1 ? '' : 's'}<br><span class="jr">root ${e.root.slice(0, 24)}…</span></p>
       <p class="jp">Bring it with your application: the keeper who reviews can recompute it from the chain.</p>
       <button class="jb" id="j-copy">Copy your evidence note</button>${e.links.some(l => l.kind === 'voice') ? `<div class="k" style="margin-top:1.4vh">Your voice notes · only your key plays them</div>${e.links.filter(l => l.kind === 'voice').map(l => `<button class="jb jv" data-seq="${l.seq}">▶ #${l.seq}</button> `).join('')}<audio id="j-audio" controls style="display:none;width:100%;margin-top:.6vh"></audio>` : ''}`;
@@ -247,9 +253,11 @@ if (DEMO) {
     clock += 20000 + rnd() * 60000; const at = new Date(t0 + clock).toISOString(), seq = links.length, prev = seq ? links[seq - 1].hash : '0'.repeat(64);
     const content = kind === 'thumb' ? mark : kind === 'chat' || kind === 'claim' ? await hx(kind + '|' + seq) : {text: LINES[seq % LINES.length], title: kind === 'guide' ? GUIDES[seq % GUIDES.length] : ''};
     const leaf = await hx(JSON.stringify({kind, content, at})), hash = await hx([prev, leaf, mark, seq].join('|'));
-    if (kind === 'genesis') { GUIDE = {name: 'The Guide to Newspeak House', date: '2026-11-05', place: 'Newspeak House, London'}; guideHead(); }
-    const link = {seq, kind, at, leaf, mark: kind === 'genesis' ? '' : mark, prev, hash, secs: kind === 'voice' ? 8 + Math.floor(rnd() * 37) : undefined, genesis: kind === 'genesis' ? GUIDE : undefined, room: ['Main hall', 'Library', 'Garden room'][Math.floor(rnd() * 3)]}; links.push(link); born.set(hash, performance.now());
+    const DN = {iiw43: {name: 'The Guide to IIW 43'}, newspeak: {name: 'The Guide to Newspeak House'}, archive: {name: 'The Guide to the Internet Archive'}}, night = ['iiw43', 'newspeak', 'archive'][Math.min(2, Math.floor(seq / 55))];
+    if (kind === 'genesis') { GUIDE = {name: "The Hitchhiker's Guide to Trust"}; NIGHTS = DN; TONIGHT = 'newspeak'; guideHead(); }
+    const link = {seq, kind, at, leaf, mark: kind === 'genesis' ? '' : mark, prev, hash, secs: kind === 'voice' ? 8 + Math.floor(rnd() * 37) : undefined, genesis: kind === 'genesis' ? GUIDE : undefined, event: kind === 'genesis' ? undefined : night, room: ['Main hall', 'Library', 'Garden room'][Math.floor(rnd() * 3)]}; links.push(link); born.set(hash, performance.now());
     if (mark === you && kind !== 'genesis') MINE.add(hash);
+    drawNights();
   }
   (async () => { for (let i = 0; i < 160; i++) await addDemo(); head = links[links.length - 1].hash; feed(); $('#n').textContent = links.filter(l => l.kind !== 'genesis').length; $('#head').textContent = 'head ' + head;
     // the "you" line reads from the demo visitor's mark
