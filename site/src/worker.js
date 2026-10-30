@@ -1,12 +1,16 @@
-// hitchhiker.mages.city: The Hitchhiker's Guide to Trust, hosted. Serves the pages (./public) and one small API:
-// visitors leave a "Don't Panic" proverb or launch a guide at the end of a presentation; the keeper approves
-// each one before it appears. Keeper calls carry Bearer KEEPER_KEY. Storage: KV keys "queue" and "approved".
+// hitchhiker.mages.city: The Hitchhiker's Guide to Trust, hosted. Serves the pages (./public) and one small API.
+// Each event is a guide of its own (the guide to Newspeak House, the guide to IIW 43): its own evidence chain,
+// begun by a genesis link, where presence, proverbs, guides and voice notes are recorded as hashes, sealed with
+// each visitor's own key. Nobody has to join anything to be part of the night's history; a claim code (or, after
+// joining a community, the code plus a DID) later shows the stars were theirs. The keeper approves proverbs and
+// guides before they show. Keeper calls carry Bearer KEEPER_KEY. Storage (KV), per event: chain:, queue:, approved:.
 //
 // Gate mode: set GATE_ORIGIN to a community node's address (a Pi running serve.mjs behind a tunnel) and every
 // /api/* call is handed to that node instead. The pages stay up here; when the node is unplugged, the gate is
 // closed and nothing can be submitted. Hosting the graph is what lets people in.
 
 const LIMIT = { title: 40, text: 160, by: 40 }, PER_MINUTE = 30, QUEUE_MAX = 500, GATE_TIMEOUT_MS = 4000, CHAIN_MAX = 20000;
+const VOICE_MAX_B64 = 480000, VOICES_MAX = 400; // ~45 s of opus per note, sealed; a few hundred notes per event
 const CORS = { 'access-control-allow-origin': '*', 'access-control-allow-headers': 'content-type, authorization', 'access-control-allow-methods': 'GET, POST, OPTIONS' };
 
 const json = (data, status = 200) => new Response(JSON.stringify(data), { status, headers: { 'content-type': 'application/json', 'cache-control': 'no-store', ...CORS } });
@@ -36,35 +40,55 @@ function isKeeper(env, req) {
 const shown = list => list.filter(x => !x.hidden).map(({ id, kind, title, text, by }) => ({ id, kind, title, text, by }));
 
 // Approved guides and proverbs as Federated Wiki pages, ready for a community node's wiki to import.
-function wikiPages(list) {
+function wikiPages(list, name) {
   const slug = t => t.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase(); // Federated Wiki's own slug rule
   const id = () => [...crypto.getRandomValues(new Uint8Array(8))].map(b => b.toString(16).padStart(2, '0')).join('');
   const page = (title, paras) => { const story = paras.map(text => ({ type: 'paragraph', id: id(), text })); return { slug: slug(title), page: { title, story, journal: [{ type: 'create', item: { title, story }, date: Date.now() }] } }; };
   const live = list.filter(x => !x.hidden), credit = x => x.by ? ` (${x.by})` : '';
-  return [page("Don't Panic", ["Proverbs left by visitors to The Hitchhiker's Guide to Trust.", ...live.filter(x => x.kind === 'proverb').map(x => x.text + credit(x))])]
-    .concat(live.filter(x => x.kind === 'guide').map(x => page(x.title, ["A Hitchhiker guide, launched at The Hitchhiker's Guide to Trust.", x.text + credit(x)])));
+  return [page("Don't Panic", [`Proverbs left by visitors to ${name}.`, ...live.filter(x => x.kind === 'proverb').map(x => x.text + credit(x))])]
+    .concat(live.filter(x => x.kind === 'guide').map(x => page(x.title, [`A Hitchhiker guide, launched at ${name}.`, x.text + credit(x)])));
+}
+
+// ---- the events: each night is its own guide, with its own chain ----
+// Override or add with EVENTS (JSON, same shape); DEFAULT_EVENT picks the one a bare address opens. A genesis link
+// records the event as it was first opened, so set the details before the first visitor arrives.
+const EVENTS_DEFAULT = {
+  newspeak: { name: 'The Guide to Newspeak House', date: '2026-11-05', place: 'Newspeak House, London', with: 'The Hitchhikers · Field Guide · Mages City' },
+  iiw43: { name: 'The Guide to IIW 43', date: '', place: 'Internet Identity Workshop 43', with: 'The Hitchhikers · Mages City' } };
+const events = env => { try { return { ...EVENTS_DEFAULT, ...JSON.parse(env.EVENTS || '{}') }; } catch (e) { return EVENTS_DEFAULT; } };
+function eventOf(env, req, body) {
+  const e = String(new URL(req.url).searchParams.get('event') || (body && body.event) || env.DEFAULT_EVENT || 'newspeak').toLowerCase();
+  return events(env)[e] ? e : null;
 }
 
 // ---- the evidence chain ----
 // Each link: leaf = sha256 of what was done (kind + content + time); hash = sha256(prev | leaf | mark | seq).
 // Content never enters the chain in the clear: only its hash, and a box sealed with the visitor's own key. mark = sha256 of a secret the visitor's phone keeps (or '').
+// Link 0 is the genesis: the event itself, in the clear.
 const hex = async s => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)))].map(b => b.toString(16).padStart(2, '0')).join('');
 const isMark = m => /^[0-9a-f]{64}$/.test(String(m || ''));
+const isDid = d => /^did:[a-z0-9]+:[A-Za-z0-9._:%-]{3,300}$/.test(String(d || ''));
 // The OpenVTC community this guide leads into (Mages City by default): its daemon's public API and join page.
 const cityApi = env => (env.CITY_API || 'https://vtc.mages.city').replace(/\/$/, '');
 const MANIFEST = 'https://trusttasks.org/spec/vtc/join-requests/manifest/0.3';
 const isSealed = b => b && typeof b.iv === 'string' && typeof b.ct === 'string' && b.iv.length <= 24 && b.ct.length <= 2400 && /^[A-Za-z0-9+/=]+$/.test(b.iv + b.ct);
-async function addLink(env, kind, content, mark, sealed, claim) {
-  const chain = await load(env, 'chain'); if (chain.length >= CHAIN_MAX) return null;
-  const at = new Date().toISOString(), prev = chain.length ? chain[chain.length - 1].hash : '0'.repeat(64), seq = chain.length;
+async function chainOf(env, ev) {
+  const chain = await load(env, 'chain:' + ev); if (chain.length) return chain;
+  const at = new Date().toISOString(), genesis = { event: ev, ...events(env)[ev] }, prev = '0'.repeat(64);
+  const leaf = await hex(JSON.stringify({ kind: 'genesis', content: genesis, at }));
+  chain.push({ seq: 0, kind: 'genesis', at, leaf, mark: '', prev, hash: await hex([prev, leaf, '', 0].join('|')), genesis });
+  await save(env, 'chain:' + ev, chain); return chain;
+}
+async function addLink(env, ev, kind, content, mark, sealed, extra) {
+  const chain = await chainOf(env, ev); if (chain.length >= CHAIN_MAX) return null;
+  const at = new Date().toISOString(), prev = chain[chain.length - 1].hash, seq = chain.length;
   const leaf = await hex(JSON.stringify({ kind, content, at })), m = isMark(mark) ? mark : '';
-  const link = { seq, kind, at, leaf, mark: m, prev, hash: await hex([prev, leaf, m, seq].join('|')) };
+  const link = { seq, kind, at, leaf, mark: m, prev, hash: await hex([prev, leaf, m, seq].join('|')), ...(extra || {}) };
   if (isSealed(sealed)) link.sealed = { iv: sealed.iv, ct: sealed.ct }; // only its owner's key opens it
-  if (claim) link.claim = claim; // the hash of a claim code only the owner was shown
-  chain.push(link); await save(env, 'chain', chain);
-  if (env.SCROLL_ORIGIN && env.ROOM_NAME && env.ROOM_KEY && kind !== 'room') { // a room node: pass the star up to the scroll
+  chain.push(link); await save(env, 'chain:' + ev, chain);
+  if (env.SCROLL_ORIGIN && env.ROOM_NAME && env.ROOM_KEY && !link.room) { // a room node: pass the star up to the scroll
     const up = fetch(env.SCROLL_ORIGIN.replace(/\/$/, '') + '/api/room/link', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + env.ROOM_KEY },
-      body: JSON.stringify({ room: env.ROOM_NAME, kind, ref: link.hash, mark: m }) }).catch(() => {});
+      body: JSON.stringify({ room: env.ROOM_NAME, event: ev, kind, ref: link.hash, mark: m }) }).catch(() => {});
     if (env.waitUntil) env.waitUntil(up);
   }
   return link;
@@ -72,11 +96,20 @@ async function addLink(env, kind, content, mark, sealed, claim) {
 const roomKeys = env => { try { return JSON.parse(env.ROOM_KEYS || '{}'); } catch (e) { return {}; } };
 function roomOf(env, req, room) { const k = roomKeys(env)[room], got = (req.headers.get('authorization') || '').replace(/^Bearer\s+/i, '');
   if (!k || got.length !== k.length) return false; let d = 0; for (let i = 0; i < got.length; i++) d |= got.charCodeAt(i) ^ k.charCodeAt(i); return d === 0; }
+const words4 = t => String(t || '').toLowerCase().normalize('NFKC').replace(/[^a-z\s-]/g, ' ').split(/\s+/).filter(Boolean);
+// find whose thumb up a claim code belongs to: any four words in a row whose hash matches a committed claim
+async function findClaim(chain, text) {
+  const words = words4(text), byClaim = new Map(chain.filter(l => l.kind === 'thumb' && l.claim).map(l => [l.claim, l]));
+  for (let i = 0; i + 4 <= words.length; i++) { const c = await hex('claimcode|' + words.slice(i, i + 4).join(' ')); if (byClaim.has(c)) return byClaim.get(c); }
+  return null;
+}
+const DEFAULT_PROVERBS = ["Don't panic: every task you share builds trust.", 'A towel and a runbook: never travel without both.', "Don't panic; check the checksum."];
+const aProverb = approved => { const pool = approved.filter(x => x.kind === 'proverb' && !x.hidden).map(x => x.text), p = pool.length ? pool : DEFAULT_PROVERBS; return p[Math.floor(Math.random() * p.length)]; };
 
 // Hand an /api/* call to the community node. Unreachable node = closed gate.
 async function viaGate(req, env, path) {
   try {
-    const target = env.GATE_ORIGIN.replace(/\/$/, '') + path;
+    const u = new URL(req.url), target = env.GATE_ORIGIN.replace(/\/$/, '') + path + u.search;
     const headers = new Headers(req.headers); headers.set('cf-connecting-ip', req.headers.get('cf-connecting-ip') || '');
     const r = await fetch(target, { method: req.method, headers, body: req.method === 'POST' ? await req.text() : undefined, signal: AbortSignal.timeout(GATE_TIMEOUT_MS) });
     if (r.status >= 502) throw new Error('node down');
@@ -86,14 +119,21 @@ async function viaGate(req, env, path) {
 
 async function api(req, env, path, body) {
   if (path === '/api/gate') return json({ gate: 'open', host: env.NODE_NAME || 'worker' });
+  const url = new URL(req.url), ev = eventOf(env, req, body), EV = events(env);
+
+  // the events: each one's name, date, place, and how far its chain has grown
+  if (path === '/api/events' && req.method === 'GET') {
+    const out = []; for (const id of Object.keys(EV)) { const c = await load(env, 'chain:' + id); out.push({ id, ...EV[id], stars: Math.max(0, c.length - 1), genesis: c.length ? c[0].hash : null }); }
+    return json({ default: env.DEFAULT_EVENT || 'newspeak', events: out });
+  }
 
   // ---- rooms: each room's Pi passes its stars up to this scroll, and says it is alive ----
   if (path === '/api/room/link' && req.method === 'POST') {
     const room = clean(body.room, 40); if (!roomOf(env, req, room)) return json({ error: 'Room key needed.' }, 401);
+    if (!ev) return json({ error: 'Unknown guide.' }, 400);
     if (!/^[0-9a-f]{64}$/.test(String(body.ref || ''))) return json({ error: 'Send the room link hash.' }, 400);
-    const link = await addLink(env, clean(body.kind, 20) || 'thumb', { room, ref: body.ref }, body.mark);
+    const link = await addLink(env, ev, clean(body.kind, 20) || 'thumb', { room, ref: body.ref }, body.mark, null, { room, ref: body.ref });
     if (!link) return json({ error: 'The scroll is full.' }, 503);
-    const chain = await load(env, 'chain'); chain[link.seq].room = room; chain[link.seq].ref = body.ref; await save(env, 'chain', chain);
     const rooms = (await env.PROVERBS.get('rooms', 'json')) || {}; rooms[room] = { ...(rooms[room] || {}), last: Date.now(), count: ((rooms[room] || {}).count || 0) + 1 }; await env.PROVERBS.put('rooms', JSON.stringify(rooms));
     return json({ ok: true, seq: link.seq, hash: link.hash });
   }
@@ -106,7 +146,6 @@ async function api(req, env, path, body) {
     const rooms = (await env.PROVERBS.get('rooms', 'json')) || {}, now = Date.now();
     return json(Object.keys(roomKeys(env)).concat(Object.keys(rooms)).filter((r, i, a) => a.indexOf(r) === i).map(r => ({ room: r, count: (rooms[r] || {}).count || 0, open: !!rooms[r] && now - rooms[r].last < 90000 })));
   }
-  if (path === '/api/approved' && req.method === 'GET') return json(shown(await load(env, 'approved')));
 
   // the community to join: its DID, its QR, and the ways in, read live from its own join manifest
   if (path === '/api/city' && req.method === 'GET') {
@@ -119,25 +158,31 @@ async function api(req, env, path, body) {
         criteria: ((man.payload || {}).criteria || []).map(c => ({ id: c.id, description: c.description, admission: c.admission })) });
     } catch (e) { return json({ error: 'The community is not answering right now.' }, 502); }
   }
+
+  if (!ev) return json({ error: 'Unknown guide.' }, 400);
+  const Q = 'queue:' + ev, A = 'approved:' + ev;
+  if (path === '/api/approved' && req.method === 'GET') return json(shown(await load(env, A)));
+
   // one person's evidence: their stars (same mark) in order, chained into a root anyone can recompute
   if (path === '/api/evidence' && req.method === 'GET') {
-    const mark = new URL(req.url).searchParams.get('mark'); if (!isMark(mark)) return json({ error: 'Give a mark.' }, 400);
-    const chain = await load(env, 'chain'), mine = chain.filter(l => l.mark === mark);
+    const mark = url.searchParams.get('mark'); if (!isMark(mark)) return json({ error: 'Give a mark.' }, 400);
+    const chain = await chainOf(env, ev), mine = chain.filter(l => l.mark === mark);
     let root = '0'.repeat(64); for (const l of mine) root = await hex(root + '|' + l.hash);
-    return json({ mark, stars: mine.length, root, rule: 'root = sha256(root + "|" + hash), from 64 zeros, over these links in order',
-      links: mine.map(l => ({ seq: l.seq, kind: l.kind, at: l.at, hash: l.hash, room: l.room })), chainLength: chain.length, chainHead: chain.length ? chain[chain.length - 1].hash : null });
+    return json({ event: ev, guide: EV[ev].name, mark, stars: mine.length, root, rule: 'root = sha256(root + "|" + hash), from 64 zeros, over these links in order',
+      links: mine.map(l => ({ seq: l.seq, kind: l.kind, at: l.at, hash: l.hash, room: l.room, did: l.did })), genesis: chain[0].hash, chainLength: chain.length, chainHead: chain[chain.length - 1].hash });
   }
 
   if (path === '/api/chain' && req.method === 'GET') {
-    const chain = await load(env, 'chain'), since = Math.max(0, parseInt(new URL(req.url).searchParams.get('since') || '0', 10) || 0);
-    return json({ length: chain.length, head: chain.length ? chain[chain.length - 1].hash : null, links: chain.slice(since, since + 500) });
+    const chain = await chainOf(env, ev), since = Math.max(0, parseInt(url.searchParams.get('since') || '0', 10) || 0);
+    return json({ event: ev, guide: EV[ev], genesis: chain[0], length: chain.length, head: chain[chain.length - 1].hash, links: chain.slice(since, since + 500) });
   }
 
   // a thumb up: the first trust task. Joins the chain with nothing but your mark.
   if (path === '/api/thumb' && req.method === 'POST') {
     if (!isMark(body.mark)) return json({ error: 'Open the page again to make your mark.' }, 400);
     if (await limited(env, req)) return json({ error: 'Slow down a moment, then try again.' }, 429);
-    const link = await addLink(env, 'thumb', body.mark, body.mark, body.sealed, /^[0-9a-f]{64}$/.test(String(body.claim || '')) ? body.claim : null);
+    const claim = /^[0-9a-f]{64}$/.test(String(body.claim || '')) ? body.claim : null;
+    const link = await addLink(env, ev, 'thumb', body.mark, body.mark, body.sealed, claim ? { claim } : null);
     return link ? json({ ok: true, link }) : json({ error: 'The chain is full tonight.' }, 503);
   }
 
@@ -147,50 +192,81 @@ async function api(req, env, path, body) {
     if (kind === 'guide' && title.length < 3) return json({ error: 'Give your guide a name.' }, 400);
     if (text.length < 3) return json({ error: kind === 'guide' ? 'Write its first line.' : 'Write a proverb first.' }, 400);
     if (await limited(env, req)) return json({ error: 'Slow down a moment, then try again.' }, 429);
-    const queue = await load(env, 'queue');
+    const queue = await load(env, Q);
     if (queue.length >= QUEUE_MAX) return json({ error: 'The keeper is catching up. Try again later.' }, 503);
     queue.push({ id: Date.now() * 100 + Math.floor(Math.random() * 100), kind, title: kind === 'guide' ? title : '', text, by, at: new Date().toISOString() });
-    await save(env, 'queue', queue);
-    const link = await addLink(env, kind, { title, text, by }, body.mark, body.sealed);
+    await save(env, Q, queue);
+    const link = await addLink(env, ev, kind, { title, text, by }, body.mark, body.sealed);
     return json({ ok: true, held: true, link });
+  }
+
+  // a voice note: recorded and sealed on the phone; stored here only as the sealed box, under its own hash.
+  // Its star records that hash, so the note can't be swapped later; only its owner's key plays it.
+  if (path === '/api/voice' && req.method === 'POST') {
+    if (!isMark(body.mark)) return json({ error: 'Open the page again to make your mark.' }, 400);
+    const iv = String(body.iv || ''), ct = String(body.ct || ''), secs = Math.max(0, Math.min(60, Math.round(+body.secs || 0)));
+    if (iv.length > 24 || !ct || ct.length > VOICE_MAX_B64 || !/^[A-Za-z0-9+/=]+$/.test(iv + ct)) return json({ error: 'That note is too long (about 45 seconds at most).' }, 400);
+    if (await limited(env, req)) return json({ error: 'Slow down a moment, then try again.' }, 429);
+    const n = parseInt(await env.PROVERBS.get('voices:' + ev) || '0', 10); if (n >= VOICES_MAX) return json({ error: 'The guide has all the voice notes it can hold tonight.' }, 503);
+    const id = await hex('voice|' + iv + '|' + ct);
+    await env.PROVERBS.put('voice:' + id, JSON.stringify({ iv, ct })); await env.PROVERBS.put('voices:' + ev, String(n + 1));
+    const link = await addLink(env, ev, 'voice', id, body.mark, null, { voice: id, secs });
+    return link ? json({ ok: true, link }) : json({ error: 'The chain is full tonight.' }, 503);
+  }
+  if (path === '/api/voice' && req.method === 'GET') {
+    const id = url.searchParams.get('id'); if (!/^[0-9a-f]{64}$/.test(String(id || ''))) return json({ error: 'Give a voice id.' }, 400);
+    const box = await env.PROVERBS.get('voice:' + id, 'json'); return box ? json(box) : json({ error: 'Not found.' }, 404);
+  }
+
+  // claiming after joining: your claim code (only you were shown it) and the DID you joined with. The claim link
+  // records the DID only as a hash, so it can later be matched by the community you joined, not read by anyone.
+  if (path === '/api/claim' && req.method === 'POST') {
+    const did = String(body.did || '').trim(); if (!isDid(did)) return json({ error: 'Paste the DID you joined with (it starts with did:).' }, 400);
+    if (await limited(env, req)) return json({ error: 'Slow down a moment, then try again.' }, 429);
+    const chain = await chainOf(env, ev), hit = await findClaim(chain, body.code);
+    if (!hit) return json({ error: 'That claim code is not on this guide.' }, 404);
+    const didHash = await hex('did|' + did), proverb = aProverb(await load(env, A));
+    const done = chain.find(l => l.kind === 'claim' && l.mark === hit.mark && l.did);
+    if (done) return json({ ok: true, already: true, seq: done.seq, same: done.did === didHash, proverb });
+    const link = await addLink(env, ev, 'claim', didHash, hit.mark, null, { did: didHash });
+    return link ? json({ ok: true, seq: link.seq, hash: link.hash, mark: hit.mark, proverb }) : json({ error: 'The chain is full.' }, 503);
   }
 
   if (path.startsWith('/api/keeper/')) {
     if (!isKeeper(env, req)) return json({ error: 'Keeper key needed.' }, 401);
-    const queue = await load(env, 'queue'), approved = await load(env, 'approved');
+    const queue = await load(env, Q), approved = await load(env, A);
     const action = path.slice('/api/keeper/'.length), id = Number(body.id);
-    if (action === 'state') return json({ queue, approved, host: env.NODE_NAME || 'worker' });
-    if (action === 'export') return json(wikiPages(approved));
-    // the invitation trust task: the group chat's bot sends a message; if it holds someone's claim code, their
-    // claim is written onto their chain (the chat handle only as a salted hash) and a proverb comes back
+    if (action === 'state') return json({ event: ev, guide: EV[ev].name, events: Object.keys(EV), queue, approved, host: env.NODE_NAME || 'worker' });
+    if (action === 'export') return json(wikiPages(approved, EV[ev].name));
+    // the invitation trust task: the group chat's bot sends a message; if it holds someone's claim code (on any
+    // event's guide), their claim is written onto that chain (the chat handle only as a salted hash) and a proverb comes back
     if (action === 'claim') {
-      const words = String(body.text || '').toLowerCase().normalize('NFKC').replace(/[^a-z\s-]/g, ' ').split(/\s+/).filter(Boolean);
-      const chain = await load(env, 'chain'), byClaim = new Map(chain.filter(l => l.kind === 'thumb' && l.claim).map(l => [l.claim, l]));
-      let hit = null; for (let i = 0; i + 4 <= words.length && !hit; i++) { const c = await hex('claimcode|' + words.slice(i, i + 4).join(' ')); if (byClaim.has(c)) hit = byClaim.get(c); }
-      if (!hit) return json({ error: 'No claim code in that message.' }, 404);
-      const done = chain.find(l => l.kind === 'claim' && l.mark === hit.mark);
-      const pool = approved.filter(x => x.kind === 'proverb' && !x.hidden).map(x => x.text), proverb = pool.length ? pool[Math.floor(Math.random() * pool.length)] : ["Don't panic: you own your own perspective in the trust graph.", 'A towel and a runbook: never travel without both.', "Don't panic; check the checksum."][Math.floor(Math.random() * 3)];
-      if (done) return json({ ok: true, already: true, seq: done.seq, mark: hit.mark, proverb });
-      const link = await addLink(env, 'claim', await hex('who|' + (env.KEEPER_KEY || '') + '|' + clean(body.who, 120)), hit.mark);
-      return link ? json({ ok: true, seq: link.seq, mark: hit.mark, hash: link.hash, proverb }) : json({ error: 'The chain is full.' }, 503);
+      for (const e of Object.keys(EV)) {
+        const chain = await load(env, 'chain:' + e), hit = await findClaim(chain, body.text); if (!hit) continue;
+        const proverb = aProverb(await load(env, 'approved:' + e)), done = chain.find(l => l.kind === 'claim' && l.mark === hit.mark && !l.did);
+        if (done) return json({ ok: true, already: true, event: e, seq: done.seq, mark: hit.mark, proverb });
+        const link = await addLink(env, e, 'claim', await hex('who|' + (env.KEEPER_KEY || '') + '|' + clean(body.who, 120)), hit.mark);
+        return link ? json({ ok: true, event: e, seq: link.seq, mark: hit.mark, hash: link.hash, proverb }) : json({ error: 'The chain is full.' }, 503);
+      }
+      return json({ error: 'No claim code in that message.' }, 404);
     }
     // the Pi's chat agent commits a chat contribution: it sends only a digest (and the member's mark, if known)
     if (action === 'commit') {
       const digest = String(body.digest || ''); if (!/^[0-9a-f]{64}$/.test(digest)) return json({ error: 'Send a sha256 digest.' }, 400);
-      const link = await addLink(env, clean(body.kind, 20) || 'chat', digest, body.mark);
+      const link = await addLink(env, ev, clean(body.kind, 20) || 'chat', digest, body.mark);
       return link ? json({ ok: true, link }) : json({ error: 'The chain is full.' }, 503);
     }
     if (action === 'approve') {
       const i = queue.findIndex(x => x.id === id); if (i < 0) return json({ error: 'Not in the queue.' }, 404);
       const [x] = queue.splice(i, 1);
       if (body.text) x.text = clean(body.text, LIMIT.text); if (body.title && x.kind === 'guide') x.title = clean(body.title, LIMIT.title);
-      approved.push(x); await save(env, 'approved', approved); await save(env, 'queue', queue);
+      approved.push(x); await save(env, A, approved); await save(env, Q, queue);
       return json({ ok: true });
     }
-    if (action === 'reject') { await save(env, 'queue', queue.filter(x => x.id !== id)); return json({ ok: true }); }
+    if (action === 'reject') { await save(env, Q, queue.filter(x => x.id !== id)); return json({ ok: true }); }
     if (action === 'hide' || action === 'show') {
       const x = approved.find(y => y.id === id); if (!x) return json({ error: 'Not found.' }, 404);
-      x.hidden = action === 'hide'; await save(env, 'approved', approved); return json({ ok: true });
+      x.hidden = action === 'hide'; await save(env, A, approved); return json({ ok: true });
     }
     return json({ error: 'Unknown action.' }, 404);
   }
@@ -198,11 +274,15 @@ async function api(req, env, path, body) {
 }
 
 export default {
-  async fetch(req, env) {
-    const path = new URL(req.url).pathname;
+  async fetch(req, env, ctx) {
+    const u = new URL(req.url), path = u.pathname;
     if (req.method === 'OPTIONS') return new Response(null, { headers: CORS });
+    // short addresses for each night: /newspeak → that guide's home
+    const short = path.replace(/^\/|\/$/g, '').toLowerCase();
+    if (short && !short.includes('/') && events(env)[short]) return Response.redirect(u.origin + '/?event=' + short, 302);
     if (!path.startsWith('/api/')) return env.ASSETS.fetch(req);
     if (env.GATE_ORIGIN) return viaGate(req, env, path);
+    if (ctx && ctx.waitUntil && !env.waitUntil) env = { ...env, waitUntil: p => ctx.waitUntil(p) };
     const body = req.method === 'POST' ? await req.json().catch(() => ({})) : {};
     return api(req, env, path, body);
   }

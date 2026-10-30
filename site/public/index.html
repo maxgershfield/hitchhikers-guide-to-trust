@@ -42,6 +42,7 @@ footer a{color:var(--pale)}
   <div class="kicker">Don't Panic</div>
   <h1>The Hitchhiker's Guide<br>to <span>Trust</span></h1>
   <p class="subtitle">A Galaxy of Local-First Verifiable Trust Communities, Agents, Guides and Guidance Built with Trust Tasks</p>
+  <p class="lede" id="tonight" style="color:var(--blue)"></p>
   <p class="lede">How a community's trust graph forms around guides and guidance, and why it should be kept locally. Read it, play with it, and add your own at the end, while the gate is open.</p>
   <div class="doors">
     <a class="door" href="guide/?path=workshop"><div class="micro">IIW 43 · the workshop</div><h2>The <span>workshop</span></h2><p>The main thread through every part, with the deeper scenes one touch away, and room for questions as we go.</p></a>
@@ -58,6 +59,13 @@ footer a{color:var(--pale)}
 (async () => { const g = document.getElementById('gate'); let open = false, host = '';
   try { const r = await fetch('/api/gate', {cache: 'no-store'}); const d = await r.json(); open = r.ok && d.gate === 'open'; host = d.host || ''; } catch (e) {}
   g.innerHTML = open ? `<span class="dot on"></span>Gate open${host && host !== 'worker' ? ' · held by ' + host.replace(/[<>&"]/g, '') : ''}` : '<span class="dot"></span>Gate closed: the node holding this site is offline; you can still read'; })();
+
+// tonight's guide: which night this is, how far its chain has grown, and the other nights
+(async () => { try { const d = await (await fetch('/api/events', {cache: 'no-store'})).json(), cur = (window.DP && DP.event) || d.default, me = d.events.find(e => e.id === cur) || d.events[0];
+  const others = d.events.filter(e => e.id !== me.id).map(e => `<a href="/${e.id}" style="color:inherit">${e.name} →</a>`).join(' · ');
+  document.getElementById('tonight').innerHTML = `Tonight: <b>${me.name}</b> · ${me.stars} star${me.stars === 1 ? '' : 's'} since its genesis · <a href="chain/?event=${me.id}" style="color:inherit">see the chain →</a>${others ? '<br><span style="opacity:.7">Also: ' + others + '</span>' : ''}`;
+  document.querySelectorAll('a.door[href^="guide/"]').forEach(a => a.href += (a.href.includes('?') ? '&' : '?') + 'event=' + me.id);
+} catch (e) {} })();
 </script>
 </body>
 </html>

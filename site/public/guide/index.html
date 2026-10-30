@@ -316,6 +316,16 @@ svg text{font-family:var(--mono)}
   <aside class="notes">Most of the hour lives here. Let a question pick the scene: "go deeper" jumps to it, and "back to the discussion" returns here. The close (next) has the call to action: thumb up, a proverb, or launch a guide.</aside>
 </section>
 
+<!-- tonight's guide, from its genesis -->
+<section class="scene" data-part="Close" data-sec="Genesis">
+  <div class="kick">Tonight</div>
+  <h1><span class="n">18.</span> The genesis of <b>tonight's guide</b></h1>
+  <div class="sub" id="gen-sub">You don't need to join anything to be part of its history.</div>
+  <svg id="gen" width="1440" height="470" viewBox="0 0 1440 470" style="left:80px;top:290px"></svg>
+  <div class="hint">Touch each step</div>
+  <aside class="notes">Tonight's guide has a genesis: the first link of its evidence chain names the night. Every thumb up, proverb, guide and voice note after it is a star: its hash on the chain, what's behind it sealed with the visitor's own key. No account and no joining. Each visitor keeps a claim code. Later, when they join a community (Mages City today; a DID from vta.farm if they need one), the code and their DID claim their stars; the guide records the DID only as a hash. What comes next, and is not built yet: claims signed by your DID, and a community recognising them as a credential, so the night's history becomes part of a VTC.</aside>
+</section>
+
 <section class="scene dark" data-part="Close" data-sec="Close">
   <h1 style="top:200px;font-size:150px">Don't <b>Panic.</b></h1>
   <div style="position:absolute;left:62px;top:390px;font-family:var(--head);font-weight:400;text-transform:uppercase;font-size:40px;line-height:1.15">Who holds your community's keys?<br><span style="color:var(--pale)">Who could recover them?</span></div>
@@ -335,8 +345,8 @@ svg text{font-family:var(--mono)}
 /* ---------- paths through the guide: a main thread, with deeper scenes as branches of the scene they belong to ---------- */
 (function () {
   const PATHS = {
-    workshop: ['Cover', 'Opportunity', 'Why local', 'Thumb up', 'Three nodes', 'The pathway', 'The guide', 'Cities', 'Evidence', 'Hitchhiker mage', 'Close'],
-    lightning: ['Cover', 'Opportunity', 'Thumb up', 'Three nodes', 'Hitchhiker mage', 'Close']};
+    workshop: ['Cover', 'Opportunity', 'Why local', 'Thumb up', 'Three nodes', 'The pathway', 'The guide', 'Cities', 'Evidence', 'Hitchhiker mage', 'Genesis', 'Close'],
+    lightning: ['Cover', 'Opportunity', 'Thumb up', 'Three nodes', 'Hitchhiker mage', 'Genesis', 'Close']};
   // where each scene belongs when it is not on the main thread
   const PARENT = {'Built': 'Opportunity', 'Why local': 'Opportunity', 'Local': 'Why local', 'Cities': 'Why local', 'Privacy': 'Thumb up', 'Three graphs': 'Privacy', 'Trust': 'Thumb up',
     'A visit': 'Three nodes', 'The pathway': 'Three nodes', 'The guide': 'Three nodes', 'Games': 'The guide', 'Evidence': 'Hitchhiker mage'};
@@ -727,6 +737,29 @@ const WHYCHECK = [
 $('#why-check').innerHTML = WHYCHECK.map((w, i) => `<button class="act" data-i="${i}">${w[0]}</button>`).join('');
 $$('#why-check .act').forEach(b => b.onclick = () => { $$('#why-check .act').forEach(x => x.classList.toggle('on', x === b)); pop(sceneOf('#why-check'), 1150, 215, WHYCHECK[+b.dataset.i][1]); });
 
+/* ---------- tonight's guide: genesis, contributions, the claim, and what comes next ---------- */
+const GEN = [
+  ['Genesis', 'The first link names the night: the guide to this place, on this date. Everything after it is its history.', 'now', '✦'],
+  ['Presence', 'A thumb up: your mark joins the guide. No account, no joining.', 'now', '👍'],
+  ['Proverbs and guides', 'What you write is sealed with your own key; the keeper shows proverbs and guides once approved.', 'now', '📖'],
+  ['Voice notes', 'Up to 45 seconds, sealed on your phone before it leaves. Only you can play it back.', 'now', '🎙'],
+  ['Your claim', 'Keep your claim code. Join when you are ready (no DID? vta.farm makes one) and claim your stars with your DID.', 'now', '🗝'],
+  ['Next: recognised', 'Claims signed by your DID, and a community that reads them as a credential: the night becomes part of a VTC.', 'next', '✧']];
+let genOn = -1;
+function genDraw() {
+  const s = $('#gen'); s.innerHTML = ''; const y = 170, x0 = 120, dx = 240;
+  s.append(el('line', {x1: x0, y1: y, x2: x0 + dx * 4, y2: y, stroke: C.cobalt, 'stroke-width': 3}));
+  s.append(el('line', {x1: x0 + dx * 4, y1: y, x2: x0 + dx * 5, y2: y, stroke: C.dim, 'stroke-width': 2, 'stroke-dasharray': '5 8'}));
+  GEN.forEach((g, i) => { const x = x0 + i * dx, on = genOn >= i, next = g[2] === 'next', grp = el('g', {class: 'click'});
+    grp.append(el('circle', {cx: x, cy: y, r: i === 0 ? 46 : 38, fill: next ? C.paper : on ? (i === 0 ? '#E8C873' : C.cobalt) : C.off, stroke: next ? C.dim : C.ink, 'stroke-width': 2, 'stroke-dasharray': next ? '4 6' : ''}));
+    const t = el('text', {x, y: y + 13, 'text-anchor': 'middle', 'font-size': 32}); t.textContent = g[3]; grp.append(t);
+    grp.append(el('text', {x, y: y + 82, 'text-anchor': 'middle', 'font-size': 15, 'font-weight': 700, fill: next ? C.dim : C.ink}, g[0].toUpperCase()));
+    grp.append(el('text', {x, y: y + 104, 'text-anchor': 'middle', 'font-size': 12, fill: next ? C.dim : C.cobalt}, next ? 'NOT BUILT YET' : i === 0 ? 'LINK #0' : 'TONIGHT'));
+    grp.onclick = () => { genOn = i; genDraw(); $('#gen-sub').textContent = g[1]; }; s.append(grp); });
+  s.append(el('text', {x: 720, y: 420, 'text-anchor': 'middle', 'font-size': 22, fill: C.ink}, "DON'T PANIC: YOUR NOTES ARE PART OF THE GUIDE'S FIRST PAGE"));
+}
+genDraw();
+
 /* ---------- the hitchhiker mage: one agent, many communities ---------- */
 const VTCS = [
   ['Mages City', 170, 350, 'Home', 'Admitted by work evidence. Its standing travels with it as roots anyone can check.'],
@@ -865,7 +898,7 @@ if ($('#disc-q')) {
 
 /* ---------- the chain, live: how many stars, one touch away ---------- */
 (function () { const api = location.protocol.startsWith('http') ? '' : 'https://hitchhiker.mages.city', chip = $('#stars');
-  const tick = async () => { try { const r = await fetch(api + '/api/chain?since=99999999', {cache: 'no-store'}); if (!r.ok) return; const d = await r.json();
+  const tick = async () => { try { const r = await fetch(window.DP ? DP.u('/api/chain?since=99999999') : api + '/api/chain?since=99999999', {cache: 'no-store'}); if (!r.ok) return; const d = await r.json(); d.length = Math.max(0, d.length - 1); // not counting the genesis
     chip.textContent = `✦ ${d.length} star${d.length === 1 ? '' : 's'} on the chain ↗`; chip.style.display = ''; } catch (e) {} };
   if (!location.protocol.startsWith('http')) chip.href = 'https://hitchhiker.mages.city/chain/';
   tick(); setInterval(tick, 8000); })();

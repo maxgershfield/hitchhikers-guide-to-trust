@@ -18,44 +18,65 @@
 .dp-approved{font-family:"Space Grotesk","Segoe UI",Arial,sans-serif}.dp-item{border-left:3px solid #1F4BFF;padding:6px 12px;margin:0 0 8px;font-size:18px}
 .dp-item small{display:block;font-family:"Space Mono",Consolas,monospace;font-size:12px;text-transform:uppercase;opacity:.7}`;
   const st = document.createElement('style'); st.textContent = css; document.head.append(st);
-  const api = (location.protocol.startsWith('http') ? '' : 'https://hitchhiker.mages.city');
-  const chainUrl = (location.protocol.startsWith('http') ? '/chain/' : 'https://hitchhiker.mages.city/chain/');
+  const api = (location.protocol.startsWith('http') ? '' : 'https://hitchhiker.mages.city'), U = p => window.DP ? DP.u(p) : api + p;
+  const chainUrl = (location.protocol.startsWith('http') ? '/chain/' : 'https://hitchhiker.mages.city/chain/') + (window.DP && DP.event ? '?event=' + DP.event : '');
 
   document.querySelectorAll('[data-prompt]').forEach(box => {
     box.className = 'dp-prompt'; let kind = 'thumb';
-    box.innerHTML = `<div class="dp-tabs"><button class="on" data-k="thumb">👍 Thumb up</button><button data-k="proverb">A proverb</button><button data-k="guide">Launch a guide</button></div>
-      <p class="dp-thumb">The first trust task: put your thumb up. Your mark joins the evidence chain, the public face of this community's guide: see yourself in it, and start contributing.</p>
+    box.innerHTML = `<div class="dp-tabs"><button class="on" data-k="thumb">👍 Thumb up</button><button data-k="proverb">A proverb</button><button data-k="guide">Launch a guide</button><button data-k="voice">🎙 Voice note</button></div>
+      <p class="dp-thumb">The first trust task: put your thumb up. Your mark joins tonight's guide from its genesis: no account, no joining. What you add is sealed with your own key; claim it later, when you join.</p>
+      <div class="dp-voice" style="display:none"><p class="dp-thumb">Say what tonight taught you, up to 45 seconds. It is sealed on your phone before it leaves; only you can play it back. Its star joins the guide.</p><button type="button" class="dp-go dp-rec">● Record</button> <span class="dp-secs"></span> <audio class="dp-play" controls style="display:none;vertical-align:middle;max-width:240px"></audio></div>
       <input class="dp-title" maxlength="40" placeholder="Name your guide" style="display:none">
       <textarea class="dp-text" maxlength="160" placeholder="Don't panic; …" style="display:none"></textarea>
       <div class="dp-row"><input class="dp-by" maxlength="40" placeholder="from (optional)" style="display:none"><button class="dp-go">Thumb up</button></div>
       <div class="dp-msg"></div><div class="dp-you"></div><div class="dp-gate"></div>`;
     const $ = s => box.querySelector(s);
-    const mode = () => { const t = kind === 'thumb';
-      $('.dp-thumb').style.display = t ? '' : 'none'; $('.dp-text').style.display = t ? 'none' : ''; $('.dp-by').style.display = t ? 'none' : '';
+    const mode = () => { const t = kind === 'thumb', v = kind === 'voice';
+      $('.dp-thumb').style.display = t ? '' : 'none'; $('.dp-voice').style.display = v ? '' : 'none'; $('.dp-text').style.display = t || v ? 'none' : ''; $('.dp-by').style.display = t || v ? 'none' : '';
       $('.dp-title').style.display = kind === 'guide' ? '' : 'none'; $('.dp-go').textContent = t ? 'Thumb up' : 'Send';
       $('.dp-text').placeholder = kind === 'guide' ? 'Its first line of guidance' : "Don't panic; …";
-      $('.dp-msg').textContent = t ? '' : 'Its star joins the chain now, sealed with your key; the keeper reads it before it shows on the guide.'; };
+      $('.dp-msg').textContent = t || v ? '' : 'Its star joins the chain now, sealed with your key; the keeper reads it before it shows on the guide.'; if (v) $('.dp-go').textContent = 'Send the note'; };
     box.querySelectorAll('.dp-tabs button').forEach(b => b.onclick = () => { kind = b.dataset.k; box.querySelectorAll('.dp-tabs button').forEach(x => x.classList.toggle('on', x === b)); mode(); });
     box.addEventListener('keydown', e => e.stopPropagation());
     // the gate: when the community node hosting the graph is offline, the door is closed
     const gate = async () => { const g = $('.dp-gate'); let open = false, host = '';
-      try { const r = await fetch(api + '/api/gate', { cache: 'no-store' }); const d = await r.json(); open = r.ok && d.gate === 'open'; host = d.host || ''; } catch (e) {}
+      try { const r = await fetch(U('/api/gate'), { cache: 'no-store' }); const d = await r.json(); open = r.ok && d.gate === 'open'; host = d.host || ''; } catch (e) {}
       g.innerHTML = open ? `<span class="dp-dot on"></span>Gate open${host && host !== 'worker' ? ' · held by ' + esc(host) : ''}` : '<span class="dp-dot"></span>Gate closed: the community node is offline';
       box.querySelectorAll('textarea,input,.dp-go').forEach(x => x.disabled = !open); };
     gate(); setInterval(gate, 8000);
+    // a voice note: recorded here, sealed here, sent as a sealed box
+    let rec = null, chunks = [], blob = null, secs = 0, tick = null, mime = '';
+    const stopRec = () => { if (rec && rec.state === 'recording') rec.stop(); clearInterval(tick); };
+    $('.dp-rec').onclick = async () => {
+      if (rec && rec.state === 'recording') { stopRec(); return; }
+      try { const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mime = ['audio/webm;codecs=opus', 'audio/mp4', 'audio/webm'].find(t => window.MediaRecorder && MediaRecorder.isTypeSupported(t)) || '';
+        rec = new MediaRecorder(stream, mime ? { mimeType: mime, audioBitsPerSecond: 24000 } : { audioBitsPerSecond: 24000 }); chunks = []; secs = 0; blob = null;
+        rec.ondataavailable = e => e.data.size && chunks.push(e.data);
+        rec.onstop = () => { stream.getTracks().forEach(t => t.stop()); blob = new Blob(chunks, { type: rec.mimeType || mime || 'audio/webm' }); const a = $('.dp-play'); a.src = URL.createObjectURL(blob); a.style.display = ''; $('.dp-rec').textContent = '● Record again'; $('.dp-secs').textContent = secs + ' s · ready to send'; };
+        rec.start(); $('.dp-rec').textContent = '■ Stop'; $('.dp-play').style.display = 'none';
+        tick = setInterval(() => { secs++; $('.dp-secs').textContent = secs + ' s'; if (secs >= 45) stopRec(); }, 1000);
+      } catch (e) { $('.dp-msg').textContent = 'No microphone here (or it was not allowed).'; } };
     const you = async link => { if (!link || !window.DP) return; DP.remember(link.hash); const mk = await DP.mark();
       $('.dp-you').innerHTML = `Your mark <b>${DP.sigil(mk)}</b> · ${esc(DP.spell(mk))}<br>link #${link.seq}: ${DP.sigil(link.hash)} ${esc(DP.spell(link.hash))} · <a href="${chainUrl}" target="_blank" rel="noopener">see yourself in the guide →</a>`; };
-    $('.dp-go').onclick = async () => { const m = $('.dp-msg'); m.textContent = 'Sending…';
+    $('.dp-go:not(.dp-rec)').onclick = async () => { const m = $('.dp-msg');
+      if (kind === 'voice') { if (!blob || !window.DP) { m.textContent = 'Record a note first.'; return; } m.textContent = 'Sealing and sending…';
+        try { const type = new TextEncoder().encode((blob.type || 'audio/webm') + '\n'), audio = new Uint8Array(await blob.arrayBuffer()), all = new Uint8Array(type.length + audio.length); all.set(type); all.set(audio, type.length);
+          const box = await DP.sealBytes(all), r = await fetch(U('/api/voice'), { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ mark: await DP.mark(), iv: box.iv, ct: box.ct, secs }) });
+          const d = await r.json(); if (!r.ok) { m.textContent = d.error || 'That did not go through.'; return; }
+          m.textContent = 'Your voice note is sealed and on the guide. Only you can play it back.'; blob = null; $('.dp-secs').textContent = ''; $('.dp-rec').textContent = '● Record'; you(d.link);
+        } catch (e) { m.textContent = 'No connection. Try again in a moment.'; } return; }
+      m.textContent = 'Sending…';
       try { const mark = window.DP ? await DP.mark() : '', sealed = window.DP ? await DP.seal(kind === 'thumb' ? {kind, at: new Date().toISOString()} : {kind, title: $('.dp-title').value, text: $('.dp-text').value, by: $('.dp-by').value}) : null;
         const claim = kind === 'thumb' && window.DP ? await DP.claimHash() : undefined;
-        const r = kind === 'thumb' ? await fetch(api + '/api/thumb', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ mark, sealed, claim }) })
-          : await fetch(api + '/api/submit', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ kind, title: $('.dp-title').value, text: $('.dp-text').value, by: $('.dp-by').value, mark, sealed }) });
+        const r = kind === 'thumb' ? await fetch(U('/api/thumb'), { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ mark, sealed, claim }) })
+          : await fetch(U('/api/submit'), { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ kind, title: $('.dp-title').value, text: $('.dp-text').value, by: $('.dp-by').value, mark, sealed }) });
         const d = await r.json(); if (!r.ok) { m.textContent = d.error || 'That did not go through.'; return; }
         $('.dp-text').value = ''; $('.dp-title').value = '';
-        m.textContent = kind === 'thumb' ? 'Thumb up. A ride stopped: you are on the chain.' : kind === 'guide' ? 'Received. Its star is on the chain, sealed with your key; the keeper will launch the guide.' : 'Received. Its star is on the chain, sealed with your key; it shows on the guide once approved.';
+        m.textContent = kind === 'thumb' ? "Thumb up. You're part of tonight's guide." : kind === 'guide' ? 'Received. Its star is on the chain, sealed with your key; the keeper will launch the guide.' : 'Received. Its star is on the chain, sealed with your key; it shows on the guide once approved.';
         you(d.link);
         if (kind === 'thumb' && window.DP) { const c = await DP.claimCode();
-          $('.dp-you').insertAdjacentHTML('beforeend', `<div style="margin-top:10px"><a href="${chainUrl}#join" target="_blank" rel="noopener">Join Mages City by DID, bringing your stars as evidence →</a></div><div class="dp-claim"><div>Your claim code, for the night's group chat:</div><b>${c.sigil} ${esc(c.words)}</b> <button type="button" class="dp-copy">copy</button><div style="text-transform:none;opacity:.85">Paste it in the chat: the bot writes your claim onto the community's chain and answers with a proverb. Only you have this code.</div></div>`);
+          $('.dp-you').insertAdjacentHTML('beforeend', `<div style="margin-top:10px"><a href="${chainUrl}#join" target="_blank" rel="noopener">Join Mages City, and claim your stars →</a></div><div class="dp-claim"><div>Your claim code. Keep it: it proves these stars are yours.</div><b>${c.sigil} ${esc(c.words)}</b> <button type="button" class="dp-copy">copy</button><div style="text-transform:none;opacity:.85">Paste it in the night's group chat for a proverb back, or, once you have joined (no DID yet? vta.farm makes one), claim your stars with it and your DID on the chain page. Only you have this code.</div></div>`);
           const cp = $('.dp-copy'); if (cp) cp.onclick = () => { try { navigator.clipboard.writeText(c.sigil + ' ' + c.words); cp.textContent = 'copied'; } catch (e) {} }; }
       } catch (e) { m.textContent = 'No connection. Try again in a moment.'; } };
   });
@@ -64,7 +85,7 @@
   if (shelves.length) {
     const draw = list => shelves.forEach(s => { s.className = 'dp-approved'; const n = +(s.dataset.approved || 6);
       s.innerHTML = list.slice(-n).reverse().map(x => x.kind === 'guide' ? `<div class="dp-item"><small>new guide</small><b>${esc(x.title)}</b>: ${esc(x.text)}</div>` : `<div class="dp-item">${esc(x.text)}${x.by ? `<small>${esc(x.by)}</small>` : ''}</div>`).join(''); });
-    const poll = async () => { try { const r = await fetch(api + '/api/approved', { cache: 'no-store' }); if (r.ok) draw(await r.json()); } catch (e) {} };
+    const poll = async () => { try { const r = await fetch(U('/api/approved'), { cache: 'no-store' }); if (r.ok) draw(await r.json()); } catch (e) {} };
     poll(); setInterval(poll, 15000);
   }
 })();

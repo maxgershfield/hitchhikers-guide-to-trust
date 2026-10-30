@@ -44,7 +44,9 @@ const ASSETS = { async fetch(req) {
 // NODE_NAME labels where the gate is held (shown on the end prompt), e.g. NODE_NAME="Mitch's Pi".
 const env = { PROVERBS, ASSETS, KEEPER_KEY, NODE_NAME: process.env.NODE_NAME || 'this node',
   // a room node (one of several Pis feeding one scroll): SCROLL_ORIGIN, ROOM_NAME, ROOM_KEY. The central scroll: ROOM_KEYS.
-  SCROLL_ORIGIN: process.env.SCROLL_ORIGIN, ROOM_NAME: process.env.ROOM_NAME, ROOM_KEY: process.env.ROOM_KEY, ROOM_KEYS: process.env.ROOM_KEYS };
+  SCROLL_ORIGIN: process.env.SCROLL_ORIGIN, ROOM_NAME: process.env.ROOM_NAME, ROOM_KEY: process.env.ROOM_KEY, ROOM_KEYS: process.env.ROOM_KEYS,
+  // which guides (events) this node keeps, and the community it leads into
+  EVENTS: process.env.EVENTS, DEFAULT_EVENT: process.env.DEFAULT_EVENT, CITY_API: process.env.CITY_API, CITY_JOIN: process.env.CITY_JOIN };
 if (env.SCROLL_ORIGIN && env.ROOM_NAME && env.ROOM_KEY) {
   const beat = () => fetch(env.SCROLL_ORIGIN.replace(/\/$/, '') + '/api/room/beat', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + env.ROOM_KEY }, body: JSON.stringify({ room: env.ROOM_NAME, host: env.NODE_NAME }) }).catch(() => {});
   beat(); setInterval(beat, 30000).unref();
