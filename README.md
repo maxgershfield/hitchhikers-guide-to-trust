@@ -20,8 +20,8 @@ On the site:
 | page | what |
 |---|---|
 | `/` | home: the title, the doors, and the first trust task (thumb up) |
-| `/guide/?path=workshop` | **the workshop**: a short guide, then "Over to you" (questions, and every deeper scene one touch away) |
-| `/guide/?path=lightning` | **the lightning talk**: five scenes and the call to action |
+| `/guide/?path=iiw` | **the IIW workshop**: each story, then its technical telling (teleport to and from the lightning talk at any scene) |
+| `/guide/?path=lightning` | **the lightning talk**: stories only |
 | `/guide/` | the whole guide, 18 scenes |
 | `/newspeak`, `/iiw43`, `/archive` | add to that night: one guide, one chain from its genesis, each night opening its own page (set nights' names, dates and places with `EVENTS` before each night's first visitor) |
 | `/chain/` | **the evidence chain**: the public face of the guide. Every thumb up, proverb and guide is a star on the Star's 64 states; drag to turn it; point to see a star's threads and its owner's evidence root; *The scroll* writes the whole chain in the sigil script. `?demo` shows an example night |
