@@ -256,17 +256,6 @@ svg text{font-family:var(--mono)}
   <aside class="notes">Stages unlock by demonstrated understanding and contribution, not fees or identity checks. Each stage can become a credential the VTC issues; a predicate proof lets a member show the stage without showing who vouched.</aside>
 </section>
 
-<!-- 08 don't panic -->
-<section class="scene dark" data-part="IV" data-sec="Don't Panic">
-  <div class="frame"></div>
-  <div class="kick">Part IV · Guides and guidance</div>
-  <h1 style="font-size:120px"><span class="n">14.</span> Don't <b>Panic</b></h1>
-  <div class="sub" id="pv-site" style="top:150px;max-width:1300px;color:var(--pale);font-family:var(--mono);font-size:24px">Send a proverb about not panicking.</div>
-  <svg id="pv" width="1440" height="460" viewBox="0 0 1440 460" style="left:80px;top:330px"></svg>
-  <div class="hint" id="pv-hint">Touch one proverb, then another, to say it resonates</div>
-  <div style="position:absolute;right:60px;bottom:80px;display:flex;gap:8px;opacity:.6"><input id="pv-text" placeholder="type one from chat" style="font-family:var(--mono);font-size:14px;background:transparent;border:1px solid #6b6a64;color:var(--off);padding:7px 10px;width:320px"><button class="act" style="padding:7px 12px;font-size:12px" onclick="pvAdd()">Add</button></div>
-  <aside class="notes">Don't Panic is a meme every Hitchhiker already shares: a common understanding that travels across different verifiable trust communities before any of them trusts the other. Proverbs left by visitors appear here once they are approved. You can also type one from chat. Ask "which of these resonates with which?" and draw the edges: the room's own small trust graph.</aside>
-</section>
 
 <!-- 09 work others can check -->
 <section class="scene" data-part="V" data-sec="Evidence">
@@ -350,7 +339,7 @@ svg text{font-family:var(--mono)}
     lightning: ['Cover', 'Opportunity', 'Thumb up', 'Three nodes', 'Hitchhiker mage', 'Close']};
   // where each scene belongs when it is not on the main thread
   const PARENT = {'Built': 'Opportunity', 'Why local': 'Opportunity', 'Local': 'Why local', 'Cities': 'Why local', 'Privacy': 'Thumb up', 'Three graphs': 'Privacy', 'Trust': 'Thumb up',
-    'A visit': 'Three nodes', 'The pathway': 'Three nodes', 'The guide': 'Three nodes', 'Games': 'The guide', "Don't Panic": 'The guide', 'Evidence': 'Hitchhiker mage'};
+    'A visit': 'Three nodes', 'The pathway': 'Three nodes', 'The guide': 'Three nodes', 'Games': 'The guide', 'Evidence': 'Hitchhiker mage'};
   const path = new URLSearchParams(location.search).get('path'), list = PATHS[path], stage = document.getElementById('stage');
   const all = [...stage.querySelectorAll('.scene')], bySec = n => all.find(x => x.dataset.sec === n), anchor = document.getElementById('overview');
   document.body.dataset.path = list ? path : 'guide';
@@ -543,39 +532,6 @@ function ladDraw() {
 }
 $('#ladder').onclick = () => { lad = (lad + 1) % LAD.length; ladDraw(); };
 ladDraw();
-
-/* ---------- 08 Don't Panic proverb graph (live with ?wall=) ---------- */
-const Q = new URLSearchParams(location.search);
-// hosted: read this site's own proverb wall; opened as a file: only with ?wall=
-// approved proverbs from the site (or the deployed site when opened as a file)
-const wall = (location.protocol.startsWith('http') ? '' : 'https://dontpanic.mages.city') + '/api/approved';
-$('#pv-site').innerHTML = 'A shared phrase between communities: the first common understanding of a first person network. <span style="color:#fff">Add a proverb at the end →</span>';
-let SRV = [], SRVE = [], LOC = store.get('local', [{id: 1, text: "Don't panic; check the checksum.", by: ''}, {id: 2, text: 'A towel and a runbook: never travel without both.', by: ''}]), LE = store.get('edges', []), pvSel = null, pos = {};
-const PV = () => [...SRV, ...LOC].filter((p, i, a) => a.findIndex(q => q.text.trim().toLowerCase() === p.text.trim().toLowerCase()) === i), E = () => { const a = [...SRVE]; LE.forEach(e => { if (!a.some(x => x[0] === e[0] && x[1] === e[1])) a.push(e); }); return a; };
-function pvAdd() { const t = $('#pv-text').value.trim(); if (!t) return; LOC.push({id: Date.now(), text: t, by: ''}); store.set('local', LOC); $('#pv-text').value = ''; pvDraw(); }
-$('#pv-text').addEventListener('keydown', e => { if (e.key === 'Enter') pvAdd(); });
-const STOP = new Set('a an the and or of to in on at is are be it its you your we our for with not no do dont don that this as by from when if what who'.split(' '));
-const words = t => new Set(t.toLowerCase().replace(/[^a-z ]/g, ' ').split(/\s+/).filter(w => w.length > 2 && !STOP.has(w)));
-function pvDraw() {
-  const P = PV(), s = $('#pv'), w = 1440, h = 540; s.innerHTML = '';
-  P.forEach((p, i) => { if (!pos[p.id]) { const a = i * 2.39996; pos[p.id] = {x: w / 2 + 50 * Math.sqrt(i + 1) * Math.cos(a), y: h / 2 + 40 * Math.sqrt(i + 1) * Math.sin(a)}; } });
-  const soft = []; for (let i = 0; i < P.length; i++) for (let j = i + 1; j < P.length; j++) { const a = words(P[i].text), b = words(P[j].text); let n = 0; a.forEach(x => b.has(x) && n++); if (n) soft.push([P[i].id, P[j].id, n]); }
-  P.forEach((p, i) => { const c = i % 4, r = Math.floor(i / 4); pos[p.id] = {x: 190 + c * 350 + (r % 2) * 90, y: 50 + r * 104}; });
-  if (!P.length) { s.append(el('text', {x: w / 2, y: h / 2, 'text-anchor': 'middle', fill: C.dim, 'font-size': 20}, 'WAITING FOR THE FIRST PROVERB…')); return; }
-  const deg = {}; E().forEach(e => { deg[e[0]] = (deg[e[0]] || 0) + 1; deg[e[1]] = (deg[e[1]] || 0) + 1; });
-  soft.forEach(e => { const p = pos[e[0]], q = pos[e[1]]; s.append(el('line', {x1: p.x, y1: p.y, x2: q.x, y2: q.y, stroke: C.pale, opacity: .3, 'stroke-dasharray': '3 7'})); });
-  E().forEach(e => { const p = pos[e[0]], q = pos[e[1]]; if (p && q) s.append(el('line', {x1: p.x, y1: p.y, x2: q.x, y2: q.y, stroke: C.cobalt, 'stroke-width': 3})); });
-  P.forEach(p => { const o = pos[p.id], r = 8 + 4 * (deg[p.id] || 0), g = el('g', {class: 'click'});
-    g.append(el('circle', {cx: o.x, cy: o.y, r: r + 8, fill: 'none', stroke: C.pale, opacity: .4}));
-    g.append(el('circle', {cx: o.x, cy: o.y, r, fill: pvSel === p.id ? '#FFFFFF' : C.pale}));
-    const t = el('text', {x: o.x, y: o.y + r + 26, 'text-anchor': 'middle', fill: C.off, 'font-size': 16}); t.style.fontFamily = 'var(--body)'; t.textContent = p.text.length > 38 ? p.text.slice(0, 36) + '…' : p.text; g.append(t);
-    g.onclick = () => pvClick(p.id); s.append(g); });
-}
-function pvClick(id) { if (pvSel == null) pvSel = id; else if (pvSel === id) pvSel = null; else { const k = [Math.min(pvSel, id), Math.max(pvSel, id)]; if (!LE.some(e => e[0] === k[0] && e[1] === k[1])) LE.push(k); store.set('edges', LE); pvSel = null; }
-  $('#pv-hint').textContent = pvSel == null ? 'Touch one proverb, then another, to say it resonates' : 'Now touch the one it resonates with'; pvDraw(); }
-async function poll() { try { const d = await (await fetch(wall, {cache: 'no-store'})).json(); SRV = d.filter(x => x.kind === 'proverb').map(x => ({id: x.id, text: x.text, by: x.by || ''})); pvDraw(); } catch (e) {} }
-if (wall) { poll(); setInterval(poll, 5000); }
-pvDraw();
 
 /* ---------- 09 seal ---------- */
 async function sha(s) { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join(''); }

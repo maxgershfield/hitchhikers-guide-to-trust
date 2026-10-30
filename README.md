@@ -22,7 +22,7 @@ On the site:
 | `/` | home: the title, the doors, and the first trust task (thumb up) |
 | `/guide/?path=workshop` | **the workshop**: a short guide, then "Over to you" (questions, and every deeper scene one touch away) |
 | `/guide/?path=lightning` | **the lightning talk**: five scenes and the call to action |
-| `/guide/` | the whole guide, 19 scenes |
+| `/guide/` | the whole guide, 18 scenes |
 | `/chain/` | **the evidence chain**: the public face of the guide. Every thumb up, proverb and guide is a star on the Star's 64 states; drag to turn it; point to see a star's threads and its owner's evidence root; *The scroll* writes the whole chain in the sigil script. `?demo` shows an example night |
 | `/notes` | work notes: the technical side, written plainly |
 | `/keeper` | the keeper's page: approve, hide, export guides as wiki pages |
