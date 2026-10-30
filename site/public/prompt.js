@@ -15,6 +15,7 @@
 .dp-you{margin-top:10px;line-height:1.6;font-family:"Space Mono",Consolas,monospace;font-size:13px;text-transform:uppercase}.dp-you b{font-size:24px;letter-spacing:.08em}.dp-you a{color:#8EA4FF}
 .dp-gate{font-family:"Space Mono",Consolas,monospace;font-size:13px;text-transform:uppercase;margin-top:10px;opacity:.85}.dp-dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#C0504D;margin-right:8px}.dp-dot.on{background:#3FCB6B}
 .dp-prompt :disabled{opacity:.45;cursor:not-allowed}
+.dp-prompt svg{position:static!important;display:block}.dp-mbox .dp-thumb{font-size:16px}
 .dp-approved{font-family:"Space Grotesk","Segoe UI",Arial,sans-serif}.dp-item{border-left:3px solid #1F4BFF;padding:6px 12px;margin:0 0 8px;font-size:18px}
 .dp-item small{display:block;font-family:"Space Mono",Consolas,monospace;font-size:12px;text-transform:uppercase;opacity:.7}`;
   const st = document.createElement('style'); st.textContent = css; document.head.append(st);
@@ -24,7 +25,7 @@
   document.querySelectorAll('[data-prompt]').forEach(box => {
     box.className = 'dp-prompt'; const Q = new URLSearchParams(location.search), W = (Q.get('w') || '').toLowerCase(), MEET = (Q.get('meet') || '').toLowerCase(); let kind = MEET ? 'meet' : 'thumb';
     box.innerHTML = `<div class="dp-tabs"><button data-k="thumb">👍 Thumb up</button><button data-k="proverb">A proverb</button><button data-k="guide">Launch a guide</button><button data-k="voice">🎙 Voice note</button><button data-k="meet">🤝 Meet</button></div>
-      <div class="dp-meet" style="display:none"><p class="dp-thumb">The Meet Rite: two phones, two yeses, one edge. A scan is only a meeting; an edge needs you both to agree.</p><button type="button" class="dp-go dp-mstart">Start a meeting</button> <input class="dp-mcode" maxlength="8" placeholder="or their meet code" style="width:180px;display:inline-block"> <button type="button" class="dp-go dp-mjoin">Join</button><div class="dp-mbox"></div></div>
+      <div class="dp-meet" style="display:none"><p class="dp-thumb">The Meet Rite: two phones, two yeses, one edge. A scan is only a meeting; an edge needs you both to agree.</p><button type="button" class="dp-go dp-mstart">Start a meeting</button> <input class="dp-mcode" maxlength="8" placeholder="their code" style="width:150px;display:inline-block"> <button type="button" class="dp-go dp-mjoin">Join</button><div class="dp-mbox"></div></div>
       <p class="dp-thumb">The first trust task: put your thumb up. Your mark joins tonight's guide from its genesis: no account, no joining. What you add is sealed with your own key; claim it later, when you join.</p>
       <div class="dp-voice" style="display:none"><p class="dp-thumb">Say what tonight taught you, up to 45 seconds. It is sealed on your phone before it leaves; only you can play it back. Its star joins the guide.</p><button type="button" class="dp-go dp-rec">● Record</button> <span class="dp-secs"></span> <audio class="dp-play" controls style="display:none;vertical-align:middle;max-width:240px"></audio></div>
       <input class="dp-title" maxlength="40" placeholder="Name your guide" style="display:none">
