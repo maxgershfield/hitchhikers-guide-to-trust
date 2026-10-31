@@ -338,9 +338,9 @@ svg text{font-family:var(--mono)}
 </section>
 
 <!-- 10 what we've built -->
-<section class="scene" data-part="I" data-sec="Built">
+<section class="scene" data-part="II" data-sec="Built">
   <div class="frame"></div>
-  <div class="kick">I · Why</div>
+  <div class="kick">II · The movement</div>
   <h1><span class="n">17.</span> How the <b>pieces fit</b></h1>
   <div class="sub" id="built-sub">Touch one.</div>
   <svg id="built" width="1400" height="480" viewBox="0 0 1400 480" style="left:100px;top:280px"></svg>
@@ -354,7 +354,7 @@ svg text{font-family:var(--mono)}
   <h1>Over to <b>you</b></h1>
   <div class="sub" id="disc-site" style="color:var(--off)">Put your thumb up while we talk.</div>
   <div id="disc-n" class="label" style="position:absolute;left:62px;top:300px;color:var(--pale);font-size:16px"></div>
-  <div id="disc-q" style="position:absolute;left:62px;top:340px;width:1300px;font-family:var(--head);font-weight:400;text-transform:uppercase;font-size:84px;line-height:1.02;color:var(--off)"></div>
+  <div id="disc-q" style="position:absolute;left:62px;top:340px;width:1250px;font-family:var(--body);font-weight:400;font-size:58px;line-height:1.22;color:var(--off)"></div>
   <div style="position:absolute;left:62px;top:720px;display:flex;gap:14px;align-items:center"><button class="act" onclick="discStep(-1)">←</button><button class="act" id="disc-btn" onclick="discStep(1)">Next question →</button><span class="label" style="color:#8f8c84">Any scene is one touch away: press All</span></div>
   <aside class="notes">Most of the hour lives here: about 25 minutes. Take the questions in order; let the room pull in any deeper scene (All, bottom right). Close on the proverb prompt.</aside>
 </section>
@@ -389,10 +389,10 @@ svg text{font-family:var(--mono)}
 (function () {
   const PATHS = {
     // the IIW workshop: each story, then its technical telling (the rest stays one touch deeper)
-    iiw: ['Cover', 'Request', 'Opportunity', 'Local', 'OpenVTC', 'Flow', 'The pathway', 'Hitchhiker mage', 'Thumb up', 'Field Guide', 'Discussion', 'Close'],
+    iiw: ['Cover', 'Request', 'Why local', 'Privacy', 'Opportunity', 'Built', 'Local', 'Cities', 'OpenVTC', 'Flow', 'Three nodes', 'The pathway', 'Hitchhiker mage', 'A visit', 'Evidence', 'Thumb up', 'Three graphs', 'Trust', 'Field Guide', 'The guide', 'Games', 'Genesis', 'Discussion', 'Close'],
     lightning: ['Cover', 'Request', 'Local', 'Thumb up', 'Field Guide', 'Genesis', 'Close'],
     // the whole guide: each part's story first, its deeper scenes after it
-    guide: ['Cover', 'Request', 'Why local', 'Privacy', 'Built', 'Opportunity', 'Local', 'Cities', 'OpenVTC', 'Flow', 'Three nodes', 'The pathway', 'Hitchhiker mage', 'A visit', 'Evidence', 'Thumb up', 'Three graphs', 'Trust', 'Field Guide', 'The guide', 'Games', 'Genesis', 'Close']};
+    guide: ['Cover', 'Request', 'Why local', 'Privacy', 'Opportunity', 'Built', 'Local', 'Cities', 'OpenVTC', 'Flow', 'Three nodes', 'The pathway', 'Hitchhiker mage', 'A visit', 'Evidence', 'Thumb up', 'Three graphs', 'Trust', 'Field Guide', 'The guide', 'Games', 'Genesis', 'Close']};
   // where each scene belongs when it is not on the main thread
   const PARENT = {'Opportunity': 'Local', 'Built': 'Request', 'Why local': 'Request', 'Privacy': 'Request', 'Cities': 'Local', 'Local': 'Request',
     'OpenVTC': 'Local', 'Flow': 'OpenVTC', 'Three nodes': 'OpenVTC', 'The pathway': 'OpenVTC', 'Hitchhiker mage': 'Local', 'A visit': 'Hitchhiker mage', 'Evidence': 'Hitchhiker mage',
