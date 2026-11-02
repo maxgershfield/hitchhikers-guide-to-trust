@@ -162,16 +162,6 @@ svg text{font-family:var(--mono)}
 </section>
 
 <!-- 01 one centre or many -->
-<section class="scene" data-part="I" data-sec="Why local">
-  <div class="frame"></div>
-  <div class="kick">I · Why</div>
-  <h1><span class="n">2.</span> One centre, <b>or many?</b></h1>
-  <div class="sub" id="why-sub">Every relationship runs through one platform. One point of capture.</div>
-  <svg id="why" width="935" height="476" viewBox="0 0 1100 560" style="left:380px;top:270px"></svg>
-  <div style="position:absolute;left:62px;top:300px;display:grid;gap:10px"><button class="act on" id="w1" onclick="why(0)">One centre</button><button class="act" id="w2" onclick="why(1)">Many local graphs</button></div>
-  <aside class="notes">Start on "one centre". Switch: each community keeps its own edges on its own node; federation between nodes is optional and carries proofs, not people.</aside>
-</section>
-
 <!-- 02 keep / share -->
 <section class="scene" data-part="I" data-sec="Privacy">
   <div class="frame"></div>
@@ -466,9 +456,15 @@ svg text{font-family:var(--mono)}
   <div style="position:absolute;left:760px;top:250px;width:640px;border-left:1px solid var(--line);padding-left:30px"><div class="label" style="color:var(--cobalt);font-weight:700">Who we invite</div><div style="font-family:var(--mono);font-size:15px;line-height:1.5;margin-top:6px">Individuals, communities, researchers, practitioners, institutions and organisations.</div></div>
   <div class="label" style="position:absolute;left:62px;top:350px;color:var(--cobalt);font-weight:700">Areas of contribution <span style="font-weight:400;font-style:italic;color:var(--muted)">· illustrative, not exhaustive</span></div>
   <div id="cb" style="position:absolute;left:62px;top:384px;width:1480px;height:240px"></div>
-  <div id="cb-you" style="position:absolute;left:62px;top:648px;width:1000px;font-family:var(--body);font-size:20px;color:var(--ink)"></div>
+  <div id="cb-you" style="position:absolute;left:62px;top:640px;width:1000px;font-family:var(--body);font-size:20px;color:var(--ink)"></div>
+  <div style="position:absolute;left:62px;top:700px;display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.04em">
+    <span class="label" style="color:var(--muted);font-weight:400">Bring it to</span>
+    <span style="border:1.5px solid var(--ink);padding:5px 10px">a community</span><span style="color:var(--cobalt)">+</span>
+    <span style="border:1.5px solid var(--ink);padding:5px 10px">an event</span><span style="color:var(--cobalt)">+</span>
+    <span style="border:1.5px solid var(--ink);padding:5px 10px">a ceremony</span><span style="color:var(--cobalt)">=</span>
+    <span style="background:var(--cobalt);color:#fff;padding:6px 12px">a verifiable trust event</span></div>
   <a class="slant" href="https://hitchhikers.earth" target="_blank" rel="noopener" style="position:absolute;right:70px;top:690px;font-size:34px;text-decoration:none;z-index:4">Join Hitchhikers →</a>
-  <aside class="notes">The reviewed assembly (v2) closes on the Request for Guidance as an open invitation, the same request the Hitchhikers' declaration makes (scene 1). Let people touch what they could bring; it stays on their device. Then: join the Hitchhikers, or put a thumbs up on tonight's page.</aside>
+  <aside class="notes">The reviewed assembly (v2) closes on the Request for Guidance as an open invitation, the same request the Hitchhikers' declaration makes (scene 1). Let people touch what they could bring; it stays on their device. Where they bring it: a verifiable trust event, a community + an event + a ceremony (a Pi Ceremony, a Table, a Palava), with the guide's chain as its evidence. Then: join the Hitchhikers, or put a thumbs up on tonight's page.</aside>
 </section>
 
 <!-- the hinge: from the Hitchhikers to the implementation -->
@@ -511,7 +507,7 @@ svg text{font-family:var(--mono)}
 <section class="scene" data-part="Close" data-sec="Genesis">
   <div class="kick">Tonight</div>
   <h1><span class="n">7.</span> Don't panic: tonight, <b>a new page</b></h1>
-  <div class="sub" id="gen-sub">You don't need to join anything to be part of its history.</div>
+  <div class="sub" id="gen-sub">Each night is a verifiable trust event: a community, an event, a ceremony, with the chain as its evidence. You don't need to join anything to be part of its history.</div>
   <svg id="gen" width="1440" height="470" viewBox="0 0 1440 470" style="left:80px;top:290px"></svg>
   <div class="hint">Touch each step</div>
   <aside class="notes">The Hitchhikers' guide has one evidence chain, from its genesis; each night (Newspeak House, IIW 43, the Internet Archive) opens its own page with a gathering link, and a person's stars across nights make one root. Every thumbs up, proverb, guide and voice note after it is a star: its hash on the chain, what's behind it sealed with the visitor's own key. No account and no joining. Each visitor keeps a claim code. Later, when they join a community (Mages City today; a DID from vta.farm if they need one), the code and their DID claim their stars; the guide records the DID only as a hash. What comes next, and is not built yet: claims signed by your DID, and a community recognising them as a credential, so the night's history becomes part of a VTC.</aside>
@@ -538,7 +534,7 @@ svg text{font-family:var(--mono)}
 (function () {
   // two halves: the Hitchhikers (their story, method and ceremonies), then the implementation (OpenVTC + VTI)
   const HH = ['Request', 'Public intelligence', 'Inheritance', 'Method', 'Knowing to doing', 'Principles', 'Consent', 'Ceremonies', 'Field Guide', 'The guide', 'Local', 'Speed of trust', 'Opportunity', 'Contribute'];
-  const VTI = ['Split', 'OpenVTC', 'Three nodes', 'Flow', 'Why local', 'Privacy', 'Thumbs up', 'Three graphs', 'Trust', 'Games', 'A visit', 'The pathway', 'Evidence', 'Hitchhiker mage', 'Cities', 'Baby Dragon', 'Built'];
+  const VTI = ['Split', 'OpenVTC', 'Three nodes', 'Flow', 'Privacy', 'Thumbs up', 'Three graphs', 'Trust', 'Games', 'A visit', 'The pathway', 'Evidence', 'Hitchhiker mage', 'Cities', 'Baby Dragon', 'Built'];
   const PATHS = {
     iiw: ['Cover', ...HH, ...VTI, 'Genesis', 'Discussion', 'Close'],
     lightning: ['Cover', 'Request', 'Public intelligence', 'Ceremonies', 'Field Guide', 'Local', 'Contribute', 'Split', 'OpenVTC', 'Thumbs up', 'Genesis', 'Close'],
@@ -546,7 +542,7 @@ svg text{font-family:var(--mono)}
   // where each scene belongs when it is not on the main thread (always inside its own half)
   const PARENT = {'Inheritance': 'Public intelligence', 'Method': 'Public intelligence', 'Knowing to doing': 'Method', 'Principles': 'Method', 'Consent': 'Public intelligence',
     'The guide': 'Field Guide', 'Speed of trust': 'Local', 'Opportunity': 'Local',
-    'OpenVTC': 'Split', 'Three nodes': 'OpenVTC', 'Flow': 'OpenVTC', 'Why local': 'Split', 'Privacy': 'Split', 'Three graphs': 'Thumbs up', 'Trust': 'Thumbs up', 'Games': 'Thumbs up',
+    'OpenVTC': 'Split', 'Three nodes': 'OpenVTC', 'Flow': 'OpenVTC', 'Privacy': 'Split', 'Three graphs': 'Thumbs up', 'Trust': 'Thumbs up', 'Games': 'Thumbs up',
     'A visit': 'OpenVTC', 'The pathway': 'OpenVTC', 'Evidence': 'Split', 'Hitchhiker mage': 'Split', 'Cities': 'Split', 'Baby Dragon': 'Split', 'Built': 'OpenVTC', 'Genesis': 'Close'};
   PATHS.workshop = PATHS.iiw; // older links
   const path = new URLSearchParams(location.search).get('path'), list = PATHS[path], stage = document.getElementById('stage');
@@ -656,7 +652,7 @@ function why(m) {
     $('#why-sub').textContent = 'Each community keeps its own graph, on its own node. Between them travel proofs, not people.'; }
   PTS.forEach(p => s.append(el('circle', {cx: p.x, cy: p.y, r: 9, fill: C.off, stroke: C.ink, 'stroke-width': 1.5})));
 }
-why(0);
+if ($('#why')) why(0);
 
 /* ---------- 02 keep / share ---------- */
 const KEEP = [['Your keys', 0], ['Personal notes', 0], ['Who vouched for you', 0], ['Full history', 0], ['Proof of a stage', 1], ['A field guide you co-wrote', 1], ['Hours given to the timebank', 1], ['An evidence root', 1]];
