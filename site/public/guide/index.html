@@ -32,6 +32,9 @@ body.reader #rd{display:block;position:fixed;inset:0;overflow-y:auto;background:
 #rd-k{font:700 12px/1.4 "Space Mono",Consolas,monospace;text-transform:uppercase;letter-spacing:.06em;color:#555}
 #rd-h{position:static;left:auto;top:auto;max-width:none;font-family:var(--head);font-weight:400;text-transform:uppercase;font-size:34px;line-height:1.02;margin:10px 0 14px}#rd-h b{font-weight:400;color:#1F4BFF}#rd-h .n{color:#1F4BFF}
 #rd-s{font-size:19px;line-height:1.5;margin:0 0 18px}
+#rd-act{display:none;margin:0 0 20px;padding:16px 14px;border:1.5px solid #1F4BFF;border-radius:6px;background:#F6F1E6;color:var(--ink)}
+#rd-act .dp-prompt{position:static!important;left:auto!important;top:auto!important;width:auto!important;max-height:none!important;overflow:visible!important;padding:0!important;color:var(--ink)!important;max-width:none}
+#rd-act .dp-tabs button{font-size:12px;padding:9px 10px}#rd-act .dp-row{flex-wrap:wrap}#rd-act .dp-go{flex:1}
 #rd-nw summary{font:700 12px "Space Mono",Consolas,monospace;text-transform:uppercase;color:#1F4BFF;cursor:pointer;padding:8px 0}
 #rd-n{font-size:16px;line-height:1.55;color:#333;margin:6px 0 0}
 #rd-nav{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:var(--paper);border-top:1px solid rgba(0,0,0,.12)}
@@ -140,7 +143,8 @@ svg text{font-family:var(--mono)}
 <div id="rd"><div id="rd-top"><span id="rd-at"></span><button id="rd-thumb" onclick="const b=document.querySelector('#tu button');if(b)b.click()" title="Thumbs up">&#x1F44D;</button></div>
   <div id="rd-pic"><button id="rd-open" onclick="full(true)" aria-label="Open the full slide">&#x21bb; tap for the full slide</button></div>
   <div id="rd-body"><div id="rd-k"></div><h1 id="rd-h"></h1><p id="rd-s"></p>
-  <details id="rd-nw"><summary>Speaker's notes</summary><p id="rd-n"></p></details></div>
+  <div id="rd-act"></div>
+  <details id="rd-nw"><summary>Notes</summary><p id="rd-n"></p></details></div>
   <div id="rd-nav"><button onclick="step(-1)">&larr; Back</button><a href="../chain/">The chain</a><button onclick="step(1)">Next &rarr;</button></div></div>
 <button id="rd-close" onclick="full(false)" aria-label="Back to reading">&times;</button>
 <div class="stage" id="stage">
@@ -630,7 +634,7 @@ function deeperBar() { const bar = $('#deeper'); if (!bar) return; const x = sce
 function fs() { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); }
 let ROT = false, FULL = false;
 const PHONE = () => innerHeight > innerWidth && innerWidth < 720;
-function fit() { const ph = PHONE(), rd = $('#rd'); ROT = ph && FULL;
+function fit() { const ph = PHONE(), rd = $('#rd'); ROT = ph && FULL; if (!(ph && !FULL)) rdHome();
   document.documentElement.classList.toggle('rot', ROT); document.body.classList.toggle('reader', ph && !FULL);
   const home = ph && !FULL ? $('#rd-pic') : document.body; if (stage.parentNode !== home) home.append(stage);
   if (ph && !FULL) { const k = $('#rd-pic').clientWidth / 1600; stage.style.transform = `scale(${k})`; stage.style.left = '0px'; stage.style.top = '0px'; $('#rd-pic').style.height = 900 * k + 'px'; rdFill(); return; }
@@ -638,7 +642,10 @@ function fit() { const ph = PHONE(), rd = $('#rd'); ROT = ph && FULL;
   const k = Math.min(innerWidth / 1600, innerHeight / 900); stage.style.transform = `scale(${k})`; stage.style.left = (innerWidth - 1600 * k) / 2 + 'px'; stage.style.top = (innerHeight - 900 * k) / 2 + 'px'; }
 function full(on) { FULL = on; fit(); }
 // the reader's words come from the scene itself: its kicker, title and lede; the speaker's notes stay folded
-function rdFill() { if (!document.body.classList.contains('reader')) return; const x = scenes[cur], q = sel => x.querySelector(sel);
+let RDP = null;
+function rdHome() { if (RDP) { RDP.mark.replaceWith(RDP.el); RDP = null; } $('#rd-act').style.display = 'none'; }
+function rdFill() { rdHome(); if (!document.body.classList.contains('reader')) return; const x = scenes[cur], q = sel => x.querySelector(sel);
+  const pr = q('[data-prompt]'); if (pr) { const mark = document.createComment('prompt'); pr.replaceWith(mark); $('#rd-act').append(pr); RDP = {el: pr, mark}; $('#rd-act').style.display = 'block'; }
   $('#rd-k').textContent = q('.kick') ? q('.kick').textContent.trim() : '';
   $('#rd-h').innerHTML = q('h1') ? q('h1').innerHTML : x.dataset.sec;
   $('#rd-s').textContent = q('.sub') ? q('.sub').textContent.trim() : '';

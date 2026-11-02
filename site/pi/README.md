@@ -49,6 +49,10 @@ Other options: `--port` (if 8788 is taken), `--name` (what `/api/gate` calls thi
 **Before the first visitor**, set each night in `EVENTS` in the settings file, then
 `sudo systemctl restart trust-guide`. A night's first link is fixed once written.
 
+**Each night**, set `DEFAULT_EVENT` (`iiw43`, `newspeak`, `archive`) in the settings file and restart: every star
+that doesn't come through a night's own door (`/iiw43`, `/newspeak`) goes to that night. The next day, change it and
+restart again. Without it the night is picked by date in UTC, which flips mid-afternoon in California.
+
 ## Each time something changes
 
 ```

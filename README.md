@@ -44,7 +44,7 @@ scene sealed inside. The Pi Ceremony's record button records a pledge, sealed, a
 |---|---|
 | `PORT`, `HOST`, `DATA` | where the server listens (default 127.0.0.1:8788; `HOST` a tailnet address if the proxy is on another machine) and keeps its data |
 | `KEEPER_KEY` | the keeper's key (otherwise generated into `DATA/keeper-key.txt`) |
-| `EVENTS`, `DEFAULT_EVENT` | each night's name, date and place. **Set before the first visitor**: a chain's genesis is fixed once written |
+| `EVENTS`, `DEFAULT_EVENT` | each night's name, date and place. **Set before the first visitor**: a chain's genesis is fixed once written. `DEFAULT_EVENT` is tonight's night (`iiw43`, `newspeak`, `archive`): set, it always wins; unset, the night is picked by date (UTC) |
 | `CITY_API`, `CITY_JOIN` | **the VTC to connect to**: its API base (public profile, join manifest, DID QR) and its join page. Default: Mages City. For the Hitchhikers VTC, set both to its addresses once it is up |
 | `SCROLL_ORIGIN`, `ROOM_NAME`, `ROOM_KEY` | on a room/city Pi: pass every star up to the aggregate chain |
 | `ROOM_KEYS` | on the aggregate Pi: the rooms allowed to feed it, as JSON `{"name": "key"}` |

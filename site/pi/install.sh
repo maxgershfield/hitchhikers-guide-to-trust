@@ -88,7 +88,8 @@ NODE_NAME=$NAME
 # Each night's name, date and place (JSON, in single quotes). SET BEFORE THE FIRST VISITOR: a night's first link is
 # fixed once written. Leave commented to use the built-in nights (newspeak, iiw43, archive).
 #EVENTS='{\"newspeak\":{\"name\":\"The Guide to Newspeak House\",\"date\":\"2026-11-05\",\"place\":\"Newspeak House, London\"}}'
-#DEFAULT_EVENT=newspeak
+# Tonight's night: set it and it always wins (switch it the next day, then restart); unset, the date picks (UTC)
+#DEFAULT_EVENT=iiw43
 
 # The VTC the chain page's Join tab connects to (default: Mages City)
 #CITY_API=

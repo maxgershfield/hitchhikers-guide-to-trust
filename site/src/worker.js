@@ -59,10 +59,12 @@ const EVENTS_DEFAULT = {
 const GUIDE = env => ({ id: env.GUIDE_ID || 'hitchhikers', name: env.GUIDE_NAME || "The Hitchhiker's Guide to Trust", with: 'The Hitchhikers' });
 const CK = env => 'chain:' + GUIDE(env).id;
 const events = env => { try { return { ...EVENTS_DEFAULT, ...JSON.parse(env.EVENTS || '{}') }; } catch (e) { return EVENTS_DEFAULT; } };
-// the night a contribution belongs to: the address it came in on; otherwise tonight's (by date), preferring the default
+// the night a contribution belongs to: the address it came in on; otherwise the night the keeper set (DEFAULT_EVENT),
+// which always wins, so a night that runs past midnight UTC stays one night; with none set, tonight's by date
 function eventOf(env, req, body) {
   const EV = events(env), asked = new URL(req.url).searchParams.get('event') || (body && body.event);
   if (asked) { const e = String(asked).toLowerCase(); return EV[e] ? e : null; }
+  if (env.DEFAULT_EVENT && EV[env.DEFAULT_EVENT]) return env.DEFAULT_EVENT;
   const today = new Date().toISOString().slice(0, 10), on = Object.keys(EV).filter(k => EV[k].date === today), def = env.DEFAULT_EVENT || 'newspeak';
   return on.includes(def) ? def : on[0] || def;
 }
