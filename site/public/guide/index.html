@@ -489,7 +489,7 @@ svg text{font-family:var(--mono)}
     <div id="bd-detail" style="margin-top:26px;border-left:3px solid var(--cobalt);padding:2px 0 2px 18px;min-height:170px;color:var(--off)"></div>
   </div>
   <div class="label" style="position:absolute;left:62px;top:752px;color:#8f8c84;font-size:12px">Illustrative cities · Baby Dragon by REAL PARENT / INJURY, with Mitchell Travers · curated by Culture Vault · with Lattice Labs and the Hitchhikers · proposed for transmediale 2027</div>
-  <aside class="notes">Baby Dragon, a proposal for transmediale 2027 (Berlin, 28 to 31 January): an interactive sculpture and trust network by REAL PARENT / INJURY with Mitchell Travers, curated by Culture Vault, with Lattice Labs and the Hitchhikers. The point is the pattern, not the sculpture: Baby Dragon can appear in many cities, and each city has its own Hitchhikers and its own private knowledge graph on its own node. Between cities only proofs travel (toy dragons go with trusted visitors); the graphs stay home. Together: a transnational Chinatown of art, local AI and performance, many small internets with no hub. The cities are illustrative: London and Amsterdam where the Hitchhikers already gather, Berlin as the first proposed stop, Hong Kong and Sydney as the dragon's two homes. A proposal, not yet confirmed.</aside>
+  <aside class="notes">Baby Dragon, a proposal for transmediale 2027 (Berlin, 28 to 31 January): an interactive sculpture and trust network by REAL PARENT / INJURY with Mitchell Travers, curated by Culture Vault, with Lattice Labs and the Hitchhikers. The point is the pattern, not the sculpture: Baby Dragon can appear in many cities, and each city has its own Hitchhikers and its own private knowledge graph on its own node. Between cities only proofs travel (toy dragons go with trusted visitors); the graphs stay home. Together: a transnational Chinatown of art, local AI and performance, many small internets with no hub. The cities are illustrative: London, Amsterdam and San Francisco where the Hitchhikers gather, Hong Kong and Sydney, the dragon's two homes, as the first stop (one or the other). A proposal, not yet confirmed.</aside>
 </section>
 
 <!-- 11 close -->
@@ -1766,11 +1766,11 @@ splitDraw();
 
 /* ---------- a case study: Baby Dragon, one dragon and many small internets ---------- */
 const BD = [
-  ['The first city', 'A dragon arrives', 'Baby Dragon appears in a city, with a Pi inside, hosting its own local network. A Hitchhikers community gathers around it: each exchange a small act of trust, a star on its chain.'],
+  ['The first stop', 'A dragon comes home', 'Baby Dragon first appears at home, in Hong Kong or Sydney, with a Pi inside, hosting its own local network. A Hitchhikers community gathers around it: each exchange a small act of trust, a star on its chain.'],
   ['Every city its own', 'Many dragons, many graphs', 'It appears again in other cities. Each has its own Hitchhikers, and keeps its own private knowledge graph on its own node: readable only by the people who made it.'],
   ['Between cities', 'Only proofs travel', 'Toy dragons travel with trusted visitors. What crosses between cities is a proof: who was trusted, what was kept. The graphs themselves stay home.'],
   ['Together', 'A transnational Chinatown', 'Many small internets, no hub: art, local AI and performance, city by city, held together by trust the communities keep themselves.']];
-const BD_C = [['London', 150, 150, 'Hitchhikers', 'black'], ['Amsterdam', 360, 110, 'Hitchhikers', 'blue'], ['Berlin', 570, 170, 'first stop', 'chrome'], ['Hong Kong', 820, 130, "the dragon's home", 'red'], ['Sydney', 930, 370, 'its other home', 'silver']];
+const BD_C = [['London', 150, 150, 'Hitchhikers', 'black'], ['Amsterdam', 360, 110, 'Hitchhikers', 'blue'], ['San Francisco', 570, 170, 'Hitchhikers', 'chrome'], ['Hong Kong', 820, 130, 'home · first stop?', 'red'], ['Sydney', 930, 370, 'home · first stop?', 'silver']];
 let bdS = -1;
 function bdStep() { bdS = bdS >= BD.length - 1 ? -1 : bdS + 1; bdDraw(); }
 function dragonSvg(s, x, y, r, lit) { const g = el('g', {transform: `translate(${x},${y})`}); s.append(g);
@@ -1780,7 +1780,7 @@ function dragonSvg(s, x, y, r, lit) { const g = el('g', {transform: `translate($
   [-1, 1].forEach(k => { g.append(el('circle', {cx: k * r * .36, cy: -r * .08, r: r * .2, fill: '#0B0B0D'})); g.append(el('circle', {cx: k * r * .36 - r * .06, cy: -r * .15, r: r * .06, fill: lit ? '#fff' : '#55534e'})); });
   g.append(el('circle', {cx: 0, cy: r * .62, r: r * .12, fill: lit ? '#E05A4A' : '#55534e'})); return g; }
 function bdDraw() {
-  const s = $('#bd'); s.innerHTML = ''; const S = bdS, on = i => S >= 1 || (S === 0 && i === 2);
+  const s = $('#bd'); s.innerHTML = ''; const S = bdS, on = i => S >= 1 || (S === 0 && i >= 3);
   // between cities: proofs only (dashed gold, a proof travelling on each)
   const PAIRS = [[0, 1], [1, 2], [2, 3], [3, 4]];
   if (S >= 2) PAIRS.forEach(([i, j]) => { const a = BD_C[i], b = BD_C[j];
