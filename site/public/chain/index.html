@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The evidence chain · A galaxy of guides · Hitchhiker's Guide to Trust</title>
-<meta name="description" content="Every thumb up and every contribution, hashed and chained, drawn as it grows. Hashes and sigils only.">
+<meta name="description" content="Every thumbs up and every contribution, hashed and chained, drawn as it grows. Hashes and sigils only.">
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;700&family=Space+Mono:wght@400;700&family=Cormorant+Garamond:ital@1&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script src="../mark.js"></script>
@@ -80,9 +80,9 @@ body.bare #bare{color:var(--pale)}
 <canvas id="c"></canvas>
 <div class="hud title"><div class="k" id="guide-k" style="max-width:40vw">The Hitchhiker's Guide to Trust · the evidence chain</div><a class="back" href="../guide/?path=workshop">← back to the guide</a><h1>A galaxy<br>of <b>guides</b></h1>
   <div class="nights" id="nights"></div>
-  <p id="guide-p">One guide, many nights. Every thumb up, proverb, guide and voice note is a star: its hash public, what's behind it sealed with your own key. No joining needed.</p>
+  <p id="guide-p">One guide, many nights. Every thumbs up, proverb, guide and voice note is a star: its hash public, what's behind it sealed with your own key. No joining needed.</p>
   <p style="color:#8EA4FF">“Prove the contribution, not the person.” <span style="opacity:.7">· the Hitchhikers</span><br>Every star is a record on this guide. Claim yours with your DID; a credential your agent can carry comes next.</p>
-  <div class="steps"><div><b>1</b>Thumb up: your mark on tonight's guide</div><div><b>2</b>Add proverbs, guides, voice notes: sealed</div><div><b>3</b>Keep your claim code; the group chat answers it with a proverb</div><div><b>4</b>Join when you're ready, and claim your stars with your DID <a href="#join" onclick="tab('join');return false" style="color:#e8c873;pointer-events:auto">→</a></div></div></div>
+  <div class="steps"><div><b>1</b>Thumbs up: your mark on tonight's guide</div><div><b>2</b>Add proverbs, guides, voice notes: sealed</div><div><b>3</b>Keep your claim code; the group chat answers it with a proverb</div><div><b>4</b>Join when you're ready, and claim your stars with your DID <a href="#join" onclick="tab('join');return false" style="color:#e8c873;pointer-events:auto">→</a></div></div></div>
 <div class="hud count"><div id="demo-tag" style="display:none;font-size:clamp(10px,.8vw,13px);text-transform:uppercase;color:#0B0B0D;background:#8EA4FF;padding:3px 8px;border-radius:3px;margin-bottom:1vh;width:max-content">Example night · simulated visitors</div><b id="n">0</b><span>stars on the chain</span><div class="head" id="head"></div></div>
 <div class="hud feed"><div class="tabs"><button class="on" id="t-latest">Latest</button><button id="t-scroll">The scroll</button><button id="t-join">Join the City</button></div>
   <div id="feed-wrap"><div class="k">Latest on the chain · sigil and spell</div><div id="feed"></div></div>
@@ -94,7 +94,7 @@ body.bare #bare{color:var(--pale)}
 <button id="orb" title="orbit on · click to hold the star still">⟳</button>
 <button id="bare" title="Collapse or show all the text (H)">Hide text</button>
 <div class="hud hint" id="hint">drag to turn the star · point at a star to see its threads</div>
-<div class="hud join"><div><div class="s">Put your thumb up</div><div class="u" id="url"></div><div class="s">and start contributing</div></div><div class="qr" id="qr"></div></div>
+<div class="hud join"><div><div class="s">Put your thumbs up</div><div class="u" id="url"></div><div class="s">and start contributing</div></div><div class="qr" id="qr"></div></div>
 <script>
 const $ = s => document.querySelector(s), esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
 // the address shown to the room is always a public one: a local or private origin (this machine, the LAN) falls back to the public host
@@ -157,7 +157,7 @@ async function joinDraw() {
   try { if (!CITY) { const r = await fetch(U('/api/city'), {cache: 'no-store'}); CITY = await r.json(); if (!r.ok) throw new Error(CITY.error); } }
   catch (e) { box.innerHTML = `<p class="jp">${esc(e.message || 'The community is not answering right now.')}</p>`; CITY = null; return; }
   const ways = CITY.criteria.map((c, i) => `<li><b>${i + 1}.</b> ${esc(c.description)} <span class="jm">· ${c.admission === 'automatic' ? 'admitted at once' : 'a keeper reviews'}</span></li>`).join('');
-  let ev = '<p class="jp">Put your thumb up first: your stars become the evidence you bring.</p>';
+  let ev = '<p class="jp">Put your thumbs up first: your stars become the evidence you bring.</p>';
   if (MINE.size && window.DP) { const mk = await DP.mark(); try { const e = await (await fetch(U('/api/evidence?mark=' + mk), {cache: 'no-store'})).json();
     const url = SITE.replace(/\/$/, '') + '/api/evidence?mark=' + mk + (EVID ? '&event=' + EVID : ''), note = `${e.guide || "Hitchhiker's Guide to Trust"}${e.nights && e.nights.length ? ' (' + e.nights.map(shortNight).join(', ') + ')' : ''} · evidence: ${e.stars} star${e.stars === 1 ? '' : 's'} · root ${e.root} · check ${url}`;
     ev = `<p class="jp">Your evidence · <b>${DP.sigil(mk)}</b> · ${e.stars} star${e.stars === 1 ? '' : 's'}<br><span class="jr">root ${e.root.slice(0, 24)}…</span></p>
@@ -251,7 +251,7 @@ addEventListener('pointermove', e => {
   if (best < 0) { tip.style.display = 'none'; return; }
   const l = links[best], same = l.mark ? links.filter(x => x.mark === l.mark).length : 1, script = (() => { try { return SigilCode.encode(Uint8Array.from(l.hash.match(/../g).map(x => parseInt(x, 16)))); } catch (err) { return ''; } })();
   tip.innerHTML = `<div class="sg">${DP.sigil(l.hash)}</div>${esc(DP.spell(l.hash))}<br>#${l.seq} · ${KIND(l)}${l.mark ? ` · mark ${DP.sigil(l.mark)} · ${same} on the chain` : ''}${MINE.has(l.hash) ? ' · yours' : ''}${script ? `<div class="sc">${esc(script)}</div>` : ''}`;
-  if (MINE.has(l.hash) && l.sealed && window.DP && DP.open) DP.open(l.sealed).then(o => { if (o && HOT === best) tip.insertAdjacentHTML('beforeend', `<div style="margin-top:6px;color:#F6F1E6;text-transform:none;font-size:14px">${o.kind === 'thumb' ? 'Your thumb up' : esc((o.title ? o.title + ': ' : '') + (o.text || ''))}</div><div style="color:#8EA4FF">opened with your key · only you can see this</div>`); });
+  if (MINE.has(l.hash) && l.sealed && window.DP && DP.open) DP.open(l.sealed).then(o => { if (o && HOT === best) tip.insertAdjacentHTML('beforeend', `<div style="margin-top:6px;color:#F6F1E6;text-transform:none;font-size:14px">${o.kind === 'thumb' ? 'Your thumbs up' : esc((o.title ? o.title + ': ' : '') + (o.text || ''))}</div><div style="color:#8EA4FF">opened with your key · only you can see this</div>`); });
   if (l.room) tip.insertAdjacentHTML('beforeend', `<div style="color:#8EA4FF;margin-top:4px">from the room: ${esc(l.room)}</div>`);
   if (l.mark && same > 1) rootOf(l.mark).then(rt => { if (HOT === best) tip.insertAdjacentHTML('beforeend', `<div style="margin-top:4px">their evidence root · ${same} stars<br><span style="color:#e8c873">${rt.slice(0, 32)}…</span></div>`); });
   tip.style.display = 'block'; const left = e.clientX > innerWidth * .55, upw = e.clientY > innerHeight * .5; tip.style.left = (left ? e.clientX - 16 : e.clientX + 16) + 'px'; tip.style.top = (upw ? e.clientY - 16 : e.clientY + 16) + 'px'; tip.style.transform = `translate(${left ? '-100%' : '0'},${upw ? '-100%' : '0'})`;

@@ -51,9 +51,9 @@ against each other. Everyone's stars are joined by their mark, wherever they wer
 
 ## The night's group chat: the claim trust task
 
-A thumb up shows the visitor a **claim code** (their sigil and four words). Only its hash goes on the chain, so
+A thumbs up shows the visitor a **claim code** (their sigil and four words). Only its hash goes on the chain, so
 only they have it. Pasted into the night's group chat, the bot relays the message to `/api/keeper/claim`; the
-site finds the thumb up that committed to that code and writes a **claim** link under the same mark (the chat
+site finds the thumbs up that committed to that code and writes a **claim** link under the same mark (the chat
 handle only as a salted hash), and the bot answers with a proverb from the approved wall.
 
 `bot/claim-bot.mjs` is a reference Telegram bot (no database; the site does the matching):

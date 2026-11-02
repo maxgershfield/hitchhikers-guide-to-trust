@@ -115,7 +115,7 @@ const roomKeys = env => { try { return JSON.parse(env.ROOM_KEYS || '{}'); } catc
 function roomOf(env, req, room) { const k = roomKeys(env)[room], got = (req.headers.get('authorization') || '').replace(/^Bearer\s+/i, '');
   if (!k || got.length !== k.length) return false; let d = 0; for (let i = 0; i < got.length; i++) d |= got.charCodeAt(i) ^ k.charCodeAt(i); return d === 0; }
 const words4 = t => String(t || '').toLowerCase().normalize('NFKC').replace(/[^a-z\s-]/g, ' ').split(/\s+/).filter(Boolean);
-// find whose thumb up a claim code belongs to: any four words in a row whose hash matches a committed claim
+// find whose thumbs up a claim code belongs to: any four words in a row whose hash matches a committed claim
 async function findClaim(chain, text) {
   const words = words4(text), byClaim = new Map(chain.filter(l => (l.kind === 'thumb' || l.kind === 'witness') && l.claim).map(l => [l.claim, l]));
   for (let i = 0; i + 4 <= words.length; i++) { const c = await hex('claimcode|' + words.slice(i, i + 4).join(' ')); if (byClaim.has(c)) return byClaim.get(c); }
@@ -196,7 +196,7 @@ async function api(req, env, path, body) {
     return json({ event: ev, tonight: EV[ev], guide: GUIDE(env), nights: EV, genesis: chain[0], length: chain.length, head: chain[chain.length - 1].hash, links: chain.slice(since, since + 500) });
   }
 
-  // a thumb up: the first trust task. Joins the chain with nothing but your mark.
+  // a thumbs up: the first trust task. Joins the chain with nothing but your mark.
   if (path === '/api/thumb' && req.method === 'POST') {
     if (!isMark(body.mark)) return json({ error: 'Open the page again to make your mark.' }, 400);
     if (await limited(env, req)) return json({ error: 'Slow down a moment, then try again.' }, 429);
@@ -298,7 +298,7 @@ async function api(req, env, path, body) {
     // guides as Field Guide drafts: a name, a place, a first clue; ready to import once the studio's format is agreed
     if (action === 'drafts') return json(approved.filter(x => x.kind === 'guide' && !x.hidden).map(x => ({ title: x.title, place: x.place || '', firstClue: x.text, by: x.by || '', night: (EV[x.event] || {}).name || '', at: x.at })));
     // the invitation trust task: the group chat's bot sends a message; if it holds someone's claim code, their claim
-    // is written onto the guide (the chat handle only as a salted hash), on the night of their thumb up, and a proverb comes back
+    // is written onto the guide (the chat handle only as a salted hash), on the night of their thumbs up, and a proverb comes back
     if (action === 'claim') {
       const chain = await chainOf(env), hit = await findClaim(chain, body.text); if (!hit) return json({ error: 'No claim code in that message.' }, 404);
       const proverb = aProverb(approved), done = chain.find(l => l.kind === 'claim' && l.mark === hit.mark && !l.did);

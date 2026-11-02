@@ -22,7 +22,7 @@
   async function sealBytes(u8) { const iv = crypto.getRandomValues(new Uint8Array(12)); const ct = new Uint8Array(await crypto.subtle.encrypt({name: 'AES-GCM', iv}, await key(), u8)); let s = ''; for (let i = 0; i < ct.length; i += 8192) s += String.fromCharCode(...ct.subarray(i, i + 8192)); return {iv: b64(iv), ct: btoa(s)}; }
   async function openBytes(box) { try { return new Uint8Array(await crypto.subtle.decrypt({name: 'AES-GCM', iv: unb64(box.iv)}, await key(), unb64(box.ct))); } catch (e) { return null; } }
   async function open(box) { try { const pt = await crypto.subtle.decrypt({name: 'AES-GCM', iv: unb64(box.iv)}, await key(), unb64(box.ct)); return JSON.parse(new TextDecoder().decode(pt)); } catch (e) { return null; } }
-  // the claim code: four words drawn from the secret; only its hash is committed with the thumb up
+  // the claim code: four words drawn from the secret; only its hash is committed with the thumbs up
   const claimWords = async () => { const h = await hex('claim|' + secret()); return [0, 1, 2, 3].map(i => WORDS[parseInt(h.slice(i * 2, i * 2 + 2), 16) % WORDS.length]).join(' '); };
   const claimCode = async () => { const w = await claimWords(), h = await hex('claim|' + secret()); return {sigil: sigil(h), words: w}; };
   const claimHash = async () => hex('claimcode|' + await claimWords());
