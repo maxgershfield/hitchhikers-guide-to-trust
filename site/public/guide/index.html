@@ -1473,7 +1473,7 @@ function strataDraw() {
     [[x + w, y + 6], [x + w, y + H - 12]].forEach(([px, py]) => g.append(el('path', {d: `M${px},${py} q14,0 14,${(H - 18) / 2}`, fill: 'none', stroke: C.ink, 'stroke-width': 1, opacity: .4})));
     const t = el('text', {x: x + 50, y: y + H / 2 + 8, 'font-size': 26, fill: on ? C.off : C.ink, 'letter-spacing': '2'}); t.style.fontFamily = 'Georgia,"Times New Roman",serif'; t.textContent = L[0].toUpperCase(); g.append(t);
     g.append(el('text', {x: x + w - 46, y: y + H / 2 + 5, 'text-anchor': 'end', 'font-size': 13, 'font-weight': 700, fill: on ? C.off : '#5E5A50'}, L[1].toUpperCase()));
-    g.onclick = () => { stOn.add(i); strataDraw(); pop(sceneOf('#strata'), 1110, 260, stOn.size === STRATA.length ? {tag: 'Radical humility', title: 'Learn, without sanctifying', body: 'A remarkable inheritance, and a good reason for humility. Keep the expertise, keep the dissent, and keep the power to revise our institutions.'} : L[2]); };
+    g.onclick = () => { const was = stOn.size; stOn.add(i); strataDraw(); pop(sceneOf('#strata'), 1110, 260, was === STRATA.length - 1 && stOn.size === STRATA.length ? {tag: 'Radical humility', title: 'Learn, without sanctifying', body: 'A remarkable inheritance, and a good reason for humility. Keep the expertise, keep the dissent, and keep the power to revise our institutions.'} : L[2]); };
     s.append(g); });
   const top = base - STRATA.length * H;
   [300, 350, 520, 570, 620].forEach(x => person(s, x, top - 4, C.ink, .9));
