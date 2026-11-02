@@ -44,6 +44,7 @@ h1 .n{color:var(--cobalt)}
 .act{font-family:var(--mono);font-size:15px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;border:1.5px solid var(--ink);background:var(--off);color:var(--ink);padding:11px 18px;border-radius:3px}
 .act.on{background:var(--cobalt);border-color:var(--cobalt);color:#fff}
 .dark .act{border-color:var(--off);color:var(--off);background:transparent}
+.dark .act.on{background:var(--cobalt);border-color:var(--cobalt);color:#fff}
 .panel{position:absolute;border:1.5px solid var(--ink);background:var(--off);border-radius:4px}
 svg{position:absolute;overflow:visible}
 svg text{font-family:var(--mono)}
@@ -347,6 +348,77 @@ svg text{font-family:var(--mono)}
   <aside class="notes">If asked what we have given back: fixes to the OpenVTC setup guide, the Star Key extension (join by DID, agreements), ZKP Task Force work (co-chair), an agreements family in Trust Tasks, and the Pi node kit. Everything goes upstream through issue → PR.</aside>
 </section>
 
+<!-- ===== the Hitchhikers' own perspective: "Public Intelligence" deck (12 slides), merged as scenes ===== -->
+<!-- slides 1–3: the question, the problem, the proposition -->
+<section class="scene" data-part="I" data-sec="Public intelligence">
+  <div class="kick">I · Why</div>
+  <h1><span class="n">2.</span> <span id="pi-h">Who owns <b>the future?</b></span></h1>
+  <div class="sub" id="pi-sub">AI may bring abundance. But who do we trust to shape what comes next?</div>
+  <svg id="pi" width="1500" height="480" viewBox="0 0 1500 480" style="left:50px;top:230px"></svg>
+  <div style="position:absolute;left:62px;top:730px;display:flex;gap:14px;align-items:center"><button class="act" id="pi-btn" onclick="piStep()">Read on →</button><span class="label" id="pi-step" style="color:var(--cobalt)">1 / 3 · The question</span></div>
+  <aside class="notes">From the Hitchhikers' "Public Intelligence" deck. Open with possibility, not AI-driven economic doom: the crisis to address is trust in institutions, information and public authority. Beat 2: we need ways to ground powerful systems in real places, communities, law, knowledge and accountable institutions; the cloud is not the enemy. Beat 3: Public Intelligence is not AI supplied to the public, nor crowd wisdom displacing expertise. It is lived experience, science, institutional memory, legitimate authority and AI working together. Touch each circle, then the centre.</aside>
+</section>
+
+<!-- slide 4: radical humility -->
+<section class="scene" data-part="I" data-sec="Inheritance">
+  <div class="kick">I · Why</div>
+  <h1><span class="n">3.</span> We don't start <b>from zero</b></h1>
+  <div class="sub" id="strata-sub">Centuries of knowledge. Law. Science. Culture. Hard-won rights. Touch a layer.</div>
+  <svg id="strata" width="1000" height="500" viewBox="0 0 1000 500" style="left:62px;top:240px"></svg>
+  <aside class="notes">Radical Humility (the Hitchhikers' deck): learn from our inheritance without sanctifying it. Preserve expertise, dissent and the capacity to revise institutions. A community node stands on these layers; it does not replace them.</aside>
+</section>
+
+<!-- slide 5: the method -->
+<section class="scene" data-part="II" data-sec="Method">
+  <div class="kick">II · The movement</div>
+  <h1><span class="n">4.</span> Three disciplines, <b>one method</b></h1>
+  <div class="sub" id="md-sub">Knowledge and judgment. Purpose and mandate. Action and stewardship.</div>
+  <svg id="md" width="1000" height="480" viewBox="0 0 1000 480" style="left:62px;top:230px"></svg>
+  <div style="position:absolute;left:62px;top:730px;display:flex;gap:14px;align-items:center"><button class="act" id="md-btn" onclick="mdTurn()">Turn the cycle →</button><span class="label" style="color:var(--cobalt)">or touch a discipline</span></div>
+  <aside class="notes">The Hitchhikers' method: three repeating disciplines, not nine rigid stages. Evidence and discernment; deliberation and legitimate mandate; building, testing and tending. Each corrects the others. Each card says where that discipline already lives in this guide.</aside>
+</section>
+
+<!-- slide 6: the principles -->
+<section class="scene" data-part="II" data-sec="Principles">
+  <div class="kick">II · The movement</div>
+  <h1><span class="n">5.</span> Four principles, <b>one foundation</b></h1>
+  <div class="sub">Local first. Chat first. Agentic first. Built on trust. Touch each.</div>
+  <svg id="pr" width="1000" height="480" viewBox="0 0 1000 480" style="left:62px;top:240px"></svg>
+  <aside class="notes">Local autonomy, chat and voice as the accessible interface, agents helping with research and building, all bounded by constituted mutual trust. You don't have to code to decide what gets built. (The Hitchhikers' deck.)</aside>
+</section>
+
+<!-- slide 11: federation -->
+<section class="scene dark" data-part="II" data-sec="Speed of trust">
+  <div class="kick" style="color:var(--off)">II · The movement</div>
+  <h1><span class="n">6.</span> Grow at the <b>speed of trust</b></h1>
+  <div class="sub" id="sot-sub">Independent communities. Shared knowledge. Accountable relationships.</div>
+  <svg id="sot" width="1100" height="500" viewBox="0 0 1100 500" style="left:400px;top:240px"></svg>
+  <div style="position:absolute;left:62px;top:300px;display:grid;gap:10px"><button class="act" id="sot-0" onclick="sotMode(0)">A universal hub</button><button class="act on" id="sot-1" onclick="sotMode(1)">The speed of trust</button><button class="act" id="sot-earn" onclick="sotEarn()" style="margin-top:24px;border-color:var(--pale);color:var(--pale)">Earn a link →</button></div>
+  <div class="hint" style="left:auto;right:62px">Illustrative, not a census</div>
+  <aside class="notes">Federation without a universal hub (the Hitchhikers' deck). Communities share tools and learning while keeping local autonomy and legitimate authority. Growth is paced by earned trust, not a growth hack. Each link here is something earned: a guide shared, a visitor vouched for, a proof accepted.</aside>
+</section>
+
+<!-- slide 7: the boundary -->
+<section class="scene" data-part="IV" data-sec="Consent">
+  <div class="kick">IV · Trust by doing</div>
+  <h1><span class="n">7.</span> Chat is the interface. <b>Consent is the authority.</b></h1>
+  <div class="sub" id="cs-sub">A conversation with your agent. It helps you think, draft and plan.</div>
+  <svg id="cs" width="1500" height="400" viewBox="0 0 1500 400" style="left:50px;top:300px"></svg>
+  <div style="position:absolute;left:62px;top:730px;display:flex;gap:14px;align-items:center"><button class="act" id="cs-btn" onclick="csStep()">Next beat →</button><span class="label" style="color:var(--cobalt)">A conversation is not permission to act</span></div>
+  <aside class="notes">The boundary (the Hitchhikers' deck): an inspectable, bounded and revocable mandate bridges human deliberation to authorised agent action. Converse, mandate, act; scope, review, revocation. Cryptographic signatures establish provenance, not truth or legitimacy. This is the towel saying no on your behalf; a mandate is one of the Trust Tasks ("agree these terms").</aside>
+</section>
+
+<!-- slides 8–10: three ceremonies -->
+<section class="scene" data-part="IV" data-sec="Ceremonies">
+  <div class="kick">IV · Trust by doing</div>
+  <h1><span class="n">8.</span> Trust begins <b>together</b></h1>
+  <div class="sub" id="cer-sub">The Pi Ceremony: not another app. A human encounter.</div>
+  <div style="position:absolute;left:62px;top:228px;display:flex;gap:10px"><button class="act on" id="cer-0" onclick="cerMode(0)">The Pi Ceremony</button><button class="act" id="cer-1" onclick="cerMode(1)">The Table Ceremony</button><button class="act" id="cer-2" onclick="cerMode(2)">The Palava</button></div>
+  <svg id="cer" width="1500" height="430" viewBox="0 0 1500 430" style="left:50px;top:300px"></svg>
+  <div class="label" id="cer-not" style="position:absolute;left:62px;top:748px;color:var(--muted);font-size:14px"></div>
+  <aside class="notes">Three ceremonies from the Hitchhikers' deck, small to large. The Pi Ceremony: a first social encounter, with optional verifiable support and locally grounded technology; hardware and identity proofs don't automatically create trust, and nothing is assumed recorded. The Table Ceremony draws on Knowledge Café practice: listening and inquiry come before mandates, dissent stays visible, a table is not automatically a vote (touch the five verbs). The Palava is a whole event, theatre and performance, not just a big table or a formal assembly: it can stage disagreement and invite participation without forcing consensus. Honest status: the Pi node kit is built; it has not yet run a ceremony.</aside>
+</section>
+
 <!-- 11 close -->
 <!-- discussion (workshop path) -->
 <section class="scene dark" data-part="Discuss" data-sec="Discussion">
@@ -372,12 +444,13 @@ svg text{font-family:var(--mono)}
 <section class="scene dark" data-part="Close" data-sec="Close">
   <h1 style="top:200px;font-size:150px">Don't <b>Panic.</b></h1>
   <div style="position:absolute;left:62px;top:390px;font-family:var(--head);font-weight:400;text-transform:uppercase;font-size:40px;line-height:1.15">Who holds your community's keys?<br><span style="color:var(--pale)">Who could recover them?</span></div>
+  <div style="position:absolute;left:62px;top:500px;font-family:var(--mono);font-size:15px;line-height:1.7;letter-spacing:.04em;text-transform:uppercase;color:var(--off)">Vibe code the future:<br><span style="color:var(--pale)">people decide · agents help build · communities steward</span><br><span style="color:#8f8c84">Ground the power · build with wisdom · grow at the speed of trust</span></div>
   <div class="label" style="position:absolute;left:820px;top:150px;color:#8f8c84">Put your thumb up, leave a proverb, or launch a guide</div>
   <div data-prompt style="position:absolute;left:820px;top:190px;width:600px;max-height:470px;overflow-y:auto;padding-right:10px;color:var(--off)"></div>
   <div class="label" style="position:absolute;left:820px;bottom:62px;color:#8f8c84;font-size:15px">hitchhikers.earth · mages.city · <a href="../chain/" style="color:#8EA4FF">the scroll →</a> · <a href="../notes" style="color:#8EA4FF">work notes →</a></div>
   <svg id="close-star" width="230" height="230" viewBox="-180 -180 360 360" style="left:62px;top:580px"></svg>
   <div class="label" style="position:absolute;left:820px;bottom:96px;color:#8EA4FF;font-size:14px">Next: a workshop on privacy and the Hitchhikers · Amsterdam · December</div>
-  <aside class="notes">Leave the two questions up for discussion. Next stop: the December workshop at the University of Amsterdam, with David Bovill.</aside>
+  <aside class="notes">The Hitchhikers' deck closes the same way: "Don't panic. Vibe code the future. People decide. Agents help build. Communities steward." Invite people to a table, a Palava, or the start of the journey. Leave the two questions up for discussion. Next stop: the December workshop at the University of Amsterdam, with David Bovill.</aside>
 </section>
 
 <div class="overview" id="overview"></div>
@@ -389,14 +462,15 @@ svg text{font-family:var(--mono)}
 (function () {
   const PATHS = {
     // the IIW workshop: each story, then its technical telling (the rest stays one touch deeper)
-    iiw: ['Cover', 'Request', 'Why local', 'Privacy', 'Opportunity', 'Built', 'Local', 'Cities', 'OpenVTC', 'Flow', 'Three nodes', 'The pathway', 'Hitchhiker mage', 'A visit', 'Evidence', 'Thumb up', 'Three graphs', 'Trust', 'Field Guide', 'The guide', 'Games', 'Genesis', 'Discussion', 'Close'],
-    lightning: ['Cover', 'Request', 'Local', 'Thumb up', 'Field Guide', 'Genesis', 'Close'],
+    iiw: ['Cover', 'Request', 'Public intelligence', 'Inheritance', 'Why local', 'Privacy', 'Opportunity', 'Method', 'Principles', 'Built', 'Local', 'Speed of trust', 'Cities', 'OpenVTC', 'Flow', 'Three nodes', 'The pathway', 'Hitchhiker mage', 'A visit', 'Evidence', 'Thumb up', 'Consent', 'Three graphs', 'Trust', 'Ceremonies', 'Field Guide', 'The guide', 'Games', 'Genesis', 'Discussion', 'Close'],
+    lightning: ['Cover', 'Request', 'Public intelligence', 'Local', 'Thumb up', 'Field Guide', 'Ceremonies', 'Genesis', 'Close'],
     // the whole guide: each part's story first, its deeper scenes after it
-    guide: ['Cover', 'Request', 'Why local', 'Privacy', 'Opportunity', 'Built', 'Local', 'Cities', 'OpenVTC', 'Flow', 'Three nodes', 'The pathway', 'Hitchhiker mage', 'A visit', 'Evidence', 'Thumb up', 'Three graphs', 'Trust', 'Field Guide', 'The guide', 'Games', 'Genesis', 'Close']};
+    guide: ['Cover', 'Request', 'Public intelligence', 'Inheritance', 'Why local', 'Privacy', 'Opportunity', 'Method', 'Principles', 'Built', 'Local', 'Speed of trust', 'Cities', 'OpenVTC', 'Flow', 'Three nodes', 'The pathway', 'Hitchhiker mage', 'A visit', 'Evidence', 'Thumb up', 'Consent', 'Three graphs', 'Trust', 'Ceremonies', 'Field Guide', 'The guide', 'Games', 'Genesis', 'Close']};
   // where each scene belongs when it is not on the main thread
   const PARENT = {'Opportunity': 'Local', 'Built': 'Request', 'Why local': 'Request', 'Privacy': 'Request', 'Cities': 'Local', 'Local': 'Request',
     'OpenVTC': 'Local', 'Flow': 'OpenVTC', 'Three nodes': 'OpenVTC', 'The pathway': 'OpenVTC', 'Hitchhiker mage': 'Local', 'A visit': 'Hitchhiker mage', 'Evidence': 'Hitchhiker mage',
-    'Thumb up': 'Request', 'Three graphs': 'Thumb up', 'Trust': 'Thumb up', 'Field Guide': 'Thumb up', 'The guide': 'Field Guide', 'Games': 'Field Guide', 'Genesis': 'Close'};
+    'Thumb up': 'Request', 'Three graphs': 'Thumb up', 'Trust': 'Thumb up', 'Field Guide': 'Thumb up', 'The guide': 'Field Guide', 'Games': 'Field Guide', 'Genesis': 'Close',
+    'Public intelligence': 'Request', 'Inheritance': 'Public intelligence', 'Method': 'Public intelligence', 'Principles': 'Method', 'Speed of trust': 'Local', 'Consent': 'Thumb up', 'Ceremonies': 'Field Guide'};
   PATHS.workshop = PATHS.iiw; // older links
   const path = new URLSearchParams(location.search).get('path'), list = PATHS[path], stage = document.getElementById('stage');
   const all = [...stage.querySelectorAll('.scene')], bySec = n => all.find(x => x.dataset.sec === n), anchor = document.getElementById('overview');
@@ -443,7 +517,7 @@ function step(d) { const x = scenes[cur];
   if (x.dataset.branch) { go(origin != null ? origin : idxOf(x.dataset.branch)); origin = null; return; }
   let j = cur + d; while (j >= 0 && j < scenes.length && scenes[j].dataset.branch) j += d; if (j >= 0 && j < scenes.length) go(j); }
 // short names for the deeper scenes, so a part's branches fit on the bar
-const SHORT = {'Opportunity': 'The projects', 'Why local': 'One centre?', 'Privacy': 'Keep or share', 'Built': 'The pieces', 'Three graphs': 'Three graphs', 'Trust': 'Connection', 'OpenVTC': 'OpenVTC, plainly', 'Flow': 'Information flow', 'Genesis': 'Tonight', 'The guide': 'Owning a guide', 'Games': 'Trust is earned', 'Three nodes': 'Three nodes', 'The pathway': 'One Pi to many', 'Cities': 'Cities', 'A visit': 'A visit', 'Evidence': 'Evidence'};
+const SHORT = {'Opportunity': 'The projects', 'Why local': 'One centre?', 'Privacy': 'Keep or share', 'Built': 'The pieces', 'Three graphs': 'Three graphs', 'Trust': 'Connection', 'OpenVTC': 'OpenVTC, plainly', 'Flow': 'Information flow', 'Genesis': 'Tonight', 'The guide': 'Owning a guide', 'Games': 'Trust is earned', 'Three nodes': 'Three nodes', 'The pathway': 'One Pi to many', 'Cities': 'Cities', 'A visit': 'A visit', 'Evidence': 'Evidence', 'Public intelligence': 'Public intelligence', 'Inheritance': 'Not from zero', 'Method': 'The method', 'Principles': 'Four principles', 'Speed of trust': 'Speed of trust', 'Consent': 'Consent', 'Ceremonies': 'Ceremonies'};
 function deeperBar() { const bar = $('#deeper'); if (!bar) return; const x = scenes[cur];
   if (x.dataset.branch) { const back = origin != null ? scenes[origin] : scenes[idxOf(x.dataset.branch)]; bar.innerHTML = `<button onclick="step(-1)">← back to ${titleOf(back).toLowerCase()}</button>`; return; }
   const kids = scenes.filter(y => y.dataset.branch === x.dataset.sec);
@@ -1136,6 +1210,238 @@ if ($('#disc-q')) {
     chip.textContent = `✦ ${d.length} star${d.length === 1 ? '' : 's'} ↗`; chip.title = 'Open the evidence chain'; chip.style.display = ''; } catch (e) {} };
   if (!location.protocol.startsWith('http')) chip.href = 'https://hitchhiker.mages.city/chain/';
   tick(); setInterval(tick, 8000); })();
+
+/* ========== the Hitchhikers' perspective: Public Intelligence (their deck, as scenes) ========== */
+function person(s, x, y, col, k) { k = k || 1;
+  s.append(el('circle', {cx: x, cy: y - 30 * k, r: 10 * k, fill: col}));
+  s.append(el('path', {d: `M${x - 16 * k},${y + 4 * k} Q${x - 16 * k},${y - 16 * k} ${x},${y - 16 * k} Q${x + 16 * k},${y - 16 * k} ${x + 16 * k},${y + 4 * k} Z`, fill: col})); }
+const headText = (s, a, txt) => { const t = el('text', a); t.style.fontFamily = 'var(--head)'; t.textContent = txt; s.append(t); return t; };
+const clearPop = id => { const p = sceneOf(id).querySelector('.pop'); if (p) p.remove(); };
+
+/* ---------- slides 1–3: who owns the future · heads in the clouds · public intelligence ---------- */
+const PI_T = [['Who owns <b>the future?</b>', 'AI may bring abundance. But who do we trust to shape what comes next?', 'The question'],
+  ['Our heads are <b>in the clouds</b>', 'Trust in institutions is fraying. So is our ability to know who is accountable.', 'The problem'],
+  ['Public <b>intelligence</b>', 'People. Inherited wisdom. Accountable AI. Working together. Touch each.', 'The proposition']];
+const PI_C = [
+  {tag: 'People', title: 'Lived experience', body: 'The people who live with the outcome, and the local knowledge only they hold.', list: ['Not crowd wisdom displacing expertise', 'People decide, and stay accountable to each other']},
+  {tag: 'Wisdom', title: 'Inherited wisdom', body: 'Science, law, culture and institutional memory: what we already know, hard-won.', list: ['Expertise is kept, not flattened', 'Dissent and revision stay possible']},
+  {tag: 'AI', title: 'Accountable AI', body: 'Agents that help research and build, inside a mandate people can inspect and revoke.', list: ['Not AI supplied to the public', 'Work anyone can check']}];
+const PI_MID = {tag: 'Where they meet', title: 'Public intelligence', body: 'Lived experience, science, institutional memory, legitimate authority and AI, working together.', list: ['Ground the power', 'Build with wisdom', 'Grow at the speed of trust']};
+const PI_V = [[680, 150, C.ink, 600, 118], [820, 150, '#6B665C', 900, 118], [750, 268, C.cobalt, 750, 335]];
+let piS = 0; const piOn = new Set();
+function piStep() { piS = (piS + 1) % 3; piOn.clear(); clearPop('#pi'); piDraw(); }
+function piDraw() {
+  const s = $('#pi'), T = PI_T[piS], gy = 440, xs = [...Array(11)].map((_, i) => 230 + i * 104); s.innerHTML = '';
+  $('#pi-h').innerHTML = T[0]; $('#pi-sub').textContent = T[1]; $('#pi-step').textContent = `${piS + 1} / 3 · ${T[2]}`; $('#pi-btn').textContent = piS < 2 ? 'Read on →' : 'From the top ↺';
+  s.append(el('line', {x1: 60, y1: gy, x2: 1440, y2: gy, stroke: C.ink, 'stroke-width': 1.5}));
+  if (piS === 0) {
+    xs.forEach(x => s.append(el('line', {x1: x, y1: gy - 50, x2: 750, y2: 205, stroke: C.dim, 'stroke-width': 1.2, 'stroke-dasharray': '3 7'})));
+    const g = el('g', {transform: 'translate(750,115)'}); s.append(g); star(g, 90, false).pose(1.2);
+    s.append(el('text', {x: 862, y: 110, 'font-size': 14, 'font-weight': 700, fill: C.cobalt}, 'WHAT COMES NEXT'));
+    s.append(el('text', {x: 862, y: 132, 'font-size': 13, fill: C.muted}, 'ABUNDANCE? FOR WHOM?'));
+    [[470, 320], [1030, 320], [750, 345]].forEach(([x, y]) => headText(s, {x, y, 'text-anchor': 'middle', 'font-size': 44, fill: C.cobalt}, '?'));
+  }
+  if (piS === 1) {
+    const B = [[640, 120, 60], [720, 88, 75], [810, 98, 66], [880, 130, 50], [580, 142, 42], [750, 145, 60]];
+    B.forEach(([x, y, r]) => s.append(el('circle', {cx: x, cy: y, r, fill: 'none', stroke: C.ink, 'stroke-width': 3})));
+    B.forEach(([x, y, r]) => s.append(el('circle', {cx: x, cy: y, r, fill: C.off})));
+    s.append(el('text', {x: 730, y: 130, 'text-anchor': 'middle', 'font-size': 13, 'font-weight': 700, fill: C.muted}, 'POWER, SOMEWHERE ELSE'));
+    xs.forEach(x => { const tx = x + (750 - x) * .42, ty = gy - 50 + (205 - gy + 50) * .42;
+      s.append(el('line', {x1: x, y1: gy - 50, x2: tx, y2: ty, stroke: C.ink, 'stroke-width': 1.2, 'stroke-dasharray': '3 6', opacity: .6}));
+      s.append(el('circle', {cx: tx, cy: ty, r: 2.5, fill: C.ink, opacity: .6})); });
+    headText(s, {x: 300, y: 230, 'text-anchor': 'middle', 'font-size': 36, fill: C.cobalt}, 'WHO DECIDES?');
+    headText(s, {x: 1200, y: 230, 'text-anchor': 'middle', 'font-size': 36, fill: C.cobalt}, 'WHO ANSWERS?');
+  }
+  if (piS === 2) {
+    PI_V.forEach(([x, y, col, lx, ly], i) => { const on = piOn.has(i), g = el('g', {class: 'click'});
+      g.append(el('circle', {cx: x, cy: y, r: 112, fill: col, 'fill-opacity': on ? .26 : .08, stroke: col, 'stroke-width': on ? 3 : 2}));
+      headText(g, {x: lx, y: ly, 'text-anchor': 'middle', 'font-size': 30, fill: col}, PI_C[i].tag.toUpperCase());
+      g.onclick = () => { piOn.add(i); piDraw(); pop(sceneOf('#pi'), 1110, 250, piOn.size === 3 ? PI_MID : PI_C[i]); }; s.append(g); });
+    const m = el('g', {class: 'click'}); m.append(el('circle', {cx: 750, cy: 190, r: 34, fill: piOn.size === 3 ? C.cobalt : 'transparent'}));
+    m.append(el('text', {x: 750, y: 187, 'text-anchor': 'middle', 'font-size': 11, 'font-weight': 700, fill: piOn.size === 3 ? C.off : C.ink}, 'PUBLIC'));
+    m.append(el('text', {x: 750, y: 202, 'text-anchor': 'middle', 'font-size': 11, 'font-weight': 700, fill: piOn.size === 3 ? C.off : C.ink}, 'INTELLIGENCE'));
+    m.onclick = () => pop(sceneOf('#pi'), 1110, 250, PI_MID); s.append(m);
+    s.append(el('text', {x: 1440, y: 470, 'text-anchor': 'end', 'font-size': 13, 'font-weight': 700, fill: C.cobalt}, 'GROUND THE POWER · BUILD WITH WISDOM'));
+  }
+  xs.forEach(x => person(s, x, gy - 4, piS === 2 ? C.cobalt : C.ink, .9));
+}
+piDraw();
+
+/* ---------- slide 4: we don't start from zero ---------- */
+const STRATA = [
+  ['Law', 'Hard-won rights', '#E2DACA', {tag: 'Law', title: 'Hard-won rights', body: 'Rights, due process and legitimate authority took centuries to win. A community node runs inside them, not around them.', list: ['Authority comes from people, not platforms', 'Consent and mandate, written down']}],
+  ['Science', 'Method, evidence, revision', '#D7CDB9', {tag: 'Science', title: 'The habit of checking', body: 'Science gives us method: claims anyone can test, and revise. Guidance is worth following only if anyone can check it.', list: ['Sealed runs; negative results count', 'Every claim stays open to revision']}],
+  ['Culture', 'Stories people carry', '#CBC0A9', {tag: 'Culture', title: 'Stories people carry', body: "Stories, guides and shared phrases are how a community knows itself. Don't Panic is one.", list: ['Douglas Adams, and the puddle', 'Field guides to real places']}],
+  ['Memory', 'Archives and institutions', '#BDB199', {tag: 'Memory', title: 'What institutions remember', body: 'Archives, libraries and institutions hold what we would otherwise lose, including how we decided.', list: ['Each night of this guide keeps its own page', 'Dissent is remembered, not erased']}]];
+const stOn = new Set();
+function strataDraw() {
+  const s = $('#strata'), W = 1000, top = 100, H = 92; s.innerHTML = ''; let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const edge = (i, y) => { const pts = []; for (let x = 0; x <= W; x += 25) pts.push([x, i === 0 ? y : y + 7 * Math.sin(x / 110 + i * 1.7)]); return pts; };
+  STRATA.forEach((L, i) => { const on = stOn.has(i), g = el('g', {class: 'click'}), a = edge(i, top + i * H), b = edge(i + 1, top + (i + 1) * H).reverse();
+    g.append(el('path', {d: 'M' + a.concat(b).map(p => p[0] + ',' + p[1].toFixed(1)).join(' L') + ' Z', fill: on ? C.cobalt : L[2], stroke: C.ink, 'stroke-width': 1}));
+    for (let k = 0; k < 90; k++) g.append(el('circle', {cx: rnd() * W, cy: top + i * H + 10 + rnd() * (H - 20), r: rnd() * 1.4 + .4, fill: on ? C.off : C.ink, opacity: .22}));
+    headText(g, {x: 36, y: top + i * H + H / 2 + 14, 'font-size': 40, fill: on ? C.off : C.ink}, L[0].toUpperCase());
+    g.append(el('text', {x: W - 30, y: top + i * H + H / 2 + 6, 'text-anchor': 'end', 'font-size': 15, 'font-weight': 700, fill: on ? C.off : '#5E5A50'}, L[1].toUpperCase()));
+    g.onclick = () => { stOn.add(i); strataDraw(); pop(sceneOf('#strata'), 1110, 260, stOn.size === 4 && i === 3 ? {tag: 'Radical humility', title: 'Learn, without sanctifying', body: 'We build on what came before. Keep the expertise, keep the dissent, and keep the power to revise our institutions.'} : L[3]); };
+    s.append(g); });
+  s.append(el('line', {x1: 0, y1: top, x2: W, y2: top, stroke: C.ink, 'stroke-width': 2.5}));
+  [400, 450, 610, 660, 710].forEach(x => person(s, x, top - 2, C.ink, .8));
+  s.append(el('rect', {x: 505, y: top - 40, width: 60, height: 38, rx: 4, fill: '#0B0B0D'}));
+  [0, 1, 2].forEach(j => s.append(el('rect', {x: 514 + j * 15, y: top - 28, width: 10, height: 10, fill: j === 1 ? C.cobalt : C.pale})));
+  s.append(el('text', {x: 0, y: top - 52, 'font-size': 13, 'font-weight': 700, fill: C.cobalt}, 'TODAY'));
+  s.append(el('text', {x: 0, y: top - 32, 'font-size': 12, fill: C.muted}, 'A COMMUNITY, AND ITS NODE,'));
+  s.append(el('text', {x: 0, y: top - 14, 'font-size': 12, fill: C.muted}, 'ON WHAT CAME BEFORE'));
+  $('#strata-sub').textContent = stOn.size === 4 ? 'Radical humility: learn from what we inherit, without sanctifying it.' : 'Centuries of knowledge. Law. Science. Culture. Hard-won rights. Touch a layer.';
+}
+strataDraw();
+
+/* ---------- slide 5: three disciplines, one method ---------- */
+const MD = [
+  {n: '01', x: 500, y: 76, name: 'Knowledge & judgment', verbs: 'Discover · Discern · Document', side: 1,
+    card: {tag: '01 · Knowledge and judgment', title: 'Discover · Discern · Document', body: 'Gather evidence, weigh it, and write it down where others can check it.', list: ['In this guide: guidance you can check; runs sealed, negatives kept', 'Corrects the building: test what we think we know']}},
+  {n: '02', x: 830, y: 330, name: 'Purpose & mandate', verbs: 'Meet · Deliberate · Mandate',
+    card: {tag: '02 · Purpose and mandate', title: 'Meet · Deliberate · Mandate', body: 'People meet, deliberate, and give a mandate: bounded, inspectable, revocable.', list: ['In this guide: the table, Trust Tasks, agreeing terms', 'Corrects the knowing: evidence alone does not decide']}},
+  {n: '03', x: 170, y: 330, name: 'Action & stewardship', verbs: 'Build · Test · Tend',
+    card: {tag: '03 · Action and stewardship', title: 'Build · Test · Tend', body: 'Agents help build; people test it, and keep tending what was built.', list: ['In this guide: the node kit, guides forked and merged, the Pi kept running', 'Corrects the mandate: what we build shows what we missed']}}];
+const MD_ALL = {tag: 'One method', title: 'Each corrects the others', body: 'Three repeating disciplines, not nine rigid stages. Evidence checks the build, the build tests the mandate, the mandate steers what we look for next.'};
+let mdSel = -1;
+function mdDraw() {
+  const s = $('#md'), G = [500, 245], R = 74; s.innerHTML = '';
+  const defs = el('defs', {}); [['mdA', C.cobalt], ['mdB', '#8A857A']].forEach(([id, col]) => { const m = el('marker', {id, viewBox: '0 0 10 10', refX: 8, refY: 5, markerWidth: 7, markerHeight: 7, orient: 'auto-start-reverse'}); m.append(el('path', {d: 'M0,0 L10,5 L0,10 z', fill: col})); defs.append(m); }); s.append(defs);
+  const u = (a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy); return [dx / l, dy / l]; };
+  MD.forEach((A, i) => { const B = MD[(i + 1) % 3], M = [(A.x + B.x) / 2, (A.y + B.y) / 2], c = [M[0] + (M[0] - G[0]) * .45, M[1] + (M[1] - G[1]) * .45];
+    const ua = u([A.x, A.y], c), ub = u([B.x, B.y], c), on = mdSel === i || mdSel === 3;
+    s.append(el('path', {d: `M${A.x + ua[0] * (R + 8)},${A.y + ua[1] * (R + 8)} Q${c[0]},${c[1]} ${B.x + ub[0] * (R + 14)},${B.y + ub[1] * (R + 14)}`, fill: 'none', stroke: on ? C.cobalt : C.dim, 'stroke-width': on ? 3 : 2, 'marker-end': 'url(#mdA)'}));
+    if (mdSel === 3) { const v = u([B.x, B.y], [A.x, A.y]), q = [M[0] + (G[0] - M[0]) * .3, M[1] + (G[1] - M[1]) * .3];
+      s.append(el('line', {x1: B.x + v[0] * (R + 10) + (G[0] - M[0]) * .12, y1: B.y + v[1] * (R + 10) + (G[1] - M[1]) * .12, x2: A.x - v[0] * (R + 16) + (G[0] - M[0]) * .12, y2: A.y - v[1] * (R + 16) + (G[1] - M[1]) * .12, stroke: '#8A857A', 'stroke-width': 1.6, 'stroke-dasharray': '4 6', 'marker-end': 'url(#mdB)'}));
+      s.append(el('text', {x: q[0], y: q[1] + 4, 'text-anchor': 'middle', 'font-size': 11, 'font-weight': 700, fill: '#6B665C'}, 'CORRECTS')); } });
+  MD.forEach((d, i) => { const on = mdSel === i || mdSel === 3, g = el('g', {class: 'click'});
+    g.append(el('circle', {cx: d.x, cy: d.y, r: R, fill: on ? C.cobalt : C.off, stroke: C.ink, 'stroke-width': 2}));
+    headText(g, {x: d.x, y: d.y + 17, 'text-anchor': 'middle', 'font-size': 50, fill: on ? C.off : C.ink}, d.n);
+    const lx = d.side ? d.x + R + 22 : d.x, ly = d.side ? d.y - 6 : d.y + R + 32, anc = d.side ? 'start' : 'middle';
+    headText(g, {x: lx, y: ly, 'text-anchor': anc, 'font-size': 26, fill: C.ink}, d.name.toUpperCase());
+    g.append(el('text', {x: lx, y: ly + 24, 'text-anchor': anc, 'font-size': 14, 'font-weight': 700, fill: C.cobalt}, d.verbs.toUpperCase()));
+    g.onclick = () => { mdSel = i; mdDraw(); pop(sceneOf('#md'), 1110, 250, d.card); }; s.append(g); });
+  $('#md-btn').textContent = mdSel < 2 ? 'Turn the cycle →' : mdSel === 2 ? 'Each corrects the others →' : 'Again ↺';
+  $('#md-sub').textContent = mdSel === 3 ? 'Three repeating disciplines, not nine rigid stages. Each corrects the others.' : 'Knowledge and judgment. Purpose and mandate. Action and stewardship.';
+}
+function mdTurn() { mdSel = mdSel >= 3 ? -1 : mdSel + 1; mdDraw(); if (mdSel < 0) clearPop('#md'); else pop(sceneOf('#md'), 1110, 250, mdSel < 3 ? MD[mdSel].card : MD_ALL); }
+mdDraw();
+
+/* ---------- slide 6: four principles, one foundation ---------- */
+const PR = [
+  {name: 'Local', card: {tag: 'Local first', title: 'Your community keeps its own node', body: 'Local autonomy: the trust graph, the guides and a local AI live on machines the community owns.', list: ["A Pi per room; the co-op's hardware", 'The towel on your own device']}},
+  {name: 'Chat', card: {tag: 'Chat first', title: 'Chat and voice are the way in', body: "You don't have to code to decide what gets built. The interface is the conversation people already have.", list: ['Chathackers: agents in group chats', 'Bonfires: chat becomes a knowledge graph', 'Voice notes on the guide']}},
+  {name: 'Agentic', card: {tag: 'Agentic first', title: 'Agents help research and build', body: 'Agents do the heavy work (research, drafting, building) so people can spend their time deciding.', list: ['The hitchhiker mage travels between communities', 'Open autoresearch: work anyone can check']}},
+  {name: 'Built on trust', card: {tag: 'The foundation', title: 'Constituted mutual trust', body: 'All three are bounded by trust the community constitutes itself: who belongs, what was promised, what was kept.', list: ["OpenVTC: the community's own trust graph", 'Trust Tasks: small, standard asks between parties']}}];
+const prOn = new Set();
+function prDraw() {
+  const s = $('#pr'); s.innerHTML = '';
+  const hit = i => { prOn.add(i); prDraw(); pop(sceneOf('#pr'), 1110, 260, PR[i].card); };
+  [0, 1, 2].forEach(i => { const x = 40 + i * 320, w = 280, on = prOn.has(i), g = el('g', {class: 'click'}), cx = x + w / 2, fg = on ? C.off : C.ink;
+    g.append(el('rect', {x, y: 40, width: w, height: 280, rx: 3, fill: on ? C.cobalt : C.off, stroke: C.ink, 'stroke-width': 1.5}));
+    if (i === 0) { g.append(el('path', {d: `M${cx - 52},${130} L${cx},${86} L${cx + 52},${130} Z`, fill: 'none', stroke: fg, 'stroke-width': 2.5}));
+      g.append(el('rect', {x: cx - 40, y: 130, width: 80, height: 52, fill: 'none', stroke: fg, 'stroke-width': 2.5}));
+      [0, 1, 2].forEach(j => g.append(el('rect', {x: cx - 26 + j * 19, y: 150, width: 12, height: 12, fill: on ? C.off : (j === 1 ? C.cobalt : C.pale)}))); }
+    if (i === 1) { g.append(el('path', {d: `M${cx - 70},90 h90 a8,8 0 0 1 8,8 v40 a8,8 0 0 1 -8,8 h-58 l-18,16 v-16 h-14 a8,8 0 0 1 -8,-8 v-40 a8,8 0 0 1 8,-8 z`, fill: 'none', stroke: fg, 'stroke-width': 2.5}));
+      g.append(el('path', {d: `M${cx - 4},126 h66 a8,8 0 0 1 8,8 v34 a8,8 0 0 1 -8,8 h-8 v14 l-16,-14 h-42 a8,8 0 0 1 -8,-8 v-34 a8,8 0 0 1 8,-8 z`, fill: on ? C.off : C.cobalt, 'fill-opacity': on ? .25 : .9, stroke: fg, 'stroke-width': 2.5})); }
+    if (i === 2) { const sg = el('g', {transform: `translate(${cx},135)`}); g.append(sg); star(sg, 52, false).pose(2.4); }
+    headText(g, {x: cx, y: 260, 'text-anchor': 'middle', 'font-size': 54, fill: fg}, PR[i].name.toUpperCase());
+    g.append(el('text', {x: cx, y: 292, 'text-anchor': 'middle', 'font-size': 16, 'font-weight': 700, fill: on ? C.off : C.cobalt}, 'FIRST'));
+    g.onclick = () => hit(i); s.append(g); });
+  const on = prOn.has(3), g = el('g', {class: 'click'});
+  g.append(el('rect', {x: 20, y: 340, width: 960, height: 90, rx: 3, fill: on ? C.cobalt : C.ink}));
+  headText(g, {x: 500, y: 402, 'text-anchor': 'middle', 'font-size': 46, fill: C.off}, 'BUILT ON TRUST');
+  g.onclick = () => hit(3); s.append(g);
+  s.append(el('text', {x: 500, y: 460, 'text-anchor': 'middle', 'font-size': 13, 'font-weight': 700, fill: C.muted}, "YOU DON'T HAVE TO CODE TO DECIDE WHAT GETS BUILT"));
+}
+prDraw();
+
+/* ---------- slide 11: grow at the speed of trust ---------- */
+const SOT_P = [[150, 110], [460, 60], [820, 120], [230, 380], [560, 290], [900, 380], [600, 470]];
+const SOT_L = [[0, 1, 'a guide shared'], [1, 2, 'a visitor vouched for'], [0, 3, 'a proof accepted'], [3, 4, 'an agent admitted by its work'], [2, 4, 'a tool shared, learning returned'], [4, 5, 'a table held together'], [5, 6, 'a visit sealed'], [3, 6, 'a mandate honoured']];
+let sotM = 1, sotN = 0;
+function sotMode(m) { sotM = m; sotDraw(); }
+function sotEarn() { if (sotM !== 1) sotM = 1; sotN = sotN >= SOT_L.length ? 0 : sotN + 1; sotDraw(); }
+function sotDraw() {
+  const s = $('#sot'); s.innerHTML = ''; $('#sot-0').classList.toggle('on', !sotM); $('#sot-1').classList.toggle('on', !!sotM); $('#sot-earn').style.visibility = sotM ? 'visible' : 'hidden';
+  if (!sotM) { SOT_P.forEach(([x, y]) => { for (let k = 0; k < 3; k++) s.append(el('line', {x1: x + (k - 1) * 14, y1: y + (k - 1) * 10, x2: 530, y2: 250, stroke: '#8f8c84', 'stroke-width': 1.2, opacity: .8})); });
+    s.append(el('circle', {cx: 530, cy: 250, r: 56, fill: '#8f8c84'})); s.append(el('text', {x: 530, y: 255, 'text-anchor': 'middle', 'font-size': 14, 'font-weight': 700, fill: '#0B0B0D'}, 'THE HUB'));
+    $('#sot-sub').textContent = "One hub holds every community's relationships: fast to grow, one point of capture, and no one answers for it."; }
+  else { SOT_L.slice(0, sotN).forEach(([a, b, t], k) => { const [x1, y1] = SOT_P[a], [x2, y2] = SOT_P[b], last = k === sotN - 1;
+      s.append(el('line', {x1, y1, x2, y2, stroke: last ? C.cobalt : C.pale, 'stroke-width': last ? 3 : 2}));
+      s.append(el('text', {x: (x1 + x2) / 2, y: (y1 + y2) / 2 - 10, 'text-anchor': 'middle', 'font-size': 12, 'font-weight': 700, fill: last ? C.off : C.pale, stroke: '#0B0B0D', 'stroke-width': 5, 'paint-order': 'stroke'}, t.toUpperCase())); });
+    $('#sot-sub').textContent = sotN === 0 ? 'Independent communities, each on its own node. Nothing links them yet. Earn a link.' : sotN < SOT_L.length ? 'Shared knowledge, accountable relationships: each link is earned, one at a time.' : 'No universal hub. Growth paced by earned trust, not a growth hack.'; }
+  SOT_P.forEach(([x, y]) => { s.append(el('circle', {cx: x, cy: y, r: 28, fill: C.ink, stroke: C.pale, 'stroke-width': 1.5})); s.append(el('circle', {cx: x, cy: y, r: 18, fill: 'none', stroke: C.pale})); s.append(el('circle', {cx: x, cy: y, r: 6, fill: C.pale})); });
+  $('#sot-earn').textContent = sotN >= SOT_L.length ? 'Start again ↺' : 'Earn a link →';
+}
+sotDraw();
+
+/* ---------- slide 7: chat is the interface, consent is the authority ---------- */
+const CS_SUB = ['A conversation with your agent. It helps you think, draft and plan.',
+  'You ask it to act. With no mandate, your towel says no on your behalf: a conversation is not permission.',
+  'So you grant a mandate: inspectable, bounded and revocable.',
+  'Now it acts, inside the scope, and keeps a signed receipt. A signature shows who acted, not that it was right.',
+  'Revoke it, and the authority is gone. The next ask goes back to being a conversation.'];
+let csS = 0;
+function csStep() { csS = (csS + 1) % CS_SUB.length; csDraw(); }
+function csDraw() {
+  const s = $('#cs'); s.innerHTML = ''; $('#cs-sub').textContent = CS_SUB[csS]; $('#cs-btn').textContent = csS < CS_SUB.length - 1 ? 'Next beat →' : 'Again ↺';
+  const mOn = csS === 2 || csS === 3, aOn = csS === 3;
+  const box = (x, title, lines, on, dim) => { s.append(el('rect', {x: x - 180, y: 40, width: 360, height: 190, rx: 4, fill: on ? C.cobalt : C.off, stroke: dim ? C.dim : C.ink, 'stroke-width': 1.5}));
+    headText(s, {x, y: 86, 'text-anchor': 'middle', 'font-size': 34, fill: on ? C.off : dim ? C.dim : C.ink}, title);
+    lines.forEach((l, k) => s.append(el('text', {x, y: 128 + k * 26, 'text-anchor': 'middle', 'font-size': 14, 'font-weight': 700, fill: on ? C.off : dim ? C.dim : C.ink}, l))); };
+  box(250, 'CONVERSE', ['“BOOK US THE HALL', 'FOR THURSDAY?”', '', 'TALK · DRAFT · PLAN'], csS === 0, false);
+  box(750, 'MANDATE', csS < 2 ? ['NONE GIVEN'] : csS === 4 ? ['REVOKED', '', 'AUTHORITY WITHDRAWN'] : ['SCOPE · THE HALL, THURSDAY', 'REVIEW · THE KEEPER SEES IT', 'REVOCATION · ANY TIME'], mOn, csS < 2 || csS === 4);
+  box(1250, 'ACT', csS === 1 ? ['REFUSED', 'NO MANDATE, NO ACTION'] : aOn ? ['HALL BOOKED · THURSDAY', 'RECEIPT SIGNED', 'WHO ACTED, NOT WHETHER RIGHT'] : csS === 4 ? ['CLOSED'] : ['WAITING'], aOn, !aOn && csS !== 1);
+  if (csS === 4) s.append(el('line', {x1: 580, y1: 60, x2: 920, y2: 210, stroke: C.ink, 'stroke-width': 3}));
+  [[430, 570], [930, 1070]].forEach(([a, b], k) => { const lit = csS === 3 || (k === 0 && csS === 2);
+    s.append(el('line', {x1: a + 4, y1: 135, x2: b - 10, y2: 135, stroke: lit ? C.cobalt : C.dim, 'stroke-width': lit ? 3 : 1.5}));
+    s.append(el('path', {d: `M${b - 14},127 L${b - 2},135 L${b - 14},143`, fill: 'none', stroke: lit ? C.cobalt : C.dim, 'stroke-width': lit ? 3 : 1.5})); });
+  if (csS === 1) { s.append(el('path', {d: 'M250,232 Q750,380 1250,232', fill: 'none', stroke: C.ink, 'stroke-width': 2, 'stroke-dasharray': '5 7'}));
+    s.append(el('path', {d: 'M732,288 L768,324 M768,288 L732,324', stroke: C.ink, 'stroke-width': 4}));
+    s.append(el('text', {x: 750, y: 360, 'text-anchor': 'middle', 'font-size': 14, 'font-weight': 700, fill: C.cobalt}, 'A CONVERSATION IS NOT PERMISSION TO ACT')); }
+  else s.append(el('text', {x: 750, y: 290, 'text-anchor': 'middle', 'font-size': 14, 'font-weight': 700, fill: C.muted}, 'SCOPE · REVIEW · REVOCATION'));
+}
+csDraw();
+
+/* ---------- slides 8–10: the Pi Ceremony, the Table Ceremony, the Palava ---------- */
+const CER = [['The Pi Ceremony: not another app. A human encounter.', "Not proof of trust: hardware and identity proofs don't create it on their own. Nothing is recorded unless both say yes."],
+  ['The Table Ceremony, from Knowledge Café practice. Touch the verbs in turn.', 'A table is not a vote. Listening comes before any mandate, and dissent stays visible.'],
+  ['The Palava: a whole event, a public performance. Many tables, many voices.', 'Not a bigger table, and not a formal assembly: it can stage disagreement without forcing consensus.']];
+const TV = ['Meet', 'Listen', 'Question', 'Disagree', 'Discover'];
+let cerM = 0, tvN = 0;
+function cerMode(m) { cerM = m; cerDraw(); }
+function cerDraw() {
+  const s = $('#cer'); s.innerHTML = ''; [0, 1, 2].forEach(i => $('#cer-' + i).classList.toggle('on', i === cerM)); $('#cer-sub').textContent = CER[cerM][0]; $('#cer-not').textContent = CER[cerM][1];
+  if (cerM === 0) { s.append(el('circle', {cx: 750, cy: 250, r: 110, fill: C.cobalt, opacity: .08}));
+    s.append(el('path', {d: 'M590,150 Q750,60 910,150', fill: 'none', stroke: C.cobalt, 'stroke-width': 2, 'stroke-dasharray': '4 7'}));
+    person(s, 560, 330, C.ink, 2.4); person(s, 940, 330, C.ink, 2.4);
+    s.append(el('rect', {x: 705, y: 240, width: 90, height: 58, rx: 6, fill: '#0B0B0D'}));
+    [0, 1, 2].forEach(j => s.append(el('rect', {x: 719 + j * 23, y: 262, width: 14, height: 14, fill: j === 1 ? C.cobalt : C.pale})));
+    s.append(el('text', {x: 750, y: 324, 'text-anchor': 'middle', 'font-size': 12, 'font-weight': 700, fill: C.muted}, 'A LOCAL PI'));
+    s.append(el('text', {x: 750, y: 390, 'text-anchor': 'middle', 'font-size': 16, 'font-weight': 700, fill: C.cobalt}, 'MEET · SAY HELLO · TAP THE PI, IF YOU BOTH WANT')); }
+  if (cerM === 1) { const cx = 750, cy = 190, rx = 250, ry = 92, seats = [...Array(6)].map((_, i) => { const a = -Math.PI / 2 + i * Math.PI / 3; return [cx + (rx + 46) * Math.cos(a), cy + (ry + 40) * Math.sin(a)]; });
+    s.append(el('ellipse', {cx, cy, rx, ry, fill: C.off, stroke: C.ink, 'stroke-width': 2}));
+    if (tvN >= 2) seats.slice(1).forEach(p => s.append(el('line', {x1: seats[0][0], y1: seats[0][1], x2: p[0], y2: p[1], stroke: C.cobalt, 'stroke-width': 1.2, opacity: .55})));
+    if (tvN >= 3) s.append(el('line', {x1: seats[3][0], y1: seats[3][1], x2: seats[0][0], y2: seats[0][1], stroke: C.cobalt, 'stroke-width': 3, 'stroke-dasharray': '6 5'}));
+    if (tvN >= 4) { s.append(el('line', {x1: seats[4][0], y1: seats[4][1], x2: cx, y2: cy, stroke: '#B5651D', 'stroke-width': 3, 'stroke-dasharray': '2 6'}));
+      s.append(el('text', {x: seats[4][0] - 30, y: seats[4][1] + 56, 'text-anchor': 'middle', 'font-size': 12, 'font-weight': 700, fill: '#B5651D'}, 'DISSENT STAYS VISIBLE')); }
+    if (tvN >= 5) { s.append(el('circle', {cx, cy, r: 66, fill: C.cobalt, opacity: .9})); s.append(el('text', {x: cx, y: cy + 5, 'text-anchor': 'middle', 'font-size': 12, 'font-weight': 700, fill: C.off}, 'FOUND TOGETHER')); }
+    seats.forEach(([x, y]) => s.append(el('circle', {cx: x, cy: y, r: 18, fill: tvN >= 1 ? C.ink : C.off, stroke: C.ink, 'stroke-width': 1.5})));
+    TV.forEach((v, i) => { const g = el('g', {class: 'click'}), x = 390 + i * 180, on = tvN > i;
+      g.append(el('rect', {x: x - 75, y: 360, width: 150, height: 44, rx: 3, fill: on ? C.cobalt : C.off, stroke: on ? C.cobalt : C.ink, 'stroke-width': 1.5}));
+      g.append(el('text', {x, y: 388, 'text-anchor': 'middle', 'font-size': 15, 'font-weight': 700, fill: on ? '#fff' : C.ink}, v.toUpperCase()));
+      g.onclick = () => { tvN = tvN === i + 1 ? i : i + 1; cerDraw(); }; s.append(g); }); }
+  if (cerM === 2) { s.append(el('rect', {x: 560, y: 10, width: 380, height: 46, rx: 3, fill: C.ink}));
+    s.append(el('text', {x: 750, y: 39, 'text-anchor': 'middle', 'font-size': 14, 'font-weight': 700, fill: C.off}, 'THE STAGE · PERFORMANCE, ART, DISAGREEMENT'));
+    const T = []; [430, 750, 1070].forEach(x => [130, 230, 330].forEach(y => T.push([x, y])));
+    T.forEach(([x, y], i) => T.forEach(([x2, y2], j) => { if (j > i && Math.hypot(x2 - x, y2 - y) < 340) s.append(el('line', {x1: x, y1: y, x2, y2, stroke: C.pale, 'stroke-width': 1, 'stroke-dasharray': '3 7'})); }));
+    T.forEach(([x, y]) => { s.append(el('ellipse', {cx: x, cy: y, rx: 82, ry: 26, fill: C.off, stroke: C.ink, 'stroke-width': 1.5}));
+      [...Array(6)].forEach((_, k) => { const a = k / 6 * 6.283; s.append(el('circle', {cx: x + 100 * Math.cos(a), cy: y + 38 * Math.sin(a), r: 6, fill: C.ink})); }); });
+    [['ART', 190, 150], ['RESEARCH', 1310, 210], ['CIVIC', 190, 300], ['IMAGINATION', 1310, 360]].forEach(([t, x, y]) => headText(s, {x, y, 'text-anchor': 'middle', 'font-size': 30, fill: C.cobalt}, t)); }
+}
+cerDraw();
 
 // teleport: the lightning talk and the IIW workshop live on the same site; jump from one to the other in place
 (function () { const q = new URLSearchParams(location.search), t = $('#teleport'), p = document.body.dataset.path, to = p === 'lightning' ? 'iiw' : p === 'iiw' || p === 'workshop' ? 'lightning' : null;
