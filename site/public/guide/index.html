@@ -717,7 +717,7 @@ const NET = [
   ['VTA Farm', 2, 250, 'spec', 'trust agents, hosted', 'Sets up a Trust Agent for you in minutes: a DID that is yours, for anyone without a node of their own (vta.farm).'],
   ['Hitchhiker FM', 2, 250, 'spec', 'a voice for nature', "The Hitchhikers' station: fork, cast, transmit. Its Rights of Nature spell puts Ecuador's constitutional rights of Pacha Mama on air, in Morse."],
   ['Internet Archive', 2, 380, 'spec', 'the record, kept', 'A library of the web and of what people make, kept for anyone to look back on. One of the nights of this guide.'],
-  ['This guide\'s chain', 2, 380, 'spec', 'hh.mages.city', 'The night\'s evidence chain, hosted; its gate can move to a Pi, and close when the Pi is unplugged.']];
+  ['This guide\'s chain', 2, 380, 'spec', (location.protocol.startsWith('http') && !/^(localhost|127\.|\[?::1)/.test(location.hostname) ? location.hostname : 'trust.hitchhikers.earth'), 'The night\'s evidence chain, kept on a Pi the community runs: trust.hitchhikers.earth for the Hitchhikers, hh.mages.city as a second home and backup.']];
 const NET_COL = [[160, 'Towels · your devices'], [590, 'Embassies · local nodes'], [1000, 'Hosted']];
 const NET_EDGES = [[0, 3], [1, 4], [10, 0], [10, 1], [4, 9], [5, 3], [6, 3], [7, 3], [8, 12], [2, 3], [3, 9], [11, 3]];
 const NET_TYPE = {human: ['Human-first embassy', '#F6F1E6'], agent: ['Agent-first embassy', '#1F4BFF'], spec: ['Specialist trust agent', '#8EA4FF'], own: ['Your towel', '#E8C873']};
