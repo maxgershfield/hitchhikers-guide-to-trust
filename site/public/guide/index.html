@@ -1603,6 +1603,28 @@ const CER = [['The commitment: a conversation captured through technology, produ
   ['The public gathering: a large, fun, futuristic event exploring possible futures through talks, performance, technology and imagination.', 'Not a bigger table, and not a formal assembly: it can stage disagreement without forcing consensus.']];
 const TV = ['Meet', 'Listen', 'Question', 'Disagree', 'Discover'];
 let cerM = 0, tvN = 0;
+// the Pi Ceremony's record button
+const PC = {state: 'idle', secs: 0, link: null, err: ''}; let pcRec = null, pcTick = null;
+async function pcToggle() {
+  if (PC.state === 'sending') return;
+  if (PC.state === 'recording') { if (pcRec && pcRec.state === 'recording') pcRec.stop(); clearInterval(pcTick); return; }
+  PC.err = '';
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({audio: true}), chunks = [];
+    const mime = ['audio/webm;codecs=opus', 'audio/mp4', 'audio/webm'].find(t => window.MediaRecorder && MediaRecorder.isTypeSupported(t)) || '';
+    pcRec = new MediaRecorder(stream, mime ? {mimeType: mime, audioBitsPerSecond: 24000} : {audioBitsPerSecond: 24000});
+    pcRec.ondataavailable = e => e.data.size && chunks.push(e.data);
+    pcRec.onstop = async () => { stream.getTracks().forEach(t => t.stop()); PC.state = 'sending'; cerDraw();
+      try { const blob = new Blob(chunks, {type: pcRec.mimeType || mime || 'audio/webm'}), type = new TextEncoder().encode(blob.type + '\n'), audio = new Uint8Array(await blob.arrayBuffer()), all = new Uint8Array(type.length + audio.length); all.set(type); all.set(audio, type.length);
+        const box = await DP.sealBytes(all), r = await fetch(DP.u('/api/voice'), {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({mark: await DP.mark(), iv: box.iv, ct: box.ct, secs: PC.secs, type: blob.type})});
+        const d = await r.json().catch(() => ({})); if (!r.ok) throw new Error(d.error || 'That did not go through');
+        DP.remember(d.link.hash); PC.link = d.link; PC.state = 'done';
+      } catch (e) { PC.state = 'idle'; PC.err = e.message || 'Offline: the chain could not be reached'; }
+      cerDraw(); };
+    PC.secs = 0; PC.link = null; PC.state = 'recording'; pcRec.start(); cerDraw();
+    pcTick = setInterval(() => { PC.secs++; if (PC.secs >= 45) { pcRec.stop(); clearInterval(pcTick); } if (cerM === 0) cerDraw(); }, 1000);
+  } catch (e) { PC.state = 'idle'; PC.err = 'No microphone here (or it was not allowed)'; cerDraw(); }
+}
 function cerMode(m) { cerM = m; cerDraw(); }
 function cerDraw() {
   const s = $('#cer'); s.innerHTML = ''; [0, 1, 2].forEach(i => $('#cer-' + i).classList.toggle('on', i === cerM)); $('#cer-sub').textContent = CER[cerM][0]; $('#cer-not').textContent = CER[cerM][1];
@@ -1610,9 +1632,19 @@ function cerDraw() {
     s.append(el('path', {d: 'M100,230 Q165,170 230,230', fill: 'none', stroke: C.cobalt, 'stroke-width': 2, 'stroke-dasharray': '4 6'}));
     s.append(el('rect', {x: 330, y: 40, width: 190, height: 340, rx: 26, fill: C.cobalt, stroke: C.ink, 'stroke-width': 2.5}));
     s.append(el('rect', {x: 345, y: 62, width: 160, height: 296, rx: 14, fill: '#0B0B0D'}));
-    for (let k = 0; k < 22; k++) { const h = 8 + 60 * Math.abs(Math.sin(k * 1.7) * Math.sin(k * .45 + 1)); s.append(el('rect', {x: 358 + k * 6.3, y: 180 - h / 2, width: 3.5, height: h, fill: C.off})); }
-    s.append(el('circle', {cx: 425, cy: 300, r: 22, fill: 'none', stroke: C.off, 'stroke-width': 2})); s.append(el('rect', {x: 416, y: 291, width: 18, height: 18, fill: C.off}));
-    s.append(el('text', {x: 425, y: 260, 'text-anchor': 'middle', 'font-size': 12, 'font-weight': 700, fill: C.off}, '● REC'));
+    // the record button is a real one: it records a pledge, seals it with this device's key, and adds it to the chain
+    const live = PC.state === 'recording';
+    for (let k = 0; k < 22; k++) { const h = live ? 6 + 62 * Math.random() : 8 + 60 * Math.abs(Math.sin(k * 1.7) * Math.sin(k * .45 + 1)); s.append(el('rect', {x: 358 + k * 6.3, y: 180 - h / 2, width: 3.5, height: h, fill: live ? '#FF6C55' : C.off, opacity: PC.state === 'idle' ? .45 : 1})); }
+    const rb = el('g', {class: 'click'}); s.append(rb);
+    rb.append(el('circle', {cx: 425, cy: 300, r: 30, fill: 'transparent'}));
+    rb.append(el('circle', {cx: 425, cy: 300, r: 24, fill: 'none', stroke: C.off, 'stroke-width': 2.5}));
+    if (live) rb.append(el('rect', {x: 415, y: 290, width: 20, height: 20, rx: 3, fill: '#FF6C55'}));
+    else rb.append(el('circle', {cx: 425, cy: 300, r: 15, fill: PC.state === 'sending' ? '#8f8c84' : '#E0402F'}));
+    rb.onclick = pcToggle;
+    const mm = String(Math.floor(PC.secs / 60)), ss = String(PC.secs % 60).padStart(2, '0');
+    s.append(el('text', {x: 425, y: 250, 'text-anchor': 'middle', 'font-size': 12, 'font-weight': 700, fill: live ? '#FF6C55' : C.off},
+      live ? `● REC ${mm}:${ss}` : PC.state === 'sending' ? 'SEALING…' : PC.state === 'done' ? '✓ ON THE CHAIN' : 'TAP ● TO RECORD'));
+    if (PC.err) s.append(el('text', {x: 425, y: 400, 'text-anchor': 'middle', 'font-size': 11, fill: '#E0402F'}, PC.err.toUpperCase()));
     ['TRANSCRIBE', 'INFER', 'RECORD ON π'].forEach((t, k) => { const y = 60 + k * 100;
       s.append(el('rect', {x: 600, y, width: 220, height: 56, rx: 4, fill: C.off, stroke: C.cobalt, 'stroke-width': 2}));
       s.append(el('text', {x: 710, y: y + 34, 'text-anchor': 'middle', 'font-size': 16, 'font-weight': 700, fill: C.cobalt}, t));
@@ -1622,7 +1654,7 @@ function cerDraw() {
     cg.append(el('rect', {x: 910, y: 50, width: 340, height: 320, rx: 4, fill: C.off, stroke: C.ink, 'stroke-width': 2.5}));
     cg.append(el('rect', {x: 910, y: 50, width: 340, height: 62, fill: C.cobalt}));
     handSvg(cg, 930, 95, 'Pledge', {rot: 0, size: 34, fill: '#fff'}); headText(cg, {x: 1225, y: 98, 'text-anchor': 'end', 'font-size': 40, fill: '#fff'}, 'π');
-    [['4 hours', 'TIME GIVEN'], ['Catalogue 20 items', 'SOMETHING MEASURABLE'], ['Recorded', 'EVERYONE SAID YES']].forEach(([a, b2], k) => { const y = 160 + k * 72;
+    [['4 hours', 'TIME GIVEN'], ['Catalogue 20 items', 'SOMETHING MEASURABLE'], PC.link ? ['Recorded · star #' + PC.link.seq, 'SEALED WITH YOUR KEY'] : ['Recorded', 'EVERYONE SAID YES']].forEach(([a, b2], k) => { const y = 160 + k * 72;
       checkSvg(cg, 935, y, a, C.ink); cg.append(el('text', {x: 963, y: y + 22, 'font-size': 12, 'font-weight': 700, fill: C.muted}, b2));
       if (k < 2) cg.append(el('line', {x1: 930, y1: y + 36, x2: 1230, y2: y + 36, stroke: C.ink, opacity: .2})); });
     arrowSvg(s, 840, 260, 900, 250, -10); handSvg(s, 1440, 420, 'A promise\nyou can check.', {size: 22, rot: -6, anchor: 'end'}); }
