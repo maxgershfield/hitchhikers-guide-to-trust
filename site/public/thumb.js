@@ -4,13 +4,13 @@
   if (!window.DP) return;
   const host = document.getElementById('stage') || document.body;
   const css = document.createElement('style');
-  css.textContent = `#tu{position:absolute;right:70px;bottom:62px;z-index:7;display:flex;align-items:center;gap:8px;font-family:"Space Mono",Consolas,monospace}
-#tu button{width:52px;height:52px;border-radius:50%;border:1.5px solid #1F4BFF;background:#F6F1E6;font-size:24px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.15);transition:transform .15s}
+  css.textContent = `#tu{position:absolute;right:24px;top:7px;z-index:7;display:flex;align-items:center;gap:8px;font-family:"Space Mono",Consolas,monospace}
+#tu button{width:42px;height:42px;border-radius:50%;border:1.5px solid #1F4BFF;background:#F6F1E6;font-size:20px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.12);transition:transform .15s}
 #tu button:hover{transform:scale(1.08)}#tu button:active{transform:scale(.94)}#tu button[disabled]{opacity:.5;cursor:wait}
 #tu .msg{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#1F4BFF;background:#F6F1E6;padding:4px 8px;border-radius:3px;opacity:0;transition:opacity .3s}
 #tu .msg.on{opacity:1}
-#tu .burst{position:absolute;right:16px;bottom:40px;font-size:20px;pointer-events:none;animation:tuup 1.2s ease-out forwards}
-@keyframes tuup{to{transform:translateY(-70px);opacity:0}}`;
+#tu .burst{position:absolute;right:12px;top:30px;font-size:20px;pointer-events:none;animation:tuup 1.2s ease-out forwards}
+@keyframes tuup{to{transform:translateY(60px);opacity:0}}`;
   document.head.append(css);
   const box = document.createElement('div'); box.id = 'tu';
   box.innerHTML = '<span class="msg"></span><button title="Thumbs up: add your star to the guide">👍</button>';
