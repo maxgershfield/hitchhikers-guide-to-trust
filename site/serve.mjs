@@ -9,7 +9,8 @@ import { randomBytes } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 import worker from './src/worker.js';
 
-const PORT = +(process.env.PORT || 8788), HOST = '127.0.0.1';
+// HOST: this machine only by default; set it (e.g. a tailnet address) when the proxy runs on another machine.
+const PORT = +(process.env.PORT || 8788), HOST = process.env.HOST || '127.0.0.1';
 // DATA=<folder> PORT=<port> runs a second, separate room (e.g. one per hostname) from the same pages.
 const dir = new URL('./public/', import.meta.url), data = process.env.DATA ? pathToFileURL(process.env.DATA.replace(/[\/]?$/, '/')) : new URL('./data/', import.meta.url);
 await mkdir(data, { recursive: true });
@@ -62,7 +63,7 @@ http.createServer(async (req, res) => {
     res.writeHead(r.status, Object.fromEntries(r.headers)); res.end(Buffer.from(await r.arrayBuffer()));
   } catch (e) { res.writeHead(500); res.end('error'); }
 }).listen(PORT, HOST, () => {
-  console.log(`Don't Panic is up on http://localhost:${PORT}  (this machine only)`);
+  console.log(`Don't Panic is up on http://${HOST}:${PORT}` + (HOST === '127.0.0.1' ? '  (this machine only)' : ''));
   console.log(`Keeper page: http://localhost:${PORT}/keeper   key: ${process.env.KEEPER_KEY ? '(from KEEPER_KEY)' : 'see data/keeper-key.txt'}`);
   console.log(`Proverbs are saved in data/store.json. Open a tunnel to let people online reach it (see README).`);
 });

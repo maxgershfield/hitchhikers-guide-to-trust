@@ -42,7 +42,7 @@ scene sealed inside. The Pi Ceremony's record button records a pledge, sealed, a
 
 | variable | what |
 |---|---|
-| `PORT`, `DATA` | where the server listens (127.0.0.1) and keeps its data |
+| `PORT`, `HOST`, `DATA` | where the server listens (default 127.0.0.1:8788; `HOST` a tailnet address if the proxy is on another machine) and keeps its data |
 | `KEEPER_KEY` | the keeper's key (otherwise generated into `DATA/keeper-key.txt`) |
 | `EVENTS`, `DEFAULT_EVENT` | each night's name, date and place. **Set before the first visitor**: a chain's genesis is fixed once written |
 | `CITY_API`, `CITY_JOIN` | **the VTC to connect to**: its API base (public profile, join manifest, DID QR) and its join page. Default: Mages City. For the Hitchhikers VTC, set both to its addresses once it is up |
@@ -52,7 +52,8 @@ scene sealed inside. The Pi Ceremony's record button records a pledge, sealed, a
 
 ## Deploy
 
-- **One Pi, public**: run `serve.mjs` as a service (`site/pi/`), and point a reverse proxy or a tunnel at it.
+- **One Pi, public**: `site/pi/install.sh` sets it up as a service from a clone of this repo, behind a reverse proxy
+  or a tunnel; `site/pi/update.sh` pulls each push and restarts it, going back if it doesn't answer. See `site/pi/README.md`.
   Two homes are planned, the same code, each with its own chain and keeper key:
   - `trust.hitchhikers.earth`: the Hitchhikers' instance, on their Pi 5 (behind their Caddy), holding the aggregate chain.
   - `trust.mages.city`: Mitch's instance, on his Pi 4 (a Cloudflare tunnel). A second home, and the **backup**: if the

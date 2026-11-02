@@ -1,38 +1,97 @@
-# The gate on a Raspberry Pi
+# Hosting the guide on a Pi
 
-The Pi holds the door: while it runs, visitors can add a proverb or a guide; unplug it and the door closes.
-Works on a Pi 4 or Pi 5 with Raspberry Pi OS or Ubuntu, on any Wi-Fi (it only dials out).
+The same code runs in two homes, each with its own chain and keeper key:
 
-## Before the night
+| | address | Pi | public name by | role |
+|---|---|---|---|---|
+| the Hitchhikers | `trust.hitchhikers.earth` | their Pi 5 | their Caddy | the aggregate chain |
+| Mitch | `trust.mages.city` | Mitch's Pi 4 | a Cloudflare tunnel | a second home and the backup |
 
-1. **Node.js 20 or newer**: `node --version`. If older, install from nodejs.org (arm64 or armv7 build to match the OS).
-2. **The site**: copy the `site` folder to the Pi, e.g. `~/dontpanic`.
-3. **Wi-Fi**: save the venue's network, or your phone's hotspot, so the Pi joins it by itself.
-4. **The tunnel**: install `cloudflared` (Cloudflare's arm package), then once:
-   ```
-   cloudflared tunnel login
-   cloudflared tunnel create dontpanic-gate
-   cloudflared tunnel route dns dontpanic-gate gate.mages.city
-   ```
-   and point it at the site in `~/.cloudflared/config.yml`:
-   ```
-   tunnel: dontpanic-gate
-   credentials-file: /home/<you>/.cloudflared/<tunnel-id>.json
-   ingress:
-     - hostname: gate.mages.city
-       service: http://localhost:8788
-     - service: http_status:404
-   ```
-5. **Start both on boot**: copy the two unit files in this folder to `/etc/systemd/system/` (edit `User=` and the
-   paths), then `sudo systemctl enable --now dontpanic cloudflared-dontpanic`.
-6. **Check**: `curl https://gate.mages.city/api/gate` answers `{"gate":"open","host":"…"}`.
-7. **Point the Worker at it**: set `GATE_ORIGIN` to `https://gate.mages.city` in `wrangler.jsonc`, `npx wrangler deploy`.
+Each Pi keeps a clone of this repo. Changes go: **push to `main` → the Pi pulls → the server restarts.**
+The chain lives outside the clone (`~/trust-data`), so pulling never touches anyone's stars.
 
-Your keeper key on the Pi is in `~/dontpanic/data/keeper-key.txt`.
+## Once, on each Pi
 
-## On the night
+Needs Node.js 20+ (arm64 build from nodejs.org), git, and systemd (Raspberry Pi OS or Ubuntu).
 
-Plug in: about a minute later the gate opens. Unplug: within seconds the guide's last scene and the home page say
-the gate is closed, and the form locks. Plug back in to reopen it.
+```
+git clone https://github.com/mitchuski/hitchhikers-guide-to-trust.git ~/trust
 
-Tailscale isn't needed for the gate. It is handy for SSH into the Pi from a laptop on another network.
+# the Hitchhikers' Pi 5 (behind their Caddy)
+~/trust/site/pi/install.sh --domain trust.hitchhikers.earth --via caddy
+
+# Mitch's Pi 4 (Cloudflare tunnel; run `cloudflared tunnel login` once first)
+~/trust/site/pi/install.sh --domain trust.mages.city --via tunnel
+```
+
+Add `--dry-run` to see everything it would do first. It:
+
+- writes the settings to `~/.config/trust-guide/env` (once; never overwritten, yours to edit),
+- keeps the chain and keeper key in `~/trust-data`,
+- installs `trust-guide.service` (the server) and, with `--via tunnel`, `trust-guide-tunnel.service` with its own
+  config `~/.cloudflared/trust-guide.yml`,
+- starts them and checks the server answers.
+
+It never edits Caddy, an existing cloudflared config, or anything else on the Pi. With `--via caddy` it prints the
+block for whoever runs Caddy:
+
+```
+trust.hitchhikers.earth {
+  reverse_proxy 127.0.0.1:8788
+}
+```
+
+If Caddy runs on a different machine from the server, set `HOST=` in the settings file to the Pi's tailnet address
+and use that address in the block instead.
+
+Other options: `--port` (if 8788 is taken), `--name` (what `/api/gate` calls this node), `--auto-update` (below).
+
+**Before the first visitor**, set each night in `EVENTS` in the settings file, then
+`sudo systemctl restart trust-guide`. A night's first link is fixed once written.
+
+## Each time something changes
+
+```
+# on your computer
+git push
+
+# on each Pi
+~/trust/site/pi/update.sh
+```
+
+`update.sh` shows what's new, pulls it, checks the server scripts parse, restarts, and checks the server answers.
+If anything fails it goes back to the version it was on. It refuses to run if the clone has local edits (a Pi
+only ever pulls). `--check` only says whether there is something new.
+
+With `install.sh --auto-update`, a timer runs it every 10 minutes, so a push to `main` reaches the Pi by itself.
+It's off by default: on the day of a talk you may prefer to choose when the room sees a change.
+
+## Looking after it
+
+| | |
+|---|---|
+| is it up? | `curl https://<domain>/api/gate` |
+| logs | `journalctl -u trust-guide -n 50` (tunnel: `-u trust-guide-tunnel`) |
+| restart | `sudo systemctl restart trust-guide` |
+| keeper key | `~/trust-data/keeper-key.txt` (keeper page: `https://<domain>/keeper`) |
+| back up the chain | copy `~/trust-data/store.json` while the server runs |
+
+## Rooms: Pis feeding the aggregate
+
+A Pi can also pass every star it receives up to the aggregate (`trust.hitchhikers.earth`): its hash, the visitor's
+mark and the room's name, never what was written. In the aggregate's settings, list the room and a long random key:
+
+```
+ROOM_KEYS='{"Mitch Pi 4":"<key>"}'
+```
+
+and in the room Pi's settings:
+
+```
+SCROLL_ORIGIN=https://trust.hitchhikers.earth
+ROOM_NAME=Mitch Pi 4
+ROOM_KEY=<the same key>
+```
+
+Restart both. Not yet built: a star passed up while the aggregate is offline is not retried, and the Pi 4 does not
+yet keep a full copy of the aggregate's chain.
