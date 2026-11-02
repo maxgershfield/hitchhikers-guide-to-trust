@@ -700,6 +700,7 @@ const NET = [
   ['Chathackers', 1, 250, 'spec', 'agents in chats', 'Specialist agents that live in the group chats and help, like the bot that answers a claim with a proverb.'],
   ['The local co-op', 1, 380, 'human', 'owns the hardware', 'Members co-own the hardware and pool its compute for local AI: the Pi is the co-op\'s, not a platform\'s.'],
   ['A room\'s Pi', 1, 380, 'spec', 'one per room', 'Each room at Newspeak House can hold its own gate and chain, feeding the night\'s guide.'],
+  ['Culture Vault', 2, 120, 'spec', 'culture, kept', 'A curated vault for culture, from physical to digital: works and their provenance kept on Arweave and Ethereum. Where a community\'s guides, art and editions can live.'],
   ['First Person network', 2, 120, 'human', 'human first', 'People, each with their own trust graph, recognised across communities. It began with the First VTC (first.openvtc.net).'],
   ['VTA Farm', 2, 250, 'spec', 'trust agents, hosted', 'Sets up a Trust Agent for you in minutes: a DID that is yours, for anyone without a node of their own (vta.farm).'],
   ['Hitchhiker FM', 2, 250, 'spec', 'a voice for nature', "The Hitchhikers' station: fork, cast, transmit. Its Rights of Nature spell puts Ecuador's constitutional rights of Pacha Mama on air, in Morse."],
@@ -813,11 +814,12 @@ const OPP = [
   {name: 'Mages City', pre: 'agentprivacy', role: 'Open autoresearch · agentic privacy', col: '#6B665C', card: {tag: 'agentprivacy · open autoresearch · agentic privacy', title: 'Mages City', body: 'From agentprivacy: agents that do research in the open, and act on your behalf without giving you away.', list: ['Open autoresearch: every run sealed, anyone can re-check it', 'Agentic privacy: one agent protects, one connects', 'Hitchhiker mages that travel between communities and help']}},
   {name: 'Bonfires', role: 'Knowledge graphs from chat', col: '#B5651D', card: {tag: 'Knowledge graphs from chat', title: 'Bonfires', body: "Turns a group chat's conversation into a shared knowledge graph.", list: ['What a community learns in chat becomes knowledge it keeps', 'Talk becomes guidance the guide can hold']}},
   {name: 'The local co-op', role: 'Cooperative ownership', col: '#3E7A3A', card: {tag: 'Cooperative ownership', title: 'The local co-op', body: 'Members co-own the hardware and the local infrastructure: the nodes that hold the community\'s trust.', list: ["The Pi is the co-op's, not a platform's", 'Pooled compute: local AI the members run together', 'Who hosts, and how, is decided together']}},
-  {name: 'Chathackers', role: 'Agents in group chats', col: '#7A4FB5', card: {tag: 'Agents in group chats', title: 'Chathackers', body: "Bots and agents that live in a community's chats and help it.", list: ['Like the bot that welcomes your claim with a proverb', 'Help in the chat, without taking the chat away']}}];
+  {name: 'Chathackers', role: 'Agents in group chats', col: '#7A4FB5', card: {tag: 'Agents in group chats', title: 'Chathackers', body: "Bots and agents that live in a community's chats and help it.", list: ['Like the bot that welcomes your claim with a proverb', 'Help in the chat, without taking the chat away']}},
+  {name: 'Culture Vault', role: 'Culture, kept', col: '#9C3D54', card: {tag: 'Culture, kept', title: 'Culture Vault', body: 'A curated vault for culture, from physical to digital.', list: ['Works and their provenance kept on Arweave and Ethereum', "Where a community's guides, art and editions can live"]}}];
 const oppOn = new Set();
 function oppDraw() {
   const s = $('#opp'), cx = 530, cy = 318, R = 188; s.innerHTML = '';
-  const at = i => { const a = -Math.PI / 2 + i * Math.PI / 3; return [cx + R * 1.45 * Math.cos(a), cy + R * Math.sin(a)]; };
+  const at = i => { const a = -Math.PI / 2 + i * 2 * Math.PI / OPP.length; return [cx + R * 1.45 * Math.cos(a), cy + R * Math.sin(a)]; };
   // threads: each project to the community, and around the ring
   OPP.forEach((o, i) => { const [x, y] = at(i), [x2, y2] = at((i + 1) % OPP.length), on = oppOn.has(i);
     s.append(el('line', {x1: x, y1: y, x2: cx, y2: cy, stroke: on ? o.col : '#8f8c84', 'stroke-width': on ? 2.5 : 1.2, 'stroke-dasharray': on ? '' : '4 7', opacity: on ? .9 : .6}));
