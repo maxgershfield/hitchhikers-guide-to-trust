@@ -78,7 +78,7 @@ body.bare #bare{color:var(--pale)}
 </head>
 <body>
 <canvas id="c"></canvas>
-<div class="hud title"><div class="k" id="guide-k" style="max-width:40vw">The Hitchhiker's Guide to Trust · the evidence chain</div><a class="back" href="../guide/?path=workshop">← back to the guide</a><h1>A galaxy<br>of <b>guides</b></h1>
+<div class="hud title"><div class="k" id="guide-k" style="max-width:40vw">The Hitchhiker's Guide to Trust · the evidence chain</div><a class="back" id="back" href="../guide/?path=workshop">← back to the guide</a><h1>A galaxy<br>of <b>guides</b></h1>
   <div class="nights" id="nights"></div>
   <p id="guide-p">One guide, many nights. Each night is a verifiable trust event: a community, an event, a ceremony. Every thumbs up, proverb, guide and voice note is a star: its hash public, what's behind it sealed with your own key. No joining needed.</p>
   <p style="color:#8EA4FF">“Prove the contribution, not the person.” <span style="opacity:.7">· the Hitchhikers</span><br>Every star is a record on this guide. Claim yours with your DID; a credential your agent can carry comes next.</p>
@@ -302,6 +302,11 @@ else { const rooms = async () => { try { const r = await fetch(U('/api/rooms'), 
   if (q.has('bare')) start = q.get('bare') !== '0';
   set(start); b.onclick = () => set(!document.body.classList.contains('bare'));
   addEventListener('keydown', e => { if (e.target.matches('input,textarea,[contenteditable]')) return; if (e.key === 'h' || e.key === 'H') set(!document.body.classList.contains('bare')); }); })();
+</script>
+<script>
+// back to where you were in the presentation, not to its first scene
+(function () { try { const last = localStorage.getItem('hgt:last'), b = document.getElementById('back');
+  if (last && /^\/guide\//.test(last)) { b.href = last; const at = new URLSearchParams(last.split('?')[1] || '').get('at'); if (at) b.textContent = '← back to the guide · ' + at.toLowerCase(); } } catch (e) {} })();
 </script>
 </body>
 </html>

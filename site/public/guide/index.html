@@ -587,7 +587,8 @@ setInterval(() => { if (!t0) return; const now = pausedAt || Date.now(), q = Mat
 function go(n) { cur = Math.max(0, Math.min(scenes.length - 1, n)); scenes.forEach((x, i) => x.classList.toggle('on', i === cur)); settle(scenes[cur]);
   const part = scenes[cur].dataset.part; $$('.tab').forEach(b => b.classList.toggle('on', b.dataset.p === part)); const mainIdx = scenes.filter(y => !y.dataset.branch), at = mainIdx.indexOf(scenes[cur].dataset.branch ? scenes[idxOf(scenes[cur].dataset.branch)] : scenes[cur]); $('#prog').style.width = (100 * at / Math.max(1, mainIdx.length - 1)) + '%';
   $('#where').textContent = `${{iiw: 'IIW workshop · ', workshop: 'IIW workshop · ', lightning: 'Lightning · '}[document.body.dataset.path] || ''}${at + 1} / ${mainIdx.length}${scenes[cur].dataset.branch ? ' ↳' : ''} · ${scenes[cur].dataset.sec}`; deeperBar(); if (cur > 0 && !t0) t0 = Date.now();
-  history.replaceState(null, '', location.pathname + location.search + '#' + cur); }
+  history.replaceState(null, '', location.pathname + location.search + '#' + cur);
+  try { const q = new URLSearchParams(location.search); q.set('at', scenes[cur].dataset.sec); localStorage.setItem('hgt:last', location.pathname + '?' + q.toString()); } catch (e) {} }
 let origin = null;
 const idxOf = sec => scenes.findIndex(x => x.dataset.sec === sec), titleOf = x => (x.querySelector('h1') ? x.querySelector('h1').textContent.replace(/^\s*[\d]+[a-h]?\.\s*/, '') : x.dataset.sec);
 function branch(sec, from) { origin = from; go(idxOf(sec)); }
@@ -850,7 +851,7 @@ function oppDraw() {
     if (o.pre) g.append(el('text', {x, y: ty + (up ? -26 : 0), 'text-anchor': 'middle', 'font-size': 13, 'font-weight': 700, fill: on ? o.col : '#8f8c84'}, o.pre.toUpperCase()));
     const t = el('text', {x, y: ty + (o.pre && !up ? 26 : 0), 'text-anchor': 'middle', 'font-size': 26, fill: on ? o.col : C.ink}); t.style.fontFamily = 'var(--head)'; t.textContent = o.name.toUpperCase(); g.append(t);
     g.append(el('text', {x, y: ty + (o.pre && !up ? 26 : 0) + (up ? -28 : 22), 'text-anchor': 'middle', 'font-size': 13, 'font-weight': 700, fill: '#6B665C'}, o.role.toUpperCase()));
-    g.onclick = () => { oppOn.add(i); oppDraw(); oppCard(oppOn.size === OPP.length ? -1 : i); }; s.append(g); });
+    g.onclick = () => { const was = oppOn.size; oppOn.add(i); oppDraw(); oppCard(was === OPP.length - 1 && oppOn.size === OPP.length ? -1 : i); }; s.append(g); });
 }
 function oppCard(i) { const c = i < 0 ? {tag: 'Where they all meet', title: 'Your community', body: 'Hosted on local machines: a small node per community runs its trust graph, its guides, and a local AI that answers from them. Nothing has to leave the room.', list: OPP.map(o => `${o.role} (${o.name})`)} : OPP[i].card;
   pop(sceneOf('#opp'), 1150, 200, c); $('#opp-sub').textContent = i < 0 ? 'Together: a community that writes its own guides, keeps its own trust graph, and runs on machines it owns.' : 'Each holds one part. Touch the others.'; }
