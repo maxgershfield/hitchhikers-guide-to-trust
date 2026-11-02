@@ -3,7 +3,7 @@
 // answers with a proverb. It needs no database: the site does the matching; the bot only relays.
 //
 // Run (on the Pi, beside serve.mjs, or anywhere):
-//   TELEGRAM_BOT_TOKEN=... SITE=https://hh.mages.city KEEPER_KEY=... node bot/claim-bot.mjs
+//   TELEGRAM_BOT_TOKEN=... SITE=https://trust.mages.city KEEPER_KEY=... node bot/claim-bot.mjs
 // Add the bot to the group and turn off its privacy mode (BotFather: /setprivacy → Disable) so it sees messages.
 // Untested against Telegram itself; the site's claim endpoint is tested.
 

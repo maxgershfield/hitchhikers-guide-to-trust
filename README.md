@@ -55,7 +55,7 @@ scene sealed inside. The Pi Ceremony's record button records a pledge, sealed, a
 - **One Pi, public**: run `serve.mjs` as a service (`site/pi/`), and point a reverse proxy or a tunnel at it.
   Two homes are planned, the same code, each with its own chain and keeper key:
   - `trust.hitchhikers.earth`: the Hitchhikers' instance, on their Pi 5 (behind their Caddy), holding the aggregate chain.
-  - `hh.mages.city`: Mitch's instance, on his Pi 4 (a Cloudflare tunnel). A second home, and the **backup**: if the
+  - `trust.mages.city`: Mitch's instance, on his Pi 4 (a Cloudflare tunnel). A second home, and the **backup**: if the
     Hitchhikers' Pi is down, the guide still runs here, and it keeps a copy of the aggregate chain.
 - **Many Pis, one aggregate**: each Pi keeps its own chain (`SCROLL_ORIGIN` → the aggregate Pi over the tailnet); the
   aggregate Pi hosts the site and lists the room keys. See "Rooms" in `site/README.md`.

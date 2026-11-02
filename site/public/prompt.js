@@ -19,8 +19,8 @@
 .dp-approved{font-family:"Space Grotesk","Segoe UI",Arial,sans-serif}.dp-item{border-left:3px solid #1F4BFF;padding:6px 12px;margin:0 0 8px;font-size:18px}
 .dp-item small{display:block;font-family:"Space Mono",Consolas,monospace;font-size:12px;text-transform:uppercase;opacity:.7}`;
   const st = document.createElement('style'); st.textContent = css; document.head.append(st);
-  const api = (location.protocol.startsWith('http') ? '' : 'https://hh.mages.city'), U = p => window.DP ? DP.u(p) : api + p;
-  const chainUrl = (location.protocol.startsWith('http') ? '/chain/' : 'https://hh.mages.city/chain/') + (window.DP && DP.event ? '?event=' + DP.event : '');
+  const api = (location.protocol.startsWith('http') ? '' : 'https://trust.mages.city'), U = p => window.DP ? DP.u(p) : api + p;
+  const chainUrl = (location.protocol.startsWith('http') ? '/chain/' : 'https://trust.mages.city/chain/') + (window.DP && DP.event ? '?event=' + DP.event : '');
 
   document.querySelectorAll('[data-prompt]').forEach(box => {
     box.className = 'dp-prompt'; const Q = new URLSearchParams(location.search), W = (Q.get('w') || '').toLowerCase(), MEET = (Q.get('meet') || '').toLowerCase(); let kind = MEET ? 'meet' : 'thumb';
@@ -65,7 +65,7 @@
         $('.dp-mok').onclick = async () => { const r = await fetch(U('/api/meet/confirm'), { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ code, mark: await DP.mark() }) }), e = await r.json(); if (r.ok) { clearInterval(t); met(e.link); } else $('.dp-mbox').textContent = e.error; }; }
     } catch (e) {} }, 2000); };
     $('.dp-mstart').onclick = async () => { if (!window.DP) return; const r = await fetch(U('/api/meet/open'), { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ mark: await DP.mark() }) }), d = await r.json();
-      if (!r.ok) { $('.dp-mbox').textContent = d.error; return; } await loadQR(); const url = location.origin.startsWith('http') ? location.origin + '/m/' + d.code : 'https://hh.mages.city/m/' + d.code;
+      if (!r.ok) { $('.dp-mbox').textContent = d.error; return; } await loadQR(); const url = location.origin.startsWith('http') ? location.origin + '/m/' + d.code : 'https://trust.mages.city/m/' + d.code;
       let qr = ''; try { const q = qrcode(0, 'M'); q.addData(url); q.make(); qr = q.createSvgTag({ cellSize: 4, margin: 2 }); } catch (e) {}
       $('.dp-mbox').innerHTML = `<div style="display:flex;gap:14px;align-items:center;margin-top:10px"><div style="background:#fff;padding:4px;line-height:0">${qr}</div><div class="dp-thumb">Show this to the person you're meeting.<br>Their code: <b style="font-size:24px;letter-spacing:.1em">${d.code}</b><br>Waiting for their yes…</div></div>`; watch(d.code, true); };
     const join = async code => { if (!window.DP || !code) return; const r = await fetch(U('/api/meet/accept'), { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ code, mark: await DP.mark() }) }), d = await r.json();
