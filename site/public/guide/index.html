@@ -491,7 +491,7 @@ svg text{font-family:var(--mono)}
     <button class="act" id="bd-btn" onclick="bdStep()" style="border-color:var(--pale);color:var(--pale)">The first city →</button>
     <div id="bd-detail" style="margin-top:26px;border-left:3px solid var(--cobalt);padding:2px 0 2px 18px;min-height:170px;color:var(--off)"></div>
   </div>
-  <div class="label" style="position:absolute;left:62px;top:752px;color:#8f8c84;font-size:12px">Illustrative cities · first proposed for transmediale 2027, Berlin · REAL PARENT / INJURY with Mitchell Travers · curated by Culture Vault · with Lattice Labs and the Hitchhikers</div>
+  <div class="label" style="position:absolute;left:62px;top:752px;color:#8f8c84;font-size:12px">Illustrative cities · Baby Dragon by REAL PARENT / INJURY, with Mitchell Travers · curated by Culture Vault · with Lattice Labs and the Hitchhikers · proposed for transmediale 2027</div>
   <aside class="notes">Baby Dragon, a proposal for transmediale 2027 (Berlin, 28 to 31 January): an interactive sculpture and trust network by REAL PARENT / INJURY with Mitchell Travers, curated by Culture Vault, with Lattice Labs and the Hitchhikers. The point is the pattern, not the sculpture: Baby Dragon can appear in many cities, and each city has its own Hitchhikers and its own private knowledge graph on its own node. Between cities only proofs travel (toy dragons go with trusted visitors); the graphs stay home. Together: a transnational Chinatown of art, local AI and performance, many small internets with no hub. The cities are illustrative: London and Amsterdam where the Hitchhikers already gather, Berlin as the first proposed stop, Hong Kong and Sydney as the dragon's two homes. A proposal, not yet confirmed.</aside>
 </section>
 
@@ -1740,7 +1740,7 @@ const BD = [
   ['Every city its own', 'Many dragons, many graphs', 'It appears again in other cities. Each has its own Hitchhikers, and keeps its own private knowledge graph on its own node: readable only by the people who made it.'],
   ['Between cities', 'Only proofs travel', 'Toy dragons travel with trusted visitors. What crosses between cities is a proof: who was trusted, what was kept. The graphs themselves stay home.'],
   ['Together', 'A transnational Chinatown', 'Many small internets, no hub: art, local AI and performance, city by city, held together by trust the communities keep themselves.']];
-const BD_C = [['London', 150, 150, 'Hitchhikers'], ['Amsterdam', 360, 110, 'Hitchhikers'], ['Berlin', 570, 170, 'first stop'], ['Hong Kong', 820, 130, "the dragon's home"], ['Sydney', 930, 370, 'its other home']];
+const BD_C = [['London', 150, 150, 'Hitchhikers', 'black'], ['Amsterdam', 360, 110, 'Hitchhikers', 'blue'], ['Berlin', 570, 170, 'first stop', 'chrome'], ['Hong Kong', 820, 130, "the dragon's home", 'red'], ['Sydney', 930, 370, 'its other home', 'silver']];
 let bdS = -1;
 function bdStep() { bdS = bdS >= BD.length - 1 ? -1 : bdS + 1; bdDraw(); }
 function dragonSvg(s, x, y, r, lit) { const g = el('g', {transform: `translate(${x},${y})`}); s.append(g);
@@ -1763,7 +1763,11 @@ function bdDraw() {
       if (lit) s.append(el('line', {x1: x, y1: y, x2: rx, y2: ry, stroke: '#1F4BFF', 'stroke-width': 1.2, opacity: .7}));
       s.append(el('circle', {cx: rx, cy: ry, r: 5, fill: lit ? '#F6F1E6' : '#2a2c30'})); }
     if (lit) s.append(el('ellipse', {cx: x, cy: y, rx: 80, ry: 62, fill: '#1F4BFF', 'fill-opacity': .1, stroke: '#1F4BFF', 'stroke-width': 1.5}));
-    dragonSvg(s, x, y, 26, lit);
+    // the artists' own Baby Dragon, one version per city
+    if (!s.querySelector('#bdclip')) { const d = el('defs', {}), cp = el('clipPath', {id: 'bdclip'}); cp.append(el('circle', {cx: 0, cy: 0, r: 46})); d.append(cp); s.append(d); }
+    const ig = el('g', {transform: `translate(${x},${y})`, opacity: lit ? 1 : .3}); s.append(ig);
+    const im = el('image', {x: -46, y: -46, width: 92, height: 92, 'clip-path': 'url(#bdclip)', preserveAspectRatio: 'xMidYMid slice'}); im.setAttribute('href', 'img/baby-dragon/' + BD_C[i][4] + '.jpg'); ig.append(im);
+    ig.append(el('circle', {r: 46, fill: 'none', stroke: lit ? '#F6F1E6' : '#3a3c40', 'stroke-width': 2}));
     s.append(el('text', {x, y: y - 74, 'text-anchor': 'middle', 'font-size': 15, 'font-weight': 700, fill: lit ? '#F6F1E6' : '#55534e', 'letter-spacing': '2'}, n.toUpperCase()));
     if (lit) s.append(el('text', {x, y: y + 82, 'text-anchor': 'middle', 'font-size': 11, fill: '#8EA4FF'}, '🔒 ITS OWN GRAPH · ' + role.toUpperCase())); });
   // the next city: an open place for another community
