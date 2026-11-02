@@ -481,6 +481,20 @@ svg text{font-family:var(--mono)}
   <aside class="notes">The hinge of the talk. Everything before it is the Hitchhikers, in their own words; everything after it is the implementation, OpenVTC and VTI. Each row connects one Hitchhikers idea to the piece that implements it, with an honest status: live in OpenVTC, live on this guide, prototyped, in the spec, or a direction.</aside>
 </section>
 
+<!-- a case study: Baby Dragon (proposed for transmediale 2027, Berlin) -->
+<section class="scene dark" data-part="III" data-sec="Baby Dragon">
+  <div class="kick" style="color:var(--off)">A case study</div>
+  <h1><span class="n">1.</span> Baby Dragon: <b>one dragon, many cities</b></h1>
+  <div class="sub" style="color:var(--off)">Wherever Baby Dragon appears, a local Hitchhikers community gathers around it and keeps its own private knowledge graph. Between cities, only proofs travel.</div>
+  <svg id="bd" width="1060" height="470" viewBox="0 0 1060 500" style="left:500px;top:290px"></svg>
+  <div style="position:absolute;left:62px;top:300px;width:400px">
+    <button class="act" id="bd-btn" onclick="bdStep()" style="border-color:var(--pale);color:var(--pale)">The first city →</button>
+    <div id="bd-detail" style="margin-top:26px;border-left:3px solid var(--cobalt);padding:2px 0 2px 18px;min-height:170px;color:var(--off)"></div>
+  </div>
+  <div class="label" style="position:absolute;left:62px;top:752px;color:#8f8c84;font-size:12px">Illustrative cities · first proposed for transmediale 2027, Berlin · REAL PARENT / INJURY with Mitchell Travers · curated by Culture Vault · with Lattice Labs and the Hitchhikers</div>
+  <aside class="notes">Baby Dragon, a proposal for transmediale 2027 (Berlin, 28 to 31 January): an interactive sculpture and trust network by REAL PARENT / INJURY with Mitchell Travers, curated by Culture Vault, with Lattice Labs and the Hitchhikers. The point is the pattern, not the sculpture: Baby Dragon can appear in many cities, and each city has its own Hitchhikers and its own private knowledge graph on its own node. Between cities only proofs travel (toy dragons go with trusted visitors); the graphs stay home. Together: a transnational Chinatown of art, local AI and performance, many small internets with no hub. The cities are illustrative: London and Amsterdam where the Hitchhikers already gather, Berlin as the first proposed stop, Hong Kong and Sydney as the dragon's two homes. A proposal, not yet confirmed.</aside>
+</section>
+
 <!-- 11 close -->
 <!-- discussion (workshop path) -->
 <section class="scene dark" data-part="Discuss" data-sec="Discussion">
@@ -524,7 +538,7 @@ svg text{font-family:var(--mono)}
 (function () {
   // two halves: the Hitchhikers (their story, method and ceremonies), then the implementation (OpenVTC + VTI)
   const HH = ['Request', 'Public intelligence', 'Inheritance', 'Method', 'Knowing to doing', 'Principles', 'Consent', 'Ceremonies', 'Field Guide', 'The guide', 'Local', 'Speed of trust', 'Opportunity', 'Contribute'];
-  const VTI = ['Split', 'OpenVTC', 'Three nodes', 'Flow', 'Why local', 'Privacy', 'Thumbs up', 'Three graphs', 'Trust', 'Games', 'A visit', 'The pathway', 'Evidence', 'Hitchhiker mage', 'Cities', 'Built'];
+  const VTI = ['Split', 'OpenVTC', 'Three nodes', 'Flow', 'Why local', 'Privacy', 'Thumbs up', 'Three graphs', 'Trust', 'Games', 'A visit', 'The pathway', 'Evidence', 'Hitchhiker mage', 'Cities', 'Baby Dragon', 'Built'];
   const PATHS = {
     iiw: ['Cover', ...HH, ...VTI, 'Genesis', 'Discussion', 'Close'],
     lightning: ['Cover', 'Request', 'Public intelligence', 'Ceremonies', 'Field Guide', 'Local', 'Contribute', 'Split', 'OpenVTC', 'Thumbs up', 'Genesis', 'Close'],
@@ -533,7 +547,7 @@ svg text{font-family:var(--mono)}
   const PARENT = {'Inheritance': 'Public intelligence', 'Method': 'Public intelligence', 'Knowing to doing': 'Method', 'Principles': 'Method', 'Consent': 'Public intelligence',
     'The guide': 'Field Guide', 'Speed of trust': 'Local', 'Opportunity': 'Local',
     'OpenVTC': 'Split', 'Three nodes': 'OpenVTC', 'Flow': 'OpenVTC', 'Why local': 'Split', 'Privacy': 'Split', 'Three graphs': 'Thumbs up', 'Trust': 'Thumbs up', 'Games': 'Thumbs up',
-    'A visit': 'OpenVTC', 'The pathway': 'OpenVTC', 'Evidence': 'Split', 'Hitchhiker mage': 'Split', 'Cities': 'Split', 'Built': 'OpenVTC', 'Genesis': 'Close'};
+    'A visit': 'OpenVTC', 'The pathway': 'OpenVTC', 'Evidence': 'Split', 'Hitchhiker mage': 'Split', 'Cities': 'Split', 'Baby Dragon': 'Split', 'Built': 'OpenVTC', 'Genesis': 'Close'};
   PATHS.workshop = PATHS.iiw; // older links
   const path = new URLSearchParams(location.search).get('path'), list = PATHS[path], stage = document.getElementById('stage');
   const all = [...stage.querySelectorAll('.scene')], bySec = n => all.find(x => x.dataset.sec === n), anchor = document.getElementById('overview');
@@ -584,7 +598,7 @@ function step(d) { const x = scenes[cur];
   if (x.dataset.branch) { go(origin != null ? origin : idxOf(x.dataset.branch)); origin = null; return; }
   let j = cur + d; while (j >= 0 && j < scenes.length && scenes[j].dataset.branch) j += d; if (j >= 0 && j < scenes.length) go(j); }
 // short names for the deeper scenes, so a part's branches fit on the bar
-const SHORT = {'Opportunity': 'The projects', 'Why local': 'One centre?', 'Privacy': 'Keep or share', 'Built': 'The pieces', 'Three graphs': 'Three graphs', 'Trust': 'Connection and reflection', 'OpenVTC': 'OpenVTC and VTI', 'Flow': 'Information flow', 'Genesis': 'Tonight', 'The guide': 'Owning a guide', 'Games': 'Trust is earned', 'Three nodes': 'Three nodes', 'The pathway': 'One Pi to many', 'Cities': 'Cities', 'A visit': 'A visit', 'Evidence': 'Evidence', 'Public intelligence': 'Public intelligence', 'Inheritance': 'Not from zero', 'Method': 'The method', 'Principles': 'Four principles', 'Speed of trust': 'Speed of trust', 'Consent': 'Consent', 'Ceremonies': 'Ceremonies', 'Split': 'To VTI', 'Knowing to doing': 'Knowing to doing', 'Contribute': 'Contribute'};
+const SHORT = {'Opportunity': 'The projects', 'Why local': 'One centre?', 'Privacy': 'Keep or share', 'Built': 'The pieces', 'Three graphs': 'Three graphs', 'Trust': 'Connection and reflection', 'OpenVTC': 'OpenVTC and VTI', 'Flow': 'Information flow', 'Genesis': 'Tonight', 'The guide': 'Owning a guide', 'Games': 'Trust is earned', 'Three nodes': 'Three nodes', 'The pathway': 'One Pi to many', 'Cities': 'Cities', 'A visit': 'A visit', 'Evidence': 'Evidence', 'Public intelligence': 'Public intelligence', 'Inheritance': 'Not from zero', 'Method': 'The method', 'Principles': 'Four principles', 'Speed of trust': 'Speed of trust', 'Consent': 'Consent', 'Ceremonies': 'Ceremonies', 'Split': 'To VTI', 'Baby Dragon': 'Baby Dragon', 'Knowing to doing': 'Knowing to doing', 'Contribute': 'Contribute'};
 function deeperBar() { const bar = $('#deeper'); if (!bar) return; const x = scenes[cur];
   if (x.dataset.branch) { const back = origin != null ? scenes[origin] : scenes[idxOf(x.dataset.branch)]; bar.innerHTML = `<button onclick="step(-1)">← back to ${titleOf(back).toLowerCase()}</button>`; return; }
   const kids = scenes.filter(y => y.dataset.branch === x.dataset.sec);
@@ -1719,6 +1733,49 @@ function splitDraw() {
 function splitAll() { if (splitOn.size < SPLIT.length) { SPLIT.forEach((_, i) => splitOn.add(i)); clearPop('#split'); splitDraw(); } else step(1); }
 splitDraw();
 
+
+/* ---------- a case study: Baby Dragon, one dragon and many small internets ---------- */
+const BD = [
+  ['The first city', 'A dragon arrives', 'Baby Dragon appears in a city, with a Pi inside, hosting its own local network. A Hitchhikers community gathers around it: each exchange a small act of trust, a star on its chain.'],
+  ['Every city its own', 'Many dragons, many graphs', 'It appears again in other cities. Each has its own Hitchhikers, and keeps its own private knowledge graph on its own node: readable only by the people who made it.'],
+  ['Between cities', 'Only proofs travel', 'Toy dragons travel with trusted visitors. What crosses between cities is a proof: who was trusted, what was kept. The graphs themselves stay home.'],
+  ['Together', 'A transnational Chinatown', 'Many small internets, no hub: art, local AI and performance, city by city, held together by trust the communities keep themselves.']];
+const BD_C = [['London', 150, 150, 'Hitchhikers'], ['Amsterdam', 360, 110, 'Hitchhikers'], ['Berlin', 570, 170, 'first stop'], ['Hong Kong', 820, 130, "the dragon's home"], ['Sydney', 930, 370, 'its other home']];
+let bdS = -1;
+function bdStep() { bdS = bdS >= BD.length - 1 ? -1 : bdS + 1; bdDraw(); }
+function dragonSvg(s, x, y, r, lit) { const g = el('g', {transform: `translate(${x},${y})`}); s.append(g);
+  const id = 'bdg' + (lit ? 'l' : 'd'); if (!document.getElementById(id)) { const d = el('defs', {}), rg = el('radialGradient', {id, cx: '.35', cy: '.3'}); (lit ? [['0', '#FFFFFF'], ['.45', '#C9CCD3'], ['1', '#5E6068']] : [['0', '#55534e'], ['1', '#2a2c30']]).forEach(([o, c]) => rg.append(el('stop', {offset: o, 'stop-color': c}))); d.append(rg); s.append(d); }
+  [-1, 1].forEach(k => g.append(el('path', {d: `M${k * r * .35},${-r * .7} L${k * r * .75},${-r * 1.25} L${k * r * .85},${-r * .45} Z`, fill: `url(#${id})`, stroke: '#2a2c30', 'stroke-width': 1})));
+  g.append(el('circle', {r, fill: `url(#${id})`, stroke: '#2a2c30', 'stroke-width': 1}));
+  [-1, 1].forEach(k => { g.append(el('circle', {cx: k * r * .36, cy: -r * .08, r: r * .2, fill: '#0B0B0D'})); g.append(el('circle', {cx: k * r * .36 - r * .06, cy: -r * .15, r: r * .06, fill: lit ? '#fff' : '#55534e'})); });
+  g.append(el('circle', {cx: 0, cy: r * .62, r: r * .12, fill: lit ? '#E05A4A' : '#55534e'})); return g; }
+function bdDraw() {
+  const s = $('#bd'); s.innerHTML = ''; const S = bdS, on = i => S >= 1 || (S === 0 && i === 2);
+  // between cities: proofs only (dashed gold, a proof travelling on each)
+  const PAIRS = [[0, 1], [1, 2], [2, 3], [3, 4]];
+  if (S >= 2) PAIRS.forEach(([i, j]) => { const a = BD_C[i], b = BD_C[j];
+    s.append(el('line', {x1: a[1], y1: a[2], x2: b[1], y2: b[2], stroke: '#E8C873', 'stroke-width': 2, 'stroke-dasharray': '3 7'}));
+    s.append(el('circle', {cx: (a[1] + b[1]) / 2, cy: (a[2] + b[2]) / 2, r: 6, fill: '#E8C873'})); });
+  if (S >= 3) [[570, 170], [930, 370]].forEach(([x, y]) => s.append(el('line', {x1: x, y1: y, x2: 620, y2: 410, stroke: '#E8C873', 'stroke-width': 2, 'stroke-dasharray': '3 7'})));
+  BD_C.forEach(([n, x, y, role], i) => { const lit = on(i);
+    // the city's own Hitchhikers around its dragon; its private graph sealed on its own node
+    for (let k = 0; k < 8; k++) { const a = k / 8 * 6.283 + i, rx = x + 60 * Math.cos(a), ry = y + 46 * Math.sin(a);
+      if (lit) s.append(el('line', {x1: x, y1: y, x2: rx, y2: ry, stroke: '#1F4BFF', 'stroke-width': 1.2, opacity: .7}));
+      s.append(el('circle', {cx: rx, cy: ry, r: 5, fill: lit ? '#F6F1E6' : '#2a2c30'})); }
+    if (lit) s.append(el('ellipse', {cx: x, cy: y, rx: 80, ry: 62, fill: '#1F4BFF', 'fill-opacity': .1, stroke: '#1F4BFF', 'stroke-width': 1.5}));
+    dragonSvg(s, x, y, 26, lit);
+    s.append(el('text', {x, y: y - 74, 'text-anchor': 'middle', 'font-size': 15, 'font-weight': 700, fill: lit ? '#F6F1E6' : '#55534e', 'letter-spacing': '2'}, n.toUpperCase()));
+    if (lit) s.append(el('text', {x, y: y + 82, 'text-anchor': 'middle', 'font-size': 11, fill: '#8EA4FF'}, '🔒 ITS OWN GRAPH · ' + role.toUpperCase())); });
+  // the next city: an open place for another community
+  s.append(el('circle', {cx: 620, cy: 410, r: 34, fill: 'none', stroke: S >= 3 ? '#8EA4FF' : '#2a2c30', 'stroke-width': 2, 'stroke-dasharray': '5 6'}));
+  s.append(el('text', {x: 620, y: 416, 'text-anchor': 'middle', 'font-size': 12, 'font-weight': 700, fill: S >= 3 ? '#8EA4FF' : '#3a3c40'}, 'NEXT CITY?'));
+  if (S >= 3) handSvg(s, 210, 400, 'Many small internets.\nNo hub.', {size: 20, rot: -4, fill: '#8EA4FF'});
+  const d = $('#bd-detail');
+  d.innerHTML = S < 0 ? '<div class="label" style="color:#8f8c84">One character, many cities, each with its own Hitchhikers. Step through.</div>'
+    : `<div class="label" style="color:var(--pale);font-weight:700">${BD[S][0]}</div><div style="font-family:var(--head);font-size:32px;text-transform:uppercase;line-height:1;margin:8px 0 10px">${BD[S][1]}</div><div style="font-size:18px;line-height:1.45">${BD[S][2]}</div>`;
+  $('#bd-btn').textContent = S < 0 ? 'The first city →' : S < BD.length - 1 ? 'Next →' : 'From the start ↺';
+}
+bdDraw();
 // teleport: the lightning talk and the IIW workshop live on the same site; jump from one to the other in place
 (function () { const q = new URLSearchParams(location.search), t = $('#teleport'), p = document.body.dataset.path, to = p === 'lightning' ? 'iiw' : p === 'iiw' || p === 'workshop' ? 'lightning' : null;
   if (!to) return; t.style.display = '';
