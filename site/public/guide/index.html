@@ -84,6 +84,8 @@ svg text{font-family:var(--mono)}
 .bottom .sp{flex:1}
 #deeper button{border-color:var(--cobalt);color:var(--cobalt);font-weight:700;white-space:nowrap}
 .bottom > *{flex-shrink:0}
+/* the deeper scenes give way first: they scroll sideways, so the arrows on the right always show */
+.bottom > #deeper{flex-shrink:1;min-width:0;overflow-x:auto;scrollbar-width:none}.bottom > #deeper::-webkit-scrollbar{display:none}.bottom > #deeper > *{flex-shrink:0}
 .bottom button,.bottom a{white-space:nowrap}
 #deeper button:hover{background:var(--cobalt);color:#fff}
 .bottom button{font-family:var(--mono);font-size:12px;text-transform:uppercase;border:1px solid var(--ink);background:transparent;color:var(--ink);border-radius:3px;padding:4px 10px;cursor:pointer}

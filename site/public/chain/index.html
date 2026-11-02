@@ -46,7 +46,9 @@ body.bare #bare{color:var(--pale)}
 .count b{display:block;font-family:var(--head);font-weight:400;font-size:clamp(40px,min(7vw,8vh),120px);line-height:.9}
 .count span{font-size:clamp(11px,.9vw,14px);text-transform:uppercase;color:var(--muted)}
 .count .head{margin-top:1vh;font-size:clamp(10px,.8vw,13px);color:var(--pale);word-break:break-all;max-width:40vw}
-.feed{right:3vw;top:3.2vh;width:min(30vw,440px)}
+.feed{right:3vw;top:3.2vh;width:min(30vw,440px);max-height:calc(100vh - 3.2vh - 4vh - clamp(80px,8vw,130px) - 48px);overflow:hidden;-webkit-mask-image:linear-gradient(#000 88%,transparent);mask-image:linear-gradient(#000 88%,transparent)}
+/* a shorter screen: the quote steps aside so the steps don't run into the count */
+@media (min-width:721px) and (max-height:980px){.title p + p{display:none}}
 .feed .k{font-size:clamp(11px,.9vw,14px);text-transform:uppercase;color:var(--muted);margin-bottom:1vh}
 .feed{pointer-events:auto}
 .tabs{display:flex;gap:6px;margin-bottom:1.4vh}.tabs button{font-family:var(--mono);font-size:clamp(10px,.8vw,13px);text-transform:uppercase;letter-spacing:.04em;padding:5px 12px;border:1px solid rgba(246,241,230,.3);border-radius:14px;background:transparent;color:#CFC9BB;cursor:pointer}
@@ -93,6 +95,7 @@ body.bare #bare{color:var(--pale)}
   .about p{font-size:12px;line-height:1.6;text-transform:uppercase;color:#CFC9BB;margin:0 0 12px}
   .steps{max-width:none;gap:8px}.steps div{font-size:12px;gap:10px}
   #scroll,#join{max-height:none;overflow:visible}
+  .feed{max-height:none!important;overflow:visible;-webkit-mask-image:none;mask-image:none}
   .row{grid-template-columns:auto minmax(0,1fr)}.row .sp,.row .meta{overflow-wrap:anywhere}
   .row .sg{font-size:20px}.row .sp{font-size:13px}.row .meta{font-size:10px}
   #orb,#bare{position:fixed;bottom:16px;z-index:5}#orb{left:auto;right:16px;transform:none}#bare{left:16px}
@@ -128,9 +131,12 @@ const API = location.protocol.startsWith('http') ? '' : 'https://trust.mages.cit
 $('#url').textContent = SITE.replace(/^https?:\/\//, '');
 if (EVID) $('#url').textContent += '/' + EVID;
 const SCREEN = (location.hash.match(/screen=([0-9a-f]{64})/) || [])[1];
-async function drawQR() { let url = SITE + '/' + (EVID ? EVID : '');
-  if (SCREEN && EVID) { const win = Math.floor(Date.now() / 600000), h = [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode('witness|' + SCREEN + '|' + EVID + '|' + win)))].map(b => b.toString(16).padStart(2, '0')).join('');
-    url = SITE + '/w/' + EVID + '/' + h.slice(0, 10); document.querySelector('.join .s').textContent = 'Scan to be witnessed here'; document.querySelectorAll('.join .s')[1].textContent = 'the code changes every ten minutes'; }
+let NIGHT = EVID;
+async function drawQR() { if (!NIGHT) { try { const d = await (await fetch(U('/api/events'))).json(); NIGHT = d.default || ''; } catch (e) {} }
+  $('#url').textContent = SITE.replace(/^https?:\/\//, '') + (NIGHT ? '/' + NIGHT : '');
+  let url = SITE + '/' + (NIGHT || '');
+  if (SCREEN && NIGHT) { const win = Math.floor(Date.now() / 600000), h = [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode('witness|' + SCREEN + '|' + NIGHT + '|' + win)))].map(b => b.toString(16).padStart(2, '0')).join('');
+    url = SITE + '/w/' + NIGHT + '/' + h.slice(0, 10); document.querySelector('.join .s').textContent = 'Scan to be witnessed here'; document.querySelectorAll('.join .s')[1].textContent = 'the code changes every ten minutes'; }
   try { const q = qrcode(0, 'M'); q.addData(url); q.make(); $('#qr').innerHTML = q.createSvgTag({cellSize: 4, margin: 0}); } catch (e) {} }
 drawQR(); if (SCREEN) setInterval(drawQR, 30000);
 
