@@ -81,6 +81,11 @@ svg text{font-family:var(--mono)}
 .pop li:before{content:"";position:absolute;left:0;top:4px;width:12px;height:12px;border:2px solid var(--cobalt);border-radius:2px}
 .pop li:after{content:"";position:absolute;left:5px;top:3px;width:5px;height:10px;border:solid var(--cobalt);border-width:0 2.5px 2.5px 0;transform:rotate(40deg)}
 .dark .pop li:before{border-color:var(--pale)}.dark .pop li:after{border-color:var(--pale)}
+/* the two halves: the Hitchhikers, then the implementation (OpenVTC + VTI) */
+.chip{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.08em;padding:2px 7px;border-radius:2px;margin-right:4px;border:1.5px solid var(--ink);color:var(--ink)}
+.chip.vti{background:var(--cobalt);border-color:var(--cobalt);color:#fff}
+.dark .chip{border-color:var(--off);color:var(--off)}.dark .chip.vti{border-color:var(--cobalt);color:#fff}
+.tab[data-p="VTI"].on{border-bottom-color:var(--cobalt)}.tab[data-p="HH"].on{border-bottom-color:var(--ink)}
 /* v2 (Hitchhikers' reviewed assembly): marker annotations, slanted tags, crosshair marks, paper grain */
 .hand{position:absolute;font-family:var(--hand);color:var(--cobalt);font-size:26px;line-height:1.1;text-transform:uppercase;transform:rotate(-5deg);pointer-events:none}
 .dark .hand{color:var(--pale)}
@@ -320,14 +325,14 @@ svg text{font-family:var(--mono)}
   <aside class="notes">Why it matters, in one breath: research and security communities online are going to organise as verifiable trust communities, and the only thing that should earn standing there is work others can check. Mages City's autoresearch is our contribution to guides and guidance: agents that propose, check and seal their work, so what they hand a community is guidance it can rely on. One agent proposes, another checks, a human decides; every run is sealed and its SHA-256 root published. The sentence is illustrative; the hashing is real.</aside>
 </section>
 
-<!-- openvtc and vti, plainly (sources: OpenVTC + VTI READMEs, LF Decentralized Trust labs pages, live endpoints, 30 Oct 2026) -->
+<!-- openvtc and vti (sources: OpenVTC + VTI READMEs, LF Decentralized Trust labs pages, live endpoints, 30 Oct 2026) -->
 <section class="scene dark" data-part="III" data-sec="OpenVTC">
   <div class="kick" style="color:var(--off)">III · The technology</div>
-  <h1><span class="n">5.</span> OpenVTC and VTI, <b>plainly</b></h1>
-  <div class="sub" id="ov-sub">Open source from the Decentralized Trust Graph working group, as Linux Foundation Decentralized Trust labs (Apache-2.0). Any community can run it on its own hardware.</div>
-  <svg id="ov" width="1500" height="480" viewBox="0 0 1500 480" style="left:50px;top:270px"></svg>
-  <div class="hint" style="left:auto;right:62px">Touch a part, or a step</div>
-  <aside class="notes">OpenVTC is a Linux Foundation Decentralized Trust lab: the reference implementation of the Trust over IP Decentralized Trust Graph working group's specifications for a verifiable trust community (sponsors: the DTGWG co-chairs). VTI (verifiable trust infrastructure) is the spec (trustoverip.github.io/dtgwg-vti-spec) and its services, a Rust workspace under the OpenVTC org: the VTA, the VTC service, and the PNM/CNM tools. Live today: Mages City's community and the First VTC (first.openvtc.net, used for testing in the DTG working groups). Relationship credentials (two VRCs, one edge) are in the spec; we have not seen a live community issue one yet. The grassroots point: none of this needs a platform; a community can stand it up on its own Pi.</aside>
+  <h1><span class="n">5.</span> OpenVTC and <b>VTI</b></h1>
+  <div class="sub" id="ov-sub">Open source from the Decentralized Trust Graph working group (Linux Foundation Decentralized Trust, Apache-2.0). Any community can run it on its own hardware.</div>
+  <div style="position:absolute;left:62px;top:262px;display:flex;gap:10px"><button class="act on" id="ov-0" onclick="ovView(0)">The parts</button><button class="act" id="ov-1" onclick="ovView(1)">A member's path</button></div>
+  <svg id="ov" width="1500" height="440" viewBox="0 0 1500 440" style="left:62px;top:340px"></svg>
+  <aside class="notes">OpenVTC is a Linux Foundation Decentralized Trust lab: the reference implementation of the Trust over IP Decentralized Trust Graph working group's specifications for a verifiable trust community (sponsors: the DTGWG co-chairs). VTI (verifiable trust infrastructure) is the spec and its services, a Rust workspace under the OpenVTC org: the VTA, the VTC service, and the PNM/CNM tools. Two views, one at a time: the parts (all five run today) and a member's path (steps 1 to 4 live; vouching and trust tasks are in the spec). Live today: Mages City's community and the First VTC (first.openvtc.net). Relationship credentials (two VRCs, one edge) are in the spec; not yet seen issued by a live community. Links: trustoverip.github.io/dtgwg-vti-spec · github.com/openvtc · trusttasks.org.</aside>
 </section>
 
 <!-- how information flows (ported from the v1 classroom workshop) -->
@@ -459,6 +464,16 @@ svg text{font-family:var(--mono)}
   <aside class="notes">The reviewed assembly (v2) closes on the Request for Guidance as an open invitation, the same request the Hitchhikers' declaration makes (scene 1). Let people touch what they could bring; it stays on their device. Then: join the Hitchhikers, or put a thumb up on tonight's page.</aside>
 </section>
 
+<!-- the hinge: from the Hitchhikers to the implementation -->
+<section class="scene dark" data-part="III" data-sec="Split">
+  <div class="kick" style="color:var(--off)">Part two</div>
+  <h1><span class="n">1.</span> From the Hitchhikers <b>to VTI</b></h1>
+  <div class="sub" style="color:var(--off)">That was the Hitchhikers: the story, the method, the ceremonies. Now the implementation: what each idea becomes in OpenVTC and VTI. Touch a row.</div>
+  <svg id="split" width="1480" height="480" viewBox="0 0 1480 480" style="left:62px;top:260px"></svg>
+  <div style="position:absolute;right:62px;top:740px"><button class="act" id="split-btn" onclick="splitAll()">Connect them all →</button></div>
+  <aside class="notes">The hinge of the talk. Everything before it is the Hitchhikers, in their own words; everything after it is the implementation, OpenVTC and VTI. Each row connects one Hitchhikers idea to the piece that implements it, with an honest status: live in OpenVTC, live on this guide, prototyped, in the spec, or a direction.</aside>
+</section>
+
 <!-- 11 close -->
 <!-- discussion (workshop path) -->
 <section class="scene dark" data-part="Discuss" data-sec="Discussion">
@@ -500,32 +515,37 @@ svg text{font-family:var(--mono)}
 <script>
 /* ---------- paths through the guide: a main thread, with deeper scenes as branches of the scene they belong to ---------- */
 (function () {
+  // two halves: the Hitchhikers (their story, method and ceremonies), then the implementation (OpenVTC + VTI)
+  const HH = ['Request', 'Public intelligence', 'Inheritance', 'Method', 'Knowing to doing', 'Principles', 'Consent', 'Ceremonies', 'Field Guide', 'The guide', 'Local', 'Speed of trust', 'Opportunity', 'Contribute'];
+  const VTI = ['Split', 'OpenVTC', 'Three nodes', 'Flow', 'Why local', 'Privacy', 'Thumb up', 'Three graphs', 'Trust', 'Games', 'A visit', 'The pathway', 'Evidence', 'Hitchhiker mage', 'Cities', 'Built'];
   const PATHS = {
-    // the IIW workshop: each story, then its technical telling (the rest stays one touch deeper)
-    iiw: ['Cover', 'Request', 'Public intelligence', 'Inheritance', 'Why local', 'Privacy', 'Opportunity', 'Method', 'Knowing to doing', 'Principles', 'Built', 'Local', 'Speed of trust', 'Cities', 'OpenVTC', 'Flow', 'Three nodes', 'The pathway', 'Hitchhiker mage', 'A visit', 'Evidence', 'Thumb up', 'Consent', 'Three graphs', 'Trust', 'Ceremonies', 'Field Guide', 'The guide', 'Games', 'Contribute', 'Genesis', 'Discussion', 'Close'],
-    lightning: ['Cover', 'Request', 'Public intelligence', 'Local', 'Thumb up', 'Field Guide', 'Ceremonies', 'Contribute', 'Genesis', 'Close'],
-    // the whole guide: each part's story first, its deeper scenes after it
-    guide: ['Cover', 'Request', 'Public intelligence', 'Inheritance', 'Why local', 'Privacy', 'Opportunity', 'Method', 'Knowing to doing', 'Principles', 'Built', 'Local', 'Speed of trust', 'Cities', 'OpenVTC', 'Flow', 'Three nodes', 'The pathway', 'Hitchhiker mage', 'A visit', 'Evidence', 'Thumb up', 'Consent', 'Three graphs', 'Trust', 'Ceremonies', 'Field Guide', 'The guide', 'Games', 'Contribute', 'Genesis', 'Close']};
-  // where each scene belongs when it is not on the main thread
-  const PARENT = {'Opportunity': 'Local', 'Built': 'Request', 'Why local': 'Request', 'Privacy': 'Request', 'Cities': 'Local', 'Local': 'Request',
-    'OpenVTC': 'Local', 'Flow': 'OpenVTC', 'Three nodes': 'OpenVTC', 'The pathway': 'OpenVTC', 'Hitchhiker mage': 'Local', 'A visit': 'Hitchhiker mage', 'Evidence': 'Hitchhiker mage',
-    'Thumb up': 'Request', 'Three graphs': 'Thumb up', 'Trust': 'Thumb up', 'Field Guide': 'Thumb up', 'The guide': 'Field Guide', 'Games': 'Field Guide', 'Genesis': 'Close',
-    'Public intelligence': 'Request', 'Inheritance': 'Public intelligence', 'Method': 'Public intelligence', 'Principles': 'Method', 'Speed of trust': 'Local', 'Consent': 'Thumb up', 'Ceremonies': 'Field Guide', 'Knowing to doing': 'Method', 'Contribute': 'Close'};
+    iiw: ['Cover', ...HH, ...VTI, 'Genesis', 'Discussion', 'Close'],
+    lightning: ['Cover', 'Request', 'Public intelligence', 'Ceremonies', 'Field Guide', 'Local', 'Contribute', 'Split', 'OpenVTC', 'Thumb up', 'Genesis', 'Close'],
+    guide: ['Cover', ...HH, ...VTI, 'Genesis', 'Close']};
+  // where each scene belongs when it is not on the main thread (always inside its own half)
+  const PARENT = {'Inheritance': 'Public intelligence', 'Method': 'Public intelligence', 'Knowing to doing': 'Method', 'Principles': 'Method', 'Consent': 'Public intelligence',
+    'The guide': 'Field Guide', 'Speed of trust': 'Local', 'Opportunity': 'Local',
+    'OpenVTC': 'Split', 'Three nodes': 'OpenVTC', 'Flow': 'OpenVTC', 'Why local': 'Split', 'Privacy': 'Split', 'Three graphs': 'Thumb up', 'Trust': 'Thumb up', 'Games': 'Thumb up',
+    'A visit': 'OpenVTC', 'The pathway': 'OpenVTC', 'Evidence': 'Split', 'Hitchhiker mage': 'Split', 'Cities': 'Split', 'Built': 'OpenVTC', 'Genesis': 'Close'};
   PATHS.workshop = PATHS.iiw; // older links
   const path = new URLSearchParams(location.search).get('path'), list = PATHS[path], stage = document.getElementById('stage');
   const all = [...stage.querySelectorAll('.scene')], bySec = n => all.find(x => x.dataset.sec === n), anchor = document.getElementById('overview');
   document.body.dataset.path = list ? path : 'guide';
+  const chip = h => h === 'VTI' ? '<span class="chip vti">VTI</span> ' : '<span class="chip">HH</span> ';
+  all.forEach(x => { const h = HH.includes(x.dataset.sec) ? 'HH' : VTI.includes(x.dataset.sec) ? 'VTI' : null; if (!h) return;
+    x.dataset.part = h; x.classList.toggle('vti', h === 'VTI'); const kick = x.querySelector('.kick');
+    if (kick && x.dataset.sec !== 'Split') kick.innerHTML = chip(h) + (h === 'VTI' ? 'The implementation · OpenVTC + VTI' : 'The Hitchhikers'); });
   if (!list) { const d = bySec('Discussion'); if (d) d.remove(); PATHS.guide.forEach(n => { const x = bySec(n); if (x) stage.insertBefore(x, anchor); }); }
   else {
     list.forEach(n => { const x = bySec(n); if (x) stage.insertBefore(x, anchor); });
-    const home = sec => { let q = PARENT[sec]; while (q && !list.includes(q)) q = PARENT[q]; return q || 'Opportunity'; };
+    const home = sec => { let q = PARENT[sec]; while (q && !list.includes(q)) q = PARENT[q]; return q || list[1]; };
     all.filter(x => !list.includes(x.dataset.sec)).forEach(x => { if (x.dataset.sec === 'Discussion') { x.remove(); return; }
       const par = bySec(home(x.dataset.sec)); x.dataset.branch = par.dataset.sec; x.dataset.part = par.dataset.part;
       let at = par; while (at.nextElementSibling && at.nextElementSibling.dataset && at.nextElementSibling.dataset.branch === par.dataset.sec) at = at.nextElementSibling;
       stage.insertBefore(x, at.nextElementSibling);
-      const kick = x.querySelector('.kick'); if (kick) kick.textContent = '↳ from ' + (par.querySelector('h1') ? par.querySelector('h1').textContent.replace(/^\s*\d+\.\s*/, '') : par.dataset.sec); });
+      const kick = x.querySelector('.kick'); if (kick) kick.innerHTML = (x.dataset.part === 'VTI' || x.dataset.part === 'HH' ? chip(x.dataset.part) : '') + '↳ from ' + (par.querySelector('h1') ? par.querySelector('h1').textContent.replace(/^\s*\d+\.\s*/, '') : par.dataset.sec); });
   }
-  let k = 0, sub = 0; [...stage.querySelectorAll('.scene')].forEach(x => { const n = x.querySelector('h1 .n'); if (x.dataset.branch) { sub++; if (n) n.textContent = k + 'abcdefgh'[sub - 1] + '.'; } else { sub = 0; if (n) n.textContent = (++k) + '.'; } });
+  let k = 0, sub = 0; [...stage.querySelectorAll('.scene')].forEach(x => { const n = x.querySelector('h1 .n'); if (x.dataset.branch) { sub++; if (n) n.textContent = k + 'abcdefghijklmnop'[sub - 1] + '.'; } else { sub = 0; if (n) n.textContent = (++k) + '.'; } });
 })();
 </script>
 <script>
@@ -538,12 +558,12 @@ const store = {get(k, d) { try { const v = localStorage.getItem('hgt2:' + k); re
 /* ---------- navigation ---------- */
 const scenes = $$('.scene'), stage = $('#stage'); let cur = 0;
 function settle(sc) { const h = sc.querySelector('h1'), b = sc.querySelector('.sub'); if (!h || !b) return; const want = h.offsetTop + h.offsetHeight + 16; if (b.offsetTop < want) b.style.top = want + 'px'; }
-const titleOf0 = x => (x.querySelector('h1') ? x.querySelector('h1').textContent.replace(/^\s*[\d]+[a-h]?\.\s*/, '') : x.dataset.sec);
-const PARTS = [['Start', 'Start'], ['I', 'I · Why'], ['II', 'II · The movement'], ['III', 'III · The technology'], ['IV', 'IV · Trust by doing'], ['Discuss', 'V · Over to you'], ['Close', 'Close']].filter(([k]) => scenes.some(x => x.dataset.part === k));
+const titleOf0 = x => (x.querySelector('h1') ? x.querySelector('h1').textContent.replace(/^\s*[\d]+[a-p]?\.\s*/, '') : x.dataset.sec);
+const PARTS = [['Start', 'Start'], ['HH', 'The Hitchhikers'], ['VTI', 'The implementation · VTI'], ['Discuss', 'Over to you'], ['Close', 'Close']].filter(([k]) => scenes.some(x => x.dataset.part === k));
 let t0 = null, paused = 0, pausedAt = null;
 $('#tabs').innerHTML = PARTS.map(([k, l]) => `<button class="tab" data-p="${k}">${l}</button>`).join('');
 $$('.tab').forEach(b => b.onclick = () => go(scenes.findIndex(x => x.dataset.part === b.dataset.p)));
-$('#overview').innerHTML = scenes.map((x, i) => `<div class="ov" data-i="${i}" style="${x.dataset.branch ? 'margin-left:18px;border-style:dashed' : ''}"><b>${x.dataset.branch ? '↳ ' + x.dataset.branch : x.dataset.part}</b>${titleOf0(x)}</div>`).join('');
+$('#overview').innerHTML = scenes.map((x, i) => `<div class="ov" data-i="${i}" style="${x.dataset.branch ? 'margin-left:18px;border-style:dashed' : ''}"><b>${x.dataset.branch ? '↳ ' + x.dataset.branch : ((PARTS.find(p => p[0] === x.dataset.part) || [0, x.dataset.part])[1])}</b>${titleOf0(x)}</div>`).join('');
 $$('.ov').forEach(o => o.onclick = () => { document.body.classList.remove('showov'); const t = scenes[+o.dataset.i]; if (t.dataset.branch) branch(t.dataset.sec, idxOf(t.dataset.branch)); else go(+o.dataset.i); });
 setInterval(() => { if (!t0) return; const now = pausedAt || Date.now(), q = Math.floor((now - t0 - paused) / 1000); $('#timer').textContent = String(Math.floor(q / 60)).padStart(2, '0') + ':' + String(q % 60).padStart(2, '0') + (pausedAt ? ' (paused)' : ''); }, 500);
 function go(n) { cur = Math.max(0, Math.min(scenes.length - 1, n)); scenes.forEach((x, i) => x.classList.toggle('on', i === cur)); settle(scenes[cur]);
@@ -557,7 +577,7 @@ function step(d) { const x = scenes[cur];
   if (x.dataset.branch) { go(origin != null ? origin : idxOf(x.dataset.branch)); origin = null; return; }
   let j = cur + d; while (j >= 0 && j < scenes.length && scenes[j].dataset.branch) j += d; if (j >= 0 && j < scenes.length) go(j); }
 // short names for the deeper scenes, so a part's branches fit on the bar
-const SHORT = {'Opportunity': 'The projects', 'Why local': 'One centre?', 'Privacy': 'Keep or share', 'Built': 'The pieces', 'Three graphs': 'Three graphs', 'Trust': 'Connection', 'OpenVTC': 'OpenVTC, plainly', 'Flow': 'Information flow', 'Genesis': 'Tonight', 'The guide': 'Owning a guide', 'Games': 'Trust is earned', 'Three nodes': 'Three nodes', 'The pathway': 'One Pi to many', 'Cities': 'Cities', 'A visit': 'A visit', 'Evidence': 'Evidence', 'Public intelligence': 'Public intelligence', 'Inheritance': 'Not from zero', 'Method': 'The method', 'Principles': 'Four principles', 'Speed of trust': 'Speed of trust', 'Consent': 'Consent', 'Ceremonies': 'Ceremonies', 'Knowing to doing': 'Knowing to doing', 'Contribute': 'Contribute'};
+const SHORT = {'Opportunity': 'The projects', 'Why local': 'One centre?', 'Privacy': 'Keep or share', 'Built': 'The pieces', 'Three graphs': 'Three graphs', 'Trust': 'Connection', 'OpenVTC': 'OpenVTC and VTI', 'Flow': 'Information flow', 'Genesis': 'Tonight', 'The guide': 'Owning a guide', 'Games': 'Trust is earned', 'Three nodes': 'Three nodes', 'The pathway': 'One Pi to many', 'Cities': 'Cities', 'A visit': 'A visit', 'Evidence': 'Evidence', 'Public intelligence': 'Public intelligence', 'Inheritance': 'Not from zero', 'Method': 'The method', 'Principles': 'Four principles', 'Speed of trust': 'Speed of trust', 'Consent': 'Consent', 'Ceremonies': 'Ceremonies', 'Split': 'To VTI', 'Knowing to doing': 'Knowing to doing', 'Contribute': 'Contribute'};
 function deeperBar() { const bar = $('#deeper'); if (!bar) return; const x = scenes[cur];
   if (x.dataset.branch) { const back = origin != null ? scenes[origin] : scenes[idxOf(x.dataset.branch)]; bar.innerHTML = `<button onclick="step(-1)">← back to ${titleOf(back).toLowerCase()}</button>`; return; }
   const kids = scenes.filter(y => y.dataset.branch === x.dataset.sec);
@@ -1018,7 +1038,7 @@ function fgDraw() {
 function fgStep() { fgN = fgN >= FGS.length - 1 ? 0 : fgN + 1; fgDraw(); }
 fgDraw();
 
-/* ---------- openvtc and vti, plainly: the parts (live or in the spec) and a member's path ---------- */
+/* ---------- openvtc and vti: the parts (live or in the spec) and a member's path ---------- */
 const OVP = [
   ['Clients', 'openvtc (terminal) · Star Key (browser) · Keyring (phone)', 'live', 'How a member drives their agent. The openvtc TUI joins communities by DID; Star Key is a browser extension (Mitch\'s, with join by DID and MyTerms); Keyring is a phone app from Harvard\'s Berkman Klein Center that works with a hosted trust agent such as VTA Farm.'],
   ['VTC: the community', 'members, credentials, the gates', 'live', 'Manages a community of members, their credentials and the policies that gate them. It runs on top of a VTA; one VTA can host many communities. Live: Mages City, the First VTC (first.openvtc.net).'],
@@ -1032,25 +1052,36 @@ const OVS = [
   ['A membership credential', 'Issued by the community; a complete membership has two halves: the grant and the member\'s acknowledgement.', 'live'],
   ['Members vouch for each other', 'Relationship credentials: two, one each way, make one edge. In the spec; not yet seen issued by a live community.', 'spec'],
   ['Trust tasks between them', 'Signed, standard requests (trusttasks.org), over TSP, DIDComm or HTTPS. A ToIP working draft.', 'spec']];
-let ovSel = -1;
+let ovSel = -1, ovMode = 0;
+function ovView(m) { ovMode = m; ovSel = -1; clearPop('#ov'); ovDraw(); }
 function ovDraw() {
-  const s = $('#ov'); s.innerHTML = '';
-  s.append(el('text', {x: 0, y: 14, 'font-size': 13, 'font-weight': 700, fill: '#8EA4FF'}, 'THE PARTS · BOTTOM UP'));
-  OVP.forEach((p, i) => { const y = 30 + i * 84, on = ovSel === i, g = el('g', {class: 'click'});
-    g.append(el('rect', {x: 0, y, width: 620, height: 72, rx: 6, fill: on ? '#1F4BFF' : '#16181c', stroke: on ? '#1F4BFF' : '#2a2c2e'}));
-    g.append(el('text', {x: 22, y: y + 32, 'font-size': 19, 'font-weight': 700, fill: '#F6F1E6'}, p[0].toUpperCase()));
-    g.append(el('text', {x: 22, y: y + 56, 'font-size': 14, fill: on ? '#DCE3FF' : '#8f8c84'}, p[1]));
-    g.append(el('rect', {x: 540, y: y + 24, width: 60, height: 24, rx: 12, fill: 'none', stroke: '#3FCB6B'})); g.append(el('text', {x: 570, y: y + 41, 'text-anchor': 'middle', 'font-size': 11, 'font-weight': 700, fill: '#3FCB6B'}, 'LIVE'));
-    g.onclick = () => { ovSel = i; ovDraw(); pop(sceneOf('#ov'), 1150, 130, {tag: 'A part · live', title: p[0], body: p[3]}); }; s.append(g); });
-  s.append(el('text', {x: 720, y: 14, 'font-size': 13, 'font-weight': 700, fill: '#8EA4FF'}, "A COMMUNITY AND ITS MEMBERS, STEP BY STEP"));
-  OVS.forEach((st, i) => { const y = 30 + i * 70, on = ovSel === 10 + i, live = st[2] === 'live', g = el('g', {class: 'click'});
-    g.append(el('circle', {cx: 742, cy: y + 26, r: 18, fill: on ? '#1F4BFF' : live ? '#F6F1E6' : 'none', stroke: live ? '#F6F1E6' : '#8f8c84', 'stroke-width': 2, 'stroke-dasharray': live ? '' : '4 4'}));
-    g.append(el('text', {x: 742, y: y + 32, 'text-anchor': 'middle', 'font-size': 15, 'font-weight': 700, fill: on ? '#fff' : live ? '#0B0B0D' : '#8f8c84'}, String(i + 1)));
-    if (i) s.append(el('line', {x1: 742, y1: y - 26, x2: 742, y2: y + 8, stroke: '#3a3c40', 'stroke-width': 2}));
-    g.append(el('text', {x: 776, y: y + 24, 'font-size': 18, 'font-weight': 700, fill: live ? '#F6F1E6' : '#8f8c84'}, st[0].toUpperCase()));
-    g.append(el('text', {x: 776, y: y + 46, 'font-size': 12, fill: live ? '#3FCB6B' : '#8f8c84'}, live ? 'LIVE TODAY' : 'IN THE SPEC · NOT YET LIVE'));
-    g.onclick = () => { ovSel = 10 + i; ovDraw(); pop(sceneOf('#ov'), 1150, 130, {tag: live ? 'Step ' + (i + 1) + ' · live today' : 'Step ' + (i + 1) + ' · in the spec', title: st[0], body: st[1]}); }; s.append(g); });
-  s.append(el('text', {x: 0, y: 476, 'font-size': 12, fill: '#8f8c84'}, 'SPEC: TRUSTOVERIP.GITHUB.IO/DTGWG-VTI-SPEC · CODE: GITHUB.COM/OPENVTC · TRUST TASKS: TRUSTTASKS.ORG'));
+  const s = $('#ov'); s.innerHTML = ''; $('#ov-0').classList.toggle('on', !ovMode); $('#ov-1').classList.toggle('on', !!ovMode);
+  if (!ovMode) {
+    // the parts, as one stack: what a member touches at the top, what everything stands on at the bottom
+    OVP.forEach((p, i) => { const y = 10 + i * 78, on = ovSel === i, g = el('g', {class: 'click'}), w = 820 + i * 30, x = 0;
+      g.append(el('rect', {x, y, width: w, height: 66, rx: 4, fill: on ? '#1F4BFF' : '#16181c', stroke: on ? '#1F4BFF' : '#2a2c2e'}));
+      const t = el('text', {x: x + 24, y: y + 43, 'font-size': 32, fill: '#F6F1E6'}); t.style.fontFamily = 'var(--head)'; t.textContent = p[0].toUpperCase(); g.append(t);
+      g.append(el('text', {x: x + w - 24, y: y + 40, 'text-anchor': 'end', 'font-size': 14, fill: on ? '#DCE3FF' : '#8f8c84'}, p[1]));
+      g.onclick = () => { ovSel = i; ovDraw(); pop(sceneOf('#ov'), 1110, 140, {tag: 'A part · live today', title: p[0], body: p[3]}); }; s.append(g); });
+    s.append(el('circle', {cx: 8, cy: 418, r: 5, fill: '#3FCB6B'}));
+    s.append(el('text', {x: 22, y: 423, 'font-size': 13, 'font-weight': 700, fill: '#3FCB6B'}, 'ALL FIVE PARTS RUN TODAY · TOUCH ONE'));
+  } else {
+    // a member's path, left to right: solid where it is live, dashed where it is still the spec
+    const X = i => 60 + i * 250, Y = 120;
+    s.append(el('line', {x1: X(0), y1: Y, x2: X(3), y2: Y, stroke: '#F6F1E6', 'stroke-width': 2}));
+    s.append(el('line', {x1: X(3), y1: Y, x2: X(5), y2: Y, stroke: '#8f8c84', 'stroke-width': 2, 'stroke-dasharray': '5 7'}));
+    s.append(el('path', {d: `M${X(0) - 20},${Y - 62} V${Y - 72} H${X(3) + 20} V${Y - 62}`, fill: 'none', stroke: '#3FCB6B', 'stroke-width': 1.5}));
+    s.append(el('text', {x: (X(0) + X(3)) / 2, y: Y - 82, 'text-anchor': 'middle', 'font-size': 12, 'font-weight': 700, fill: '#3FCB6B'}, 'LIVE TODAY'));
+    s.append(el('path', {d: `M${X(4) - 20},${Y - 62} V${Y - 72} H${X(5) + 20} V${Y - 62}`, fill: 'none', stroke: '#8f8c84', 'stroke-width': 1.5, 'stroke-dasharray': '4 4'}));
+    s.append(el('text', {x: (X(4) + X(5)) / 2, y: Y - 82, 'text-anchor': 'middle', 'font-size': 12, 'font-weight': 700, fill: '#8f8c84'}, 'IN THE SPEC'));
+    OVS.forEach((st, i) => { const x = X(i), on = ovSel === 10 + i, live = st[2] === 'live', g = el('g', {class: 'click'});
+      g.append(el('circle', {cx: x, cy: Y, r: 30, fill: on ? '#1F4BFF' : live ? '#F6F1E6' : '#0B0B0D', stroke: live ? '#F6F1E6' : '#8f8c84', 'stroke-width': 2, 'stroke-dasharray': live ? '' : '5 5'}));
+      const n = el('text', {x, y: Y + 12, 'text-anchor': 'middle', 'font-size': 32, fill: on ? '#fff' : live ? '#0B0B0D' : '#8f8c84'}); n.style.fontFamily = 'var(--head)'; n.textContent = i + 1; g.append(n);
+      const words = st[0].toUpperCase().split(' '), half = Math.ceil(words.length / 2);
+      [words.slice(0, half).join(' '), words.slice(half).join(' ')].forEach((l, k) => { const t = el('text', {x, y: Y + 78 + k * 28, 'text-anchor': 'middle', 'font-size': 24, fill: live ? '#F6F1E6' : '#8f8c84'}); t.style.fontFamily = 'var(--head)'; t.textContent = l; g.append(t); });
+      g.onclick = () => { ovSel = 10 + i; ovDraw(); pop(sceneOf('#ov'), Math.min(x + 40, 1100), 330, {tag: live ? 'Step ' + (i + 1) + ' · live today' : 'Step ' + (i + 1) + ' · in the spec', title: st[0], body: st[1]}); }; s.append(g); });
+    s.append(el('text', {x: 0, y: 300, 'font-size': 13, 'font-weight': 700, fill: '#8EA4FF'}, 'TOUCH A STEP'));
+  }
 }
 ovDraw();
 
@@ -1591,6 +1622,38 @@ function cbDraw() {
   $('#cb-you').textContent = cbOn.size ? 'You could bring: ' + [...cbOn].sort((a, b) => a - b).map(i => CB[i].toLowerCase()).join(', ') + '.' : 'Touch what you could bring. (Kept on this device only.)';
 }
 cbDraw();
+
+/* ---------- the hinge: from the Hitchhikers to VTI ---------- */
+// [Hitchhikers' word, what it means to them, VTI piece, what it is, status: live | here | spec | proto | direction, honest note]
+const SPLIT = [
+  ['The towel', 'holds your keys, says no on your behalf, keeps the receipts', 'A VTA', 'a verifiable trust agent: keys, DIDs, access policies', 'live', 'Every member, community and agent has one. Self-run, or hosted (VTA Farm).'],
+  ['An embassy', 'a small sovereign group that hosts visitors', 'A VTC on a community node', 'the community service: members, credentials, the gates', 'live', 'Live for Mages City and the First VTC. The Hitchhikers\' node kit is built; not yet run on a real Pi.'],
+  ['The thumb up', 'a willingness to be guided', 'A trust task', 'a small, standard, signed request between two parties', 'here', 'Live on this guide\'s chain tonight; as a signed Trust Task between agents, it is a ToIP working draft.'],
+  ['A pledge', 'the Pi Ceremony\'s measurable commitment', 'A promise, then a credential', 'agreed terms; kept with evidence, a relationship credential', 'spec', 'Relationship credentials are in the VTI spec; not yet seen issued by a live community.'],
+  ['A visit', 'stepping into another embassy', 'A sealed visit', 'six signed beats: resolve, admit, exchange, understand, consent, seal', 'proto', 'Prototyped: the first embassy Pi and the visitor half of a signed visit.'],
+  ['Guidance you can check', 'proverbs, guides, field notes', 'An evidence root', 'hashes public, content sealed, one root anyone can re-check', 'here', 'Live on this guide\'s chain: every star is a hash; what is behind it is sealed with the visitor\'s own key.'],
+  ['The speed of trust', 'federation without a hub', 'VTCs linked over TSP', 'communities exchanging proofs over the Trust Spanning Protocol', 'direction', 'A direction, not a product: the mediator and TSP are live; community-to-community federation is the path ahead.']];
+const SPLIT_ST = {live: ['LIVE IN OPENVTC', '#3FCB6B'], here: ['LIVE ON THIS GUIDE', '#8EA4FF'], spec: ['IN THE SPEC', '#8f8c84'], proto: ['PROTOTYPED', '#e8c873'], direction: ['A DIRECTION', '#8f8c84']};
+const splitOn = new Set();
+function splitDraw() {
+  const s = $('#split'); s.innerHTML = '';
+  s.append(el('text', {x: 0, y: 16, 'font-size': 13, 'font-weight': 700, fill: '#F6F1E6', 'letter-spacing': '2'}, 'THE HITCHHIKERS SAY'));
+  s.append(el('text', {x: 860, y: 16, 'font-size': 13, 'font-weight': 700, fill: '#8EA4FF', 'letter-spacing': '2'}, 'VTI IMPLEMENTS IT AS'));
+  SPLIT.forEach((r, i) => { const y = 40 + i * 62, on = splitOn.has(i), st = SPLIT_ST[r[4]], g = el('g', {class: 'click'});
+    g.append(el('rect', {x: 0, y, width: 1480, height: 54, fill: 'transparent'}));
+    handSvg(g, 0, y + 32, r[0], {rot: -2, size: 24, fill: on ? '#F6F1E6' : '#CFC9BB'});
+    g.append(el('text', {x: 0, y: y + 50, 'font-size': 11, fill: '#8f8c84'}, r[1].toUpperCase()));
+    g.append(el('path', {d: `M560,${y + 24} H840`, stroke: on ? st[1] : '#3a3c40', 'stroke-width': on ? 2.5 : 1.5, 'stroke-dasharray': on ? '' : '3 7'}));
+    g.append(el('path', {d: `M832,${y + 18} L842,${y + 24} L832,${y + 30}`, fill: 'none', stroke: on ? st[1] : '#3a3c40', 'stroke-width': 2}));
+    if (on) g.append(el('text', {x: 700, y: y + 16, 'text-anchor': 'middle', 'font-size': 10, 'font-weight': 700, fill: st[1], 'letter-spacing': '1'}, st[0]));
+    const t = el('text', {x: 860, y: y + 30, 'font-size': 26, fill: on ? '#F6F1E6' : '#6B665C'}); t.style.fontFamily = 'var(--head)'; t.textContent = r[2].toUpperCase(); g.append(t);
+    g.append(el('text', {x: 860, y: y + 50, 'font-size': 11, fill: on ? '#8EA4FF' : '#55534e'}, r[3].toUpperCase()));
+    g.onclick = () => { splitOn.add(i); splitDraw(); pop(sceneOf('#split'), 1110, 60, {tag: r[0] + ' → ' + r[2] + ' · ' + st[0].toLowerCase(), title: r[2], body: r[5]}); };
+    s.append(g); });
+  $('#split-btn').textContent = splitOn.size < SPLIT.length ? 'Connect them all →' : 'Into the implementation →';
+}
+function splitAll() { if (splitOn.size < SPLIT.length) { SPLIT.forEach((_, i) => splitOn.add(i)); clearPop('#split'); splitDraw(); } else step(1); }
+splitDraw();
 
 // teleport: the lightning talk and the IIW workshop live on the same site; jump from one to the other in place
 (function () { const q = new URLSearchParams(location.search), t = $('#teleport'), p = document.body.dataset.path, to = p === 'lightning' ? 'iiw' : p === 'iiw' || p === 'workshop' ? 'lightning' : null;
