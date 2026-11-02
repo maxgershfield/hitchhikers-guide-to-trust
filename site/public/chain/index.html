@@ -282,11 +282,13 @@ if (DEMO) {
     if (mark === you && kind !== 'genesis') MINE.add(hash);
     drawNights();
   }
-  (async () => { for (let i = 0; i < 160; i++) await addDemo(); head = links[links.length - 1].hash; feed(); countN(); $('#head').textContent = 'head ' + head;
+  // ?demo&from=1&every=3 grows a night from its genesis; defaults: 160 stars, one more every 2.5 s
+  const DQ = new URLSearchParams(location.search), FROM = Math.max(1, Math.min(2000, parseInt(DQ.get('from') || '160', 10) || 160)), EVERY = Math.max(.3, parseFloat(DQ.get('every') || '2.5') || 2.5) * 1000;
+  (async () => { for (let i = 0; i < FROM; i++) await addDemo(); head = links[links.length - 1].hash; feed(); countN(); $('#head').textContent = 'head ' + head;
     // the "you" line reads from the demo visitor's mark
     window.DP.mark = async () => you;
     feed();
-    setInterval(async () => { await addDemo(); head = links[links.length - 1].hash; feed(); countN(); $('#head').textContent = 'head ' + head; }, 2500); })();
+    setInterval(async () => { await addDemo(); head = links[links.length - 1].hash; feed(); countN(); $('#head').textContent = 'head ' + head; }, EVERY); })();
 } else { poll(); setInterval(poll, 4000); }
 /* ---------- the rooms feeding this scroll ---------- */
 function drawRooms(list) { $('#rooms').innerHTML = list.length ? list.map(r => `<span><i class="${r.open ? 'on' : ''}"></i>${esc(r.room)} · ${r.count}</span>`).join('') : ''; }
