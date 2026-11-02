@@ -21,6 +21,23 @@ html,body{margin:0;height:100%;background:#0f1011;overflow:hidden;font-family:va
 #turn{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:50;background:#F6F1E6;color:#1F4BFF;border:1.5px solid #1F4BFF;border-radius:6px;padding:14px 18px;text-align:center;font:700 15px/1.4 "Space Mono",Consolas,monospace;box-shadow:0 6px 24px rgba(0,0,0,.35);transition:opacity .9s}
 #turn b{font-size:26px;display:block}#turn span{font-size:11px;font-weight:400;color:#333;text-transform:uppercase;letter-spacing:.05em}#turn.off{opacity:0}
 html,body{touch-action:manipulation}
+#rd,#rd-close{display:none}
+body.reader #rd{display:block;position:fixed;inset:0;overflow-y:auto;background:var(--paper);color:var(--ink);-webkit-overflow-scrolling:touch}
+#rd-top{position:sticky;top:0;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;background:var(--paper);border-bottom:1px solid rgba(0,0,0,.12);font:700 11px/1.3 "Space Mono",Consolas,monospace;text-transform:uppercase;letter-spacing:.04em;color:#1F4BFF}
+#rd-thumb{flex:none;width:44px;height:44px;border-radius:50%;border:1.5px solid #1F4BFF;background:#F6F1E6;font-size:20px}
+#rd-pic{position:relative;margin:14px 16px 0;overflow:hidden;border:1px solid rgba(0,0,0,.15);border-radius:4px;background:var(--paper)}
+#rd-pic .stage{position:absolute;pointer-events:none}
+#rd-open{position:absolute;inset:0;z-index:20;width:100%;border:0;background:transparent;display:flex;align-items:flex-end;justify-content:flex-end;padding:8px;font:700 11px "Space Mono",Consolas,monospace;text-transform:uppercase;color:#1F4BFF}
+#rd-body{padding:18px 16px 100px}
+#rd-k{font:700 12px/1.4 "Space Mono",Consolas,monospace;text-transform:uppercase;letter-spacing:.06em;color:#555}
+#rd-h{position:static;left:auto;top:auto;max-width:none;font-family:var(--head);font-weight:400;text-transform:uppercase;font-size:34px;line-height:1.02;margin:10px 0 14px}#rd-h b{font-weight:400;color:#1F4BFF}#rd-h .n{color:#1F4BFF}
+#rd-s{font-size:19px;line-height:1.5;margin:0 0 18px}
+#rd-nw summary{font:700 12px "Space Mono",Consolas,monospace;text-transform:uppercase;color:#1F4BFF;cursor:pointer;padding:8px 0}
+#rd-n{font-size:16px;line-height:1.55;color:#333;margin:6px 0 0}
+#rd-nav{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:var(--paper);border-top:1px solid rgba(0,0,0,.12)}
+#rd-nav button,#rd-nav a{font:700 13px "Space Mono",Consolas,monospace;text-transform:uppercase;padding:12px 16px;border:1.5px solid #1F4BFF;border-radius:22px;background:#F6F1E6;color:#1F4BFF;text-decoration:none}
+#rd-nav a{border-color:transparent;background:transparent;padding:12px 4px}
+html.rot #rd-close{display:block;position:fixed;top:12px;left:12px;z-index:60;width:44px;height:44px;border-radius:50%;border:1.5px solid #1F4BFF;background:#F6F1E6;color:#1F4BFF;font-size:24px;line-height:1}
 button{font-family:var(--mono);cursor:pointer}
 .stage{position:absolute;width:1600px;height:900px;transform-origin:top left;overflow:hidden;background:var(--paper)}
 .scene{position:absolute;top:56px;bottom:44px;left:0;right:0;display:none;padding:0;overflow:hidden;background:var(--paper)}
@@ -120,6 +137,12 @@ svg text{font-family:var(--mono)}
 <script src="../thumb.js" defer></script>
 </head>
 <body>
+<div id="rd"><div id="rd-top"><span id="rd-at"></span><button id="rd-thumb" onclick="const b=document.querySelector('#tu button');if(b)b.click()" title="Thumbs up">&#x1F44D;</button></div>
+  <div id="rd-pic"><button id="rd-open" onclick="full(true)" aria-label="Open the full slide">&#x21bb; tap for the full slide</button></div>
+  <div id="rd-body"><div id="rd-k"></div><h1 id="rd-h"></h1><p id="rd-s"></p>
+  <details id="rd-nw"><summary>Speaker's notes</summary><p id="rd-n"></p></details></div>
+  <div id="rd-nav"><button onclick="step(-1)">&larr; Back</button><a href="../chain/">The chain</a><button onclick="step(1)">Next &rarr;</button></div></div>
+<button id="rd-close" onclick="full(false)" aria-label="Back to reading">&times;</button>
 <div class="stage" id="stage">
 <div class="top"><span class="brand">The Hitchhiker's Guide to Trust</span><span id="tabs"></span><div class="prog" id="prog"></div></div>
 
@@ -587,7 +610,7 @@ $$('.tab').forEach(b => b.onclick = () => go(scenes.findIndex(x => x.dataset.par
 $('#overview').innerHTML = scenes.map((x, i) => `<div class="ov" data-i="${i}" style="${x.dataset.branch ? 'margin-left:18px;border-style:dashed' : ''}"><b>${x.dataset.branch ? '↳ ' + x.dataset.branch : ((PARTS.find(p => p[0] === x.dataset.part) || [0, x.dataset.part])[1])}</b>${titleOf0(x)}</div>`).join('');
 $$('.ov').forEach(o => o.onclick = () => { document.body.classList.remove('showov'); const t = scenes[+o.dataset.i]; if (t.dataset.branch) branch(t.dataset.sec, idxOf(t.dataset.branch)); else go(+o.dataset.i); });
 setInterval(() => { if (!t0) return; const now = pausedAt || Date.now(), q = Math.floor((now - t0 - paused) / 1000); $('#timer').textContent = String(Math.floor(q / 60)).padStart(2, '0') + ':' + String(q % 60).padStart(2, '0') + (pausedAt ? ' (paused)' : ''); }, 500);
-function go(n) { cur = Math.max(0, Math.min(scenes.length - 1, n)); scenes.forEach((x, i) => x.classList.toggle('on', i === cur)); settle(scenes[cur]);
+function go(n) { cur = Math.max(0, Math.min(scenes.length - 1, n)); scenes.forEach((x, i) => x.classList.toggle('on', i === cur)); settle(scenes[cur]); setTimeout(rdFill, 0);
   const part = scenes[cur].dataset.part; $$('.tab').forEach(b => b.classList.toggle('on', b.dataset.p === part)); const mainIdx = scenes.filter(y => !y.dataset.branch), at = mainIdx.indexOf(scenes[cur].dataset.branch ? scenes[idxOf(scenes[cur].dataset.branch)] : scenes[cur]); $('#prog').style.width = (100 * at / Math.max(1, mainIdx.length - 1)) + '%';
   $('#where').textContent = `${{iiw: 'IIW workshop · ', workshop: 'IIW workshop · ', lightning: 'Lightning · '}[document.body.dataset.path] || ''}${at + 1} / ${mainIdx.length}${scenes[cur].dataset.branch ? ' ↳' : ''} · ${scenes[cur].dataset.sec}`; deeperBar(); if (cur > 0 && !t0) t0 = Date.now();
   history.replaceState(null, '', location.pathname + location.search + '#' + cur);
@@ -605,11 +628,22 @@ function deeperBar() { const bar = $('#deeper'); if (!bar) return; const x = sce
   const kids = scenes.filter(y => y.dataset.branch === x.dataset.sec);
   bar.innerHTML = kids.length ? '<span style="color:var(--cobalt)">Deeper:</span>' + kids.map(y => `<button onclick="branch('${y.dataset.sec.replace(/'/g, "\\'")}', ${cur})">${SHORT[y.dataset.sec] || titleOf(y)} ↳</button>`).join('') : ''; }
 function fs() { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); }
-let ROT = false;
-function fit() { ROT = innerHeight > innerWidth && innerWidth < 720; document.documentElement.classList.toggle('rot', ROT);
+let ROT = false, FULL = false;
+const PHONE = () => innerHeight > innerWidth && innerWidth < 720;
+function fit() { const ph = PHONE(), rd = $('#rd'); ROT = ph && FULL;
+  document.documentElement.classList.toggle('rot', ROT); document.body.classList.toggle('reader', ph && !FULL);
+  const home = ph && !FULL ? $('#rd-pic') : document.body; if (stage.parentNode !== home) home.append(stage);
+  if (ph && !FULL) { const k = $('#rd-pic').clientWidth / 1600; stage.style.transform = `scale(${k})`; stage.style.left = '0px'; stage.style.top = '0px'; $('#rd-pic').style.height = 900 * k + 'px'; rdFill(); return; }
   if (ROT) { const k = Math.min(innerWidth / 900, innerHeight / 1600); stage.style.transform = `rotate(90deg) scale(${k})`; stage.style.left = (innerWidth + 900 * k) / 2 + 'px'; stage.style.top = (innerHeight - 1600 * k) / 2 + 'px'; turnHint(); return; }
   const k = Math.min(innerWidth / 1600, innerHeight / 900); stage.style.transform = `scale(${k})`; stage.style.left = (innerWidth - 1600 * k) / 2 + 'px'; stage.style.top = (innerHeight - 900 * k) / 2 + 'px'; }
-// once per visit on an upright phone: say to turn it, and that a swipe moves on
+function full(on) { FULL = on; fit(); }
+// the reader's words come from the scene itself: its kicker, title and lede; the speaker's notes stay folded
+function rdFill() { if (!document.body.classList.contains('reader')) return; const x = scenes[cur], q = sel => x.querySelector(sel);
+  $('#rd-k').textContent = q('.kick') ? q('.kick').textContent.trim() : '';
+  $('#rd-h').innerHTML = q('h1') ? q('h1').innerHTML : x.dataset.sec;
+  $('#rd-s').textContent = q('.sub') ? q('.sub').textContent.trim() : '';
+  const n = q('aside.notes'); $('#rd-nw').style.display = n ? '' : 'none'; $('#rd-n').textContent = n ? n.textContent.trim() : ''; $('#rd-nw').open = false;
+  $('#rd-at').textContent = $('#where') ? $('#where').textContent : ''; $('#rd').scrollTop = 0; }
 let hinted = false;
 function turnHint() { if (hinted) return; hinted = true; const h = document.createElement('div'); h.id = 'turn';
   h.innerHTML = '<b>&#x21bb;</b> Turn your phone sideways<br><span>swipe to move between scenes</span>'; document.body.append(h);
