@@ -24,7 +24,7 @@ below; no build step.
 | **Field Guide** | *Every place unlocks the next chapter* · *What a community owns first* · *Connected cities* (the guide walked through the city) · *How the pieces fit* | `data-sec="Field Guide"` · `data-sec="The guide"` · `WALK_TXT = [` · `const BUILT =` |
 | **First Person project** | the network map · *The hitchhiker mage* (the higher network) | `['First Person network', 2,` · `const HIGHER =` |
 | **Internet Identity Workshop** | its night on the chain (`/iiw43`) · the IIW path's cover and *Over to you* questions | `iiw43:` in `site/src/worker.js` · `data-sec="Cover"` · `data-sec="Discussion"` |
-| **Internet Archive** | its night on the chain (`/archive`), the same night as Newspeak House · *Don't panic: tonight, a new page* (the genesis scene that opens each night) | `archive:` in `site/src/worker.js` · `data-sec="Genesis"` |
+| **Internet Archive** | the ring card · the network map · its night on the chain (`/archive`), the same night as Newspeak House · *Don't panic: tonight, a new page* (the genesis scene that opens each night) | `{name: 'Internet Archive'` · `['Internet Archive', 2,` · `archive:` in `site/src/worker.js` · `data-sec="Genesis"` |
 
 Each entry is a few short fields: a name, a role in a few words, one or two sentences, and sometimes a short list.
 The speaker notes (`<aside class="notes">`) are where longer context and sources go.

@@ -229,7 +229,7 @@ svg text{font-family:var(--mono)}
   <h1><span class="n">5.</span> Towels and <b>embassies</b></h1>
   <div class="sub" id="net-sub">Embassies host; personal machines visit. “Small enough to know your stewards. Sovereign enough to leave.”</div>
   <svg id="net" width="1500" height="500" viewBox="0 0 1500 500" style="left:50px;top:300px"></svg>
-  <div class="hint" style="left:auto;right:62px;bottom:auto;top:640px">A potential map, not a census · touch a node</div>
+  <div class="hint" style="left:auto;right:62px;bottom:auto;top:250px">A potential map, not a census · touch a node</div>
   <aside class="notes">In the Hitchhikers' words: an Embassy is a small sovereign group ("Small enough to know your stewards. Sovereign enough to leave.", hitchhikers.earth, "Embassy"); embassies host and personal machines visit; each person carries a towel. A potential VTI implementation map, not a census. Every node runs an expression of OpenVTC: a community node or a trust agent. Some communities are human first (the Hitchhikers, the First Person network), some agent first (Mages City). Specialist agents make the network work: VTA Farm hosts trust agents (a DID in minutes), Bonfires turns chat into knowledge graphs, Chathackers put agents in group chats. Personal devices carry their own VTA: Keyring on the phone, Star Key in the browser. They run on personal devices, local nodes the community owns (a Pi per room, the co-op's hardware), or hosted. Under all of them: OpenVTC and VTI, and the Trust Spanning Protocol; Trust Stackers' open P2P Trust Stack is another implementation. The Hitchhikers' node kit is built and reviewed; it has not yet run on a real Pi.</aside>
 </section>
 
@@ -716,6 +716,7 @@ const NET = [
   ['First Person network', 2, 120, 'human', 'human first', 'People, each with their own trust graph, recognised across communities. It began with the First VTC (first.openvtc.net).'],
   ['VTA Farm', 2, 250, 'spec', 'trust agents, hosted', 'Sets up a Trust Agent for you in minutes: a DID that is yours, for anyone without a node of their own (vta.farm).'],
   ['Hitchhiker FM', 2, 250, 'spec', 'a voice for nature', "The Hitchhikers' station: fork, cast, transmit. Its Rights of Nature spell puts Ecuador's constitutional rights of Pacha Mama on air, in Morse."],
+  ['Internet Archive', 2, 380, 'spec', 'the record, kept', 'A library of the web and of what people make, kept for anyone to look back on. One of the nights of this guide.'],
   ['This guide\'s chain', 2, 380, 'spec', 'hh.mages.city', 'The night\'s evidence chain, hosted; its gate can move to a Pi, and close when the Pi is unplugged.']];
 const NET_COL = [[160, 'Towels · your devices'], [590, 'Embassies · local nodes'], [1000, 'Hosted']];
 const NET_EDGES = [[0, 3], [1, 4], [10, 0], [10, 1], [4, 9], [5, 3], [6, 3], [7, 3], [8, 12], [2, 3], [3, 9], [11, 3]];
@@ -827,7 +828,8 @@ const OPP = [
   {name: 'Bonfires', role: 'Knowledge graphs from chat', col: '#B5651D', card: {tag: 'Knowledge graphs from chat', title: 'Bonfires', body: "Turns a group chat's conversation into a shared knowledge graph.", list: ['What a community learns in chat becomes knowledge it keeps', 'Talk becomes guidance the guide can hold']}},
   {name: 'The local co-op', role: 'Cooperative ownership', col: '#3E7A3A', card: {tag: 'Cooperative ownership', title: 'The local co-op', body: 'Members co-own the hardware and the local infrastructure: the nodes that hold the community\'s trust.', list: ["The Pi is the co-op's, not a platform's", 'Pooled compute: local AI the members run together', 'Who hosts, and how, is decided together']}},
   {name: 'Chathackers', role: 'Agents in group chats', col: '#7A4FB5', card: {tag: 'Agents in group chats', title: 'Chathackers', body: "Bots and agents that live in a community's chats and help it.", list: ['Like the bot that welcomes your claim with a proverb', 'Help in the chat, without taking the chat away']}},
-  {name: 'Culture Vault', role: 'Culture, kept', col: '#9C3D54', card: {tag: 'Culture, kept', title: 'Culture Vault', body: 'A curated vault for culture, from physical to digital.', list: ['Works and their provenance kept on Arweave and Ethereum', "Where a community's guides, art and editions can live"]}}];
+  {name: 'Culture Vault', role: 'Culture, kept', col: '#9C3D54', card: {tag: 'Culture, kept', title: 'Culture Vault', body: 'A curated vault for culture, from physical to digital.', list: ['Works and their provenance kept on Arweave and Ethereum', "Where a community's guides, art and editions can live"]}},
+  {name: 'Internet Archive', role: 'The record, kept', col: '#5B6B7A', card: {tag: 'The record, kept', title: 'Internet Archive', body: 'A library of the web and of what people make, kept for anyone to look back on.', list: ['Each night of the guide keeps its own page; the Archive keeps the long memory', 'One of the nights: the guide opens a page there too']}}];
 const oppOn = new Set();
 function oppDraw() {
   const s = $('#opp'), cx = 530, cy = 318, R = 188; s.innerHTML = '';
