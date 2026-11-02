@@ -18,6 +18,9 @@
 }
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:#0f1011;overflow:hidden;font-family:var(--body);color:var(--ink)}
+#turn{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:50;background:#F6F1E6;color:#1F4BFF;border:1.5px solid #1F4BFF;border-radius:6px;padding:14px 18px;text-align:center;font:700 15px/1.4 "Space Mono",Consolas,monospace;box-shadow:0 6px 24px rgba(0,0,0,.35);transition:opacity .9s}
+#turn b{font-size:26px;display:block}#turn span{font-size:11px;font-weight:400;color:#333;text-transform:uppercase;letter-spacing:.05em}#turn.off{opacity:0}
+html,body{touch-action:manipulation}
 button{font-family:var(--mono);cursor:pointer}
 .stage{position:absolute;width:1600px;height:900px;transform-origin:top left;overflow:hidden;background:var(--paper)}
 .scene{position:absolute;top:56px;bottom:44px;left:0;right:0;display:none;padding:0;overflow:hidden;background:var(--paper)}
@@ -602,7 +605,21 @@ function deeperBar() { const bar = $('#deeper'); if (!bar) return; const x = sce
   const kids = scenes.filter(y => y.dataset.branch === x.dataset.sec);
   bar.innerHTML = kids.length ? '<span style="color:var(--cobalt)">Deeper:</span>' + kids.map(y => `<button onclick="branch('${y.dataset.sec.replace(/'/g, "\\'")}', ${cur})">${SHORT[y.dataset.sec] || titleOf(y)} ↳</button>`).join('') : ''; }
 function fs() { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); }
-function fit() { const k = Math.min(innerWidth / 1600, innerHeight / 900); stage.style.transform = `scale(${k})`; stage.style.left = (innerWidth - 1600 * k) / 2 + 'px'; stage.style.top = (innerHeight - 900 * k) / 2 + 'px'; }
+let ROT = false;
+function fit() { ROT = innerHeight > innerWidth && innerWidth < 720; document.documentElement.classList.toggle('rot', ROT);
+  if (ROT) { const k = Math.min(innerWidth / 900, innerHeight / 1600); stage.style.transform = `rotate(90deg) scale(${k})`; stage.style.left = (innerWidth + 900 * k) / 2 + 'px'; stage.style.top = (innerHeight - 1600 * k) / 2 + 'px'; turnHint(); return; }
+  const k = Math.min(innerWidth / 1600, innerHeight / 900); stage.style.transform = `scale(${k})`; stage.style.left = (innerWidth - 1600 * k) / 2 + 'px'; stage.style.top = (innerHeight - 900 * k) / 2 + 'px'; }
+// once per visit on an upright phone: say to turn it, and that a swipe moves on
+let hinted = false;
+function turnHint() { if (hinted) return; hinted = true; const h = document.createElement('div'); h.id = 'turn';
+  h.innerHTML = '<b>&#x21bb;</b> Turn your phone sideways<br><span>swipe to move between scenes</span>'; document.body.append(h);
+  setTimeout(() => h.classList.add('off'), 4200); setTimeout(() => h.remove(), 5200); }
+// swipe: left or right as the reader sees the slide (on a turned slide that is up or down on the glass)
+let sw = null;
+addEventListener('touchstart', e => { const t = e.touches[0]; sw = e.touches.length === 1 && !e.target.closest('input,textarea,[contenteditable]') ? {x: t.clientX, y: t.clientY, t: Date.now()} : null; }, {passive: true});
+addEventListener('touchend', e => { if (!sw) return; const t = e.changedTouches[0]; let dx = t.clientX - sw.x, dy = t.clientY - sw.y; const quick = Date.now() - sw.t < 700; sw = null;
+  if (ROT) [dx, dy] = [dy, -dx];
+  if (quick && Math.abs(dx) > 50 && Math.abs(dx) > 1.6 * Math.abs(dy)) step(dx < 0 ? 1 : -1); }, {passive: true});
 addEventListener('keydown', e => { if (e.target.matches('input,[contenteditable]')) return;
   if (['ArrowRight', 'PageDown', ' '].includes(e.key)) { step(1); e.preventDefault(); } else if (['ArrowLeft', 'PageUp'].includes(e.key)) step(-1);
   else if (e.key === 'n' || e.key === 'N') document.body.classList.toggle('shownotes'); else if (e.key === 'f' || e.key === 'F') fs();

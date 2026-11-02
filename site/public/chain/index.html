@@ -74,6 +74,30 @@ body.bare #bare{color:var(--pale)}
 .join .s{font-size:clamp(10px,.8vw,13px);text-transform:uppercase;color:#CFC9BB;margin-top:.6vh}
 .you{left:50%;transform:translateX(-50%);bottom:12vh;text-align:center;font-size:clamp(11px,.9vw,14px);text-transform:uppercase;color:var(--pale)}
 .you b{font-size:clamp(20px,2vw,32px);color:var(--cream);letter-spacing:.08em}
+/* ---- phone: one scrolling column over the galaxy ---- */
+@media (max-width:720px){
+  html,body{height:auto;min-height:100%;overflow-x:hidden;overflow-y:auto}
+  body{display:flex;flex-direction:column;padding:14px 16px 92px}
+  .hud{position:relative!important;left:auto!important;right:auto!important;top:auto!important;bottom:auto!important;transform:none!important;width:auto!important;max-width:none!important}
+  body>*{min-width:0;max-width:100%}
+  .title{order:1}.title .k{max-width:none!important;font-size:11px;display:block;white-space:normal}.title h1{font-size:44px;margin-top:10px}
+  .back{display:block;margin:8px 0 0}
+  .count{order:2;margin-top:40vh}.count .head{max-width:none}
+  .hint{order:3;margin-top:6px;font-size:10px}
+  .rooms{order:4;flex-wrap:wrap;gap:10px;margin-top:10px}
+  .you{order:5;text-align:left;margin-top:14px}
+  .feed{order:6;margin-top:18px}
+  .join{order:7;margin-top:18px;text-align:left;justify-content:flex-start}.join .qr{display:none}
+  .about{order:8;margin-top:18px}
+  .feed,.join,.about{background:rgba(11,11,13,.78);border:1px solid rgba(246,241,230,.12);border-radius:6px;padding:12px}
+  .about p{font-size:12px;line-height:1.6;text-transform:uppercase;color:#CFC9BB;margin:0 0 12px}
+  .steps{max-width:none;gap:8px}.steps div{font-size:12px;gap:10px}
+  #scroll,#join{max-height:none;overflow:visible}
+  .row{grid-template-columns:auto minmax(0,1fr)}.row .sp,.row .meta{overflow-wrap:anywhere}
+  .row .sg{font-size:20px}.row .sp{font-size:13px}.row .meta{font-size:10px}
+  #orb,#bare{position:fixed;bottom:16px;z-index:5}#orb{left:auto;right:16px;transform:none}#bare{left:16px}
+  .tip{position:fixed!important;left:16px!important;right:16px!important;top:auto!important;bottom:70px!important;transform:none!important;max-width:none}
+}
 </style>
 </head>
 <body>
@@ -307,6 +331,11 @@ else { const rooms = async () => { try { const r = await fetch(U('/api/rooms'), 
 // back to where you were in the presentation, not to its first scene
 (function () { try { const last = localStorage.getItem('hgt:last'), b = document.getElementById('back');
   if (last && /^\/guide\//.test(last)) { b.href = last; const at = new URLSearchParams(last.split('?')[1] || '').get('at'); if (at) b.textContent = '← back to the guide · ' + at.toLowerCase(); } } catch (e) {} })();
+</script>
+<script>
+(function () { if (!matchMedia('(max-width:720px)').matches) return;
+  const t = document.querySelector('.hud.title'), a = document.createElement('div'); a.className = 'hud about';
+  [...t.querySelectorAll(':scope > p, :scope > .steps')].forEach(n => a.append(n)); document.body.append(a); })();
 </script>
 </body>
 </html>
