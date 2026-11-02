@@ -200,11 +200,12 @@ svg text{font-family:var(--mono)}
 <section class="scene" data-part="IV" data-sec="Trust">
   <div class="frame"></div>
   <div class="kick">IV · Trust by doing</div>
-  <h1><span class="n">5.</span> Connection is <b>not trust</b></h1>
-  <div class="sub" id="ct-sub">Two people, two perspectives.</div>
-  <svg id="ct" width="1400" height="520" viewBox="0 0 1400 520" style="left:100px;top:270px"></svg>
+  <h1><span class="n">5.</span> Connection <b>and reflection</b></h1>
+  <div class="sub" style="font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:28px;line-height:1.35">Connection without reflection is noise.<br>Reflection without connection is stone.<span style="display:block;font-family:var(--mono);font-style:normal;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:8px">from The Amnesia Protocol · Selene's Spellbook</span></div>
+  <div id="ct-sub" style="position:absolute;left:400px;width:800px;top:752px;text-align:center;font-family:var(--body);font-size:20px;color:var(--ink)">Two people, two perspectives.</div>
+  <svg id="ct" width="1200" height="446" viewBox="0 0 1400 520" style="left:300px;top:290px"></svg>
   <div style="position:absolute;left:62px;top:300px;display:grid;gap:10px"><button class="act" onclick="ct(1)">Meet</button><button class="act" onclick="ct(2)">Commit</button><button class="act" onclick="ct(3)">Evidence</button></div>
-  <aside class="notes">Meeting (or a check-in) is proximity: a dotted line, not trust. A commitment both accept is a promise. Trust is the promise kept, with evidence. Never infer trust from presence.</aside>
+  <aside class="notes">The line is from the poem The Amnesia Protocol (Selene's Spellbook): connection without reflection is noise; reflection without connection is stone. Meeting (or a check-in) is proximity: a dotted line, not trust. A commitment both accept is a promise. Trust is the promise kept, with evidence. Never infer trust from presence.</aside>
 </section>
 
 <!-- 05 local network -->
@@ -579,7 +580,7 @@ function step(d) { const x = scenes[cur];
   if (x.dataset.branch) { go(origin != null ? origin : idxOf(x.dataset.branch)); origin = null; return; }
   let j = cur + d; while (j >= 0 && j < scenes.length && scenes[j].dataset.branch) j += d; if (j >= 0 && j < scenes.length) go(j); }
 // short names for the deeper scenes, so a part's branches fit on the bar
-const SHORT = {'Opportunity': 'The projects', 'Why local': 'One centre?', 'Privacy': 'Keep or share', 'Built': 'The pieces', 'Three graphs': 'Three graphs', 'Trust': 'Connection', 'OpenVTC': 'OpenVTC and VTI', 'Flow': 'Information flow', 'Genesis': 'Tonight', 'The guide': 'Owning a guide', 'Games': 'Trust is earned', 'Three nodes': 'Three nodes', 'The pathway': 'One Pi to many', 'Cities': 'Cities', 'A visit': 'A visit', 'Evidence': 'Evidence', 'Public intelligence': 'Public intelligence', 'Inheritance': 'Not from zero', 'Method': 'The method', 'Principles': 'Four principles', 'Speed of trust': 'Speed of trust', 'Consent': 'Consent', 'Ceremonies': 'Ceremonies', 'Split': 'To VTI', 'Knowing to doing': 'Knowing to doing', 'Contribute': 'Contribute'};
+const SHORT = {'Opportunity': 'The projects', 'Why local': 'One centre?', 'Privacy': 'Keep or share', 'Built': 'The pieces', 'Three graphs': 'Three graphs', 'Trust': 'Connection and reflection', 'OpenVTC': 'OpenVTC and VTI', 'Flow': 'Information flow', 'Genesis': 'Tonight', 'The guide': 'Owning a guide', 'Games': 'Trust is earned', 'Three nodes': 'Three nodes', 'The pathway': 'One Pi to many', 'Cities': 'Cities', 'A visit': 'A visit', 'Evidence': 'Evidence', 'Public intelligence': 'Public intelligence', 'Inheritance': 'Not from zero', 'Method': 'The method', 'Principles': 'Four principles', 'Speed of trust': 'Speed of trust', 'Consent': 'Consent', 'Ceremonies': 'Ceremonies', 'Split': 'To VTI', 'Knowing to doing': 'Knowing to doing', 'Contribute': 'Contribute'};
 function deeperBar() { const bar = $('#deeper'); if (!bar) return; const x = scenes[cur];
   if (x.dataset.branch) { const back = origin != null ? scenes[origin] : scenes[idxOf(x.dataset.branch)]; bar.innerHTML = `<button onclick="step(-1)">← back to ${titleOf(back).toLowerCase()}</button>`; return; }
   const kids = scenes.filter(y => y.dataset.branch === x.dataset.sec);
