@@ -2,62 +2,80 @@
 
 **A Galaxy of Local-First Verifiable Trust Communities, Agents, Guides and Guidance Built with Trust Tasks**
 
-A guide you visit, play with and add to, for the Hitchhikers' presentations: first shown at IIW 43, with a
-lightning version for Hitchhiker nights and a university workshop in Amsterdam next. It brings together the
-Hitchhikers (guides and guidance), OpenVTC (trust graphs), agentprivacy · Mages City (open autoresearch and agentic
-privacy), Bonfires (knowledge graphs from chat), the local co-op (cooperative ownership) and Chathackers (agents in
-group chats).
+A guide you visit, play with and add to, for the Hitchhikers' presentations: first shown at IIW 43, with a lightning
+version for Hitchhiker nights. Two halves: **the Hitchhikers** (their story, method and ceremonies) and **the
+implementation** (OpenVTC and VTI). Everyone in the room can add to its evidence chain from their own phone as the
+talk goes.
 
-## What's here
+This repo is the deployable piece, and only that:
 
-| path | what |
-|---|---|
-| `site/` | the whole site: pages, the small API (`src/worker.js`), the Pi kit, the group-chat bot |
-| `announce/` | the handwritten session card (HTML + PDF) and the announcement text |
+1. **The website**: the guide, the chain page, the home page (`site/public/`).
+2. **The evidence chain**: the small server that keeps it (`site/serve.mjs` on a Pi, or `site/src/worker.js` as a
+   Cloudflare Worker), plus the wiring for several Pis to feed one aggregate chain.
+3. **The connection to a VTC**: the chain page's *Join* tab reads a verifiable trust community's live profile and join
+   manifest, so visitors can join it by DID and claim their stars.
 
-On the site:
-
-| page | what |
-|---|---|
-| `/` | home: the title, the doors, and the first trust task (thumb up) |
-| `/guide/?path=iiw` | **the IIW workshop**: each story, then its technical telling (teleport to and from the lightning talk at any scene) |
-| `/guide/?path=lightning` | **the lightning talk**: stories only |
-| `/guide/` | the whole guide, 18 scenes |
-| `/newspeak`, `/iiw43`, `/archive` | add to that night: one guide, one chain from its genesis, each night opening its own page (set nights' names, dates and places with `EVENTS` before each night's first visitor) |
-| `/chain/` | **the evidence chain**: the public face of the guide. Every thumb up, proverb and guide is a star on the Star's 64 states; drag to turn it; point to see a star's threads and its owner's evidence root; *The scroll* writes the whole chain in the sigil script. `?demo` shows an example night |
-| `/notes` | work notes: the technical side, written plainly |
-| `/keeper` | the keeper's page: approve, hide, export guides as wiki pages |
-
-## Try it on your machine
+## Run it
 
 ```
 cd site
 node serve.mjs            # http://localhost:8788 (Node 20+; no install step)
 ```
 
-The keeper key for `/keeper` is generated into `site/data/keeper-key.txt` (never committed).
+The keeper key for `/keeper` is generated into `site/data/keeper-key.txt`; the chain is kept in `site/data/store.json`.
+Neither is ever committed.
 
-## Put it online
+## The pages
 
-- **Cloudflare Worker**: `site/wrangler.jsonc` has the three commands at the top (KV namespace, keeper key, deploy).
-- **A Pi holds the gate**: `site/pi/README.md`. Unplug the Pi and the gate closes; the pages stay up.
-- **Several rooms, one scroll**: each room's Pi keeps its own chain and passes its stars up to the central scroll
-  (see "Rooms" in `site/README.md`).
-- **The night's group chat**: `site/bot/claim-bot.mjs` lets people paste their claim code; the bot writes the claim
-  onto their chain and answers with a proverb.
+| page | what |
+|---|---|
+| `/guide/?path=iiw` | **the full presentation**: the Hitchhikers, then the implementation (OpenVTC + VTI) |
+| `/guide/?path=lightning` | **the lightning talk**: the short path; teleport between the two at any scene |
+| `/chain/` | **the evidence chain**: every thumbs up, proverb, guide and voice note is a star. `H` hides the text; `?demo&from=1&every=3` grows an example night from its genesis |
+| `/` · `/newspeak` · `/iiw43` · `/archive` | home, and each night's own door to the one chain |
+| `/keeper` | the keeper's page: approve, hide, export guides as wiki pages |
+
+Every scene of the guide has a thumbs-up button (top right): each touch adds this device's star to the chain, with the
+scene sealed inside. The Pi Ceremony's record button records a pledge, sealed, as a voice star.
+
+## Settings
+
+| variable | what |
+|---|---|
+| `PORT`, `DATA` | where the server listens (127.0.0.1) and keeps its data |
+| `KEEPER_KEY` | the keeper's key (otherwise generated into `DATA/keeper-key.txt`) |
+| `EVENTS`, `DEFAULT_EVENT` | each night's name, date and place. **Set before the first visitor**: a chain's genesis is fixed once written |
+| `CITY_API`, `CITY_JOIN` | **the VTC to connect to**: its API base (public profile, join manifest, DID QR) and its join page. Default: Mages City. For the Hitchhikers VTC, set both to its addresses once it is up |
+| `SCROLL_ORIGIN`, `ROOM_NAME`, `ROOM_KEY` | on a room/city Pi: pass every star up to the aggregate chain |
+| `ROOM_KEYS` | on the aggregate Pi: the rooms allowed to feed it, as JSON `{"name": "key"}` |
+| `GATE_ORIGIN` | Worker only: hand every `/api/*` call to a Pi, so the Pi holds the door |
+
+## Deploy
+
+- **One Pi, public**: run `serve.mjs` as a service (`site/pi/`), and point a reverse proxy at it
+  (`reverse_proxy <pi>:8788`). Planned home: `trust.hitchhikers.earth` on the Hitchhikers Pi 5.
+- **Many Pis, one aggregate**: each Pi keeps its own chain (`SCROLL_ORIGIN` → the aggregate Pi over the tailnet); the
+  aggregate Pi hosts the site and lists the room keys. See "Rooms" in `site/README.md`.
+- **Cloudflare Worker**: `site/wrangler.jsonc` (KV namespace, keeper key, deploy).
+- **The night's group chat**: `site/bot/claim-bot.mjs` answers a claim code with a proverb (reference bot; not yet run
+  against Telegram).
 
 ## Privacy, in one paragraph
 
-No accounts and no tracking. A visitor's mark is a hash of a secret their own phone keeps. The chain holds hashes
-and boxes sealed with the visitor's own key; nothing anyone writes appears on it in the clear. Proverbs and guides
-are public only once the keeper approves them. Addresses are never stored.
+No accounts and no tracking. A visitor's mark is a hash of a secret their own browser keeps. The chain holds hashes and
+boxes sealed with the visitor's own key; nothing anyone writes appears on it in the clear. Proverbs and guides are
+public only once the keeper approves them. Addresses are never stored, only a salted daily hash for the rate limit.
 
 ## Status
 
-Built and tested locally: the guide and its paths, the evidence chain, sealing, the claim trust task (site side),
-rooms feeding a central scroll, the gate. Also tested: one chain across nights (genesis, a gathering link per night, one root per person), witness stars from a room screen's rotating code, the Meet Rite (two yeses), offers to Hitchhiker FM (keeper-only audio), Field Guide drafts, sealed voice notes (recorded, sent, played back by the owner), claiming
-after joining (claim code + DID, the DID kept only as a hash). Not yet: a live deployment, the bot run against
-Telegram, the hosting agent signing the chain, DID-signed claims, and the City turning a claim into an invitation or credential.
+Built and tested locally: the guide and its paths, the evidence chain and sealing, thumbs up from every scene, recorded
+pledges, rooms feeding an aggregate chain, the gate, claiming after joining (claim code + DID, the DID kept only as a
+hash). Not yet: a live deployment; the room outbox (a star passed up while the aggregate Pi is offline is not yet
+retried); safe writes for power cuts; the bot run against Telegram; the hosting agent signing the chain; DID-signed
+claims; a VTC turning a claim into a credential.
 
-Credits: the sigil script (`site/public/sigil/sigilcode.js`) and the 64-state geometry come from the City of Mages
-scrolls (mages.city).
+## Credits
+
+The Hitchhikers' presentations (Public Intelligence; the reviewed assembly) shaped the first half. Baby Dragon images:
+REAL PARENT / INJURY, used with permission. The sigil script (`site/public/sigil/sigilcode.js`) and the 64-state
+geometry come from the City of Mages scrolls (mages.city).
