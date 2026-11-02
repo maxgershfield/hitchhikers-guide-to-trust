@@ -98,9 +98,9 @@ body.bare #bare{color:var(--pale)}
 <script>
 const $ = s => document.querySelector(s), esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
 // the address shown to the room is always a public one: a local or private origin (this machine, the LAN) falls back to the public host
-const PUBLIC_SITE = 'https://hitchhiker.mages.city', LOCAL_HOST = /^(localhost|127\.|0\.0\.0\.0|\[?::1\]?|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|[^.]+\.local$|[^.]+\.localhost$)/i;
+const PUBLIC_SITE = 'https://hh.mages.city', LOCAL_HOST = /^(localhost|127\.|0\.0\.0\.0|\[?::1\]?|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|[^.]+\.local$|[^.]+\.localhost$)/i;
 const SITE = (new URLSearchParams(location.search).get('site') || (location.protocol.startsWith('http') && !LOCAL_HOST.test(location.hostname) ? location.origin : PUBLIC_SITE)).replace(/\/$/, '');
-const API = location.protocol.startsWith('http') ? '' : 'https://hitchhiker.mages.city', U = p => window.DP ? DP.u(p) : API + p, EVID = window.DP && DP.event || '';
+const API = location.protocol.startsWith('http') ? '' : 'https://hh.mages.city', U = p => window.DP ? DP.u(p) : API + p, EVID = window.DP && DP.event || '';
 $('#url').textContent = SITE.replace(/^https?:\/\//, '');
 if (EVID) $('#url').textContent += '/' + EVID;
 const SCREEN = (location.hash.match(/screen=([0-9a-f]{64})/) || [])[1];

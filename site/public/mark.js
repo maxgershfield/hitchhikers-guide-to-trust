@@ -29,7 +29,7 @@
   // which night's guide: ?event= in the address (remembered on this device), or the site's default
   // remembered for the day only, so a phone at IIW on the 4th adds to Newspeak House on the 5th
   const EV = (() => { const day = new Date().toISOString().slice(0, 10), q = (new URLSearchParams(location.search).get('event') || '').toLowerCase().replace(/[^a-z0-9-]/g, ''); if (q) set('dp-event', q + '|' + day); const [e, d] = get('dp-event', '').split('|'); return q || (d === day ? e : ''); })();
-  const base = location.protocol.startsWith('http') ? '' : 'https://hitchhiker.mages.city';
+  const base = location.protocol.startsWith('http') ? '' : 'https://hh.mages.city';
   window.DP = {
     mark: () => hex('mark|' + secret()), sigil, spell, mine, seal, open, sealBytes, openBytes, claimCode, claimHash, event: EV,
     u: p => base + p + (EV ? (p.includes('?') ? '&' : '?') + 'event=' + EV : ''),

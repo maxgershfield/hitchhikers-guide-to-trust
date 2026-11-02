@@ -1,4 +1,4 @@
-// hitchhiker.mages.city: The Hitchhiker's Guide to Trust, hosted. Serves the pages (./public) and one small API.
+// hh.mages.city: The Hitchhiker's Guide to Trust, hosted. Serves the pages (./public) and one small API.
 // One Hitchhikers guide, many nights (Newspeak House, IIW 43, the Internet Archive): a single evidence chain,
 // begun by the guide's genesis, where each night opens with a gathering link and presence, proverbs, guides and
 // voice notes are recorded as hashes, sealed with each visitor's own key. Nobody has to join anything to be part of the night's history; a claim code (or, after
