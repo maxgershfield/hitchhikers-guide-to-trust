@@ -329,9 +329,10 @@ svg text{font-family:var(--mono)}
 <section class="scene dark" data-part="III" data-sec="OpenVTC">
   <div class="kick" style="color:var(--off)">III · The technology</div>
   <h1><span class="n">5.</span> OpenVTC and <b>VTI</b></h1>
-  <div class="sub" id="ov-sub">Open source from the Decentralized Trust Graph working group (Linux Foundation Decentralized Trust, Apache-2.0). Any community can run it on its own hardware.</div>
+  <div class="sub" id="ov-sub">From the Decentralized Trust Graph working group. Any community can run it on its own hardware.</div>
   <div style="position:absolute;left:62px;top:262px;display:flex;gap:10px"><button class="act on" id="ov-0" onclick="ovView(0)">The parts</button><button class="act" id="ov-1" onclick="ovView(1)">A member's path</button></div>
   <svg id="ov" width="1500" height="440" viewBox="0 0 1500 440" style="left:62px;top:340px"></svg>
+  <div id="ov-detail" style="position:absolute;left:1110px;top:350px;width:430px;border-left:3px solid var(--cobalt);padding:4px 0 4px 22px;color:var(--off)"></div>
   <aside class="notes">OpenVTC is a Linux Foundation Decentralized Trust lab: the reference implementation of the Trust over IP Decentralized Trust Graph working group's specifications for a verifiable trust community (sponsors: the DTGWG co-chairs). VTI (verifiable trust infrastructure) is the spec and its services, a Rust workspace under the OpenVTC org: the VTA, the VTC service, and the PNM/CNM tools. Two views, one at a time: the parts (all five run today) and a member's path (steps 1 to 4 live; vouching and trust tasks are in the spec). Live today: Mages City's community and the First VTC (first.openvtc.net). Relationship credentials (two VRCs, one edge) are in the spec; not yet seen issued by a live community. Links: trustoverip.github.io/dtgwg-vti-spec · github.com/openvtc · trusttasks.org.</aside>
 </section>
 
@@ -1053,7 +1054,11 @@ const OVS = [
   ['Members vouch for each other', 'Relationship credentials: two, one each way, make one edge. In the spec; not yet seen issued by a live community.', 'spec'],
   ['Trust tasks between them', 'Signed, standard requests (trusttasks.org), over TSP, DIDComm or HTTPS. A ToIP working draft.', 'spec']];
 let ovSel = -1, ovMode = 0;
-function ovView(m) { ovMode = m; ovSel = -1; clearPop('#ov'); ovDraw(); }
+function ovView(m) { ovMode = m; ovSel = -1; ovDraw(); }
+function ovDetail(tag, title, body) { const d = $('#ov-detail');
+  if (!ovMode) { d.style.left = '1110px'; d.style.top = '350px'; d.style.width = '430px'; } else { d.style.left = '62px'; d.style.top = '650px'; d.style.width = '1100px'; }
+  d.innerHTML = title ? `<div class="label" style="color:var(--pale);font-weight:700">${tag}</div><div style="font-family:var(--head);font-size:${ovMode ? 30 : 36}px;text-transform:uppercase;line-height:1;margin:8px 0 10px">${title}</div><div style="font-size:${ovMode ? 18 : 19}px;line-height:1.45">${body}</div>`
+    : `<div class="label" style="color:#8f8c84">${tag}</div>`; }
 function ovDraw() {
   const s = $('#ov'); s.innerHTML = ''; $('#ov-0').classList.toggle('on', !ovMode); $('#ov-1').classList.toggle('on', !!ovMode);
   if (!ovMode) {
@@ -1062,7 +1067,8 @@ function ovDraw() {
       g.append(el('rect', {x, y, width: w, height: 66, rx: 4, fill: on ? '#1F4BFF' : '#16181c', stroke: on ? '#1F4BFF' : '#2a2c2e'}));
       const t = el('text', {x: x + 24, y: y + 43, 'font-size': 32, fill: '#F6F1E6'}); t.style.fontFamily = 'var(--head)'; t.textContent = p[0].toUpperCase(); g.append(t);
       g.append(el('text', {x: x + w - 24, y: y + 40, 'text-anchor': 'end', 'font-size': 14, fill: on ? '#DCE3FF' : '#8f8c84'}, p[1]));
-      g.onclick = () => { ovSel = i; ovDraw(); pop(sceneOf('#ov'), 1110, 140, {tag: 'A part · live today', title: p[0], body: p[3]}); }; s.append(g); });
+      g.onclick = () => { ovSel = i; ovDraw(); }; s.append(g); });
+    if (ovSel >= 0 && ovSel < 10) ovDetail('A part · live today', OVP[ovSel][0], OVP[ovSel][3]); else ovDetail('Touch a part to see what it does');
     s.append(el('circle', {cx: 8, cy: 418, r: 5, fill: '#3FCB6B'}));
     s.append(el('text', {x: 22, y: 423, 'font-size': 13, 'font-weight': 700, fill: '#3FCB6B'}, 'ALL FIVE PARTS RUN TODAY · TOUCH ONE'));
   } else {
@@ -1079,8 +1085,8 @@ function ovDraw() {
       const n = el('text', {x, y: Y + 12, 'text-anchor': 'middle', 'font-size': 32, fill: on ? '#fff' : live ? '#0B0B0D' : '#8f8c84'}); n.style.fontFamily = 'var(--head)'; n.textContent = i + 1; g.append(n);
       const words = st[0].toUpperCase().split(' '), half = Math.ceil(words.length / 2);
       [words.slice(0, half).join(' '), words.slice(half).join(' ')].forEach((l, k) => { const t = el('text', {x, y: Y + 78 + k * 28, 'text-anchor': 'middle', 'font-size': 24, fill: live ? '#F6F1E6' : '#8f8c84'}); t.style.fontFamily = 'var(--head)'; t.textContent = l; g.append(t); });
-      g.onclick = () => { ovSel = 10 + i; ovDraw(); pop(sceneOf('#ov'), Math.min(x + 40, 1100), 330, {tag: live ? 'Step ' + (i + 1) + ' · live today' : 'Step ' + (i + 1) + ' · in the spec', title: st[0], body: st[1]}); }; s.append(g); });
-    s.append(el('text', {x: 0, y: 300, 'font-size': 13, 'font-weight': 700, fill: '#8EA4FF'}, 'TOUCH A STEP'));
+      g.onclick = () => { ovSel = 10 + i; ovDraw(); }; s.append(g); });
+    if (ovSel >= 10) { const st = OVS[ovSel - 10]; ovDetail(st[2] === 'live' ? 'Step ' + (ovSel - 9) + ' · live today' : 'Step ' + (ovSel - 9) + ' · in the spec', st[0], st[1]); } else ovDetail('Touch a step to see what happens');
   }
 }
 ovDraw();
