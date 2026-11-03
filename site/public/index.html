@@ -30,7 +30,9 @@ h1 span{color:var(--blue)}
 .door .micro{color:var(--pale)}
 .ceremony{display:inline-flex;align-items:center;gap:12px;margin:6px 0 4px;padding:16px 28px;border-radius:40px;background:var(--blue);color:var(--cream);text-decoration:none;font-family:var(--head);text-transform:uppercase;font-size:clamp(24px,3vw,32px);letter-spacing:.03em;line-height:1;transition:background .2s,transform .2s}
 .ceremony:hover{background:#3A62FF;transform:translateY(-1px)}.ceremony .s{font-size:.8em;color:var(--pale)}
-.ceremony + .micro{color:var(--muted);margin:8px 0 0}
+.ceremony.alt{background:transparent;border:2px solid var(--blue);color:var(--cream);padding:14px 26px}.ceremony.alt:hover{background:rgba(31,75,255,.14)}
+.acts{display:flex;flex-wrap:wrap;gap:12px;margin:6px 0 0}.acts .ceremony{margin:0}
+.acts + .micro{color:var(--muted);margin:8px 0 0}
 .gate{margin-top:30px;color:var(--muted)}
 .dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#C0504D;margin-right:8px}
 .dot.on{background:#3FCB6B}
@@ -47,8 +49,8 @@ footer a{color:var(--pale)}
   <h1>The Hitchhiker's Guide<br>to <span>Trust</span></h1>
   <p class="subtitle">A Galaxy of Local-First Verifiable Trust Communities, Agents, Guides and Guidance Built with Trust Tasks</p>
   <p class="lede" id="tonight" style="color:var(--blue)"></p>
-  <a class="ceremony" id="ceremony" href="chain/"><span class="s">&#x2726;</span> Ceremony</a>
-  <div class="micro">The star scroll: the guide's evidence chain, live</div>
+  <div class="acts"><a class="ceremony" id="ceremony" href="chain/"><span class="s">&#x2726;</span> Ceremony</a><a class="ceremony alt" id="begins" href="guide/?path=lightning&amp;at=Ceremonies"><span class="s">&#x25CF;</span> Trust begins</a></div>
+  <div class="micro">Ceremony: the star scroll, live · Trust begins: record your part and add it to the star</div>
   <p class="lede">How a community's trust graph forms around guides and guidance, and why it should be kept locally. Read it, play with it, and add your own at the end, while the gate is open.</p>
   <div class="doors">
     <a class="door" href="guide/?path=iiw"><div class="micro">IIW 43 · the deeper path</div><h2>The IIW <span>workshop</span></h2><p>The full presentation, in five acts: why, the movement, the technology (OpenVTC and VTI, how information flows, the Pi), trust by doing, and over to you. For the curious and the technical.</p></a>
@@ -71,7 +73,7 @@ footer a{color:var(--pale)}
 (async () => { try { const d = await (await fetch('/api/events', {cache: 'no-store'})).json(), cur = (window.DP && DP.event) || d.default, me = d.events.find(e => e.id === cur) || d.events[0], on = d.events.filter(e => e.stars);
   const others = d.events.filter(e => e.id !== me.id).map(e => `<a href="/${e.id}" style="color:inherit">${e.name} →</a>`).join(' · ');
   document.getElementById('tonight').innerHTML = `Tonight: <b>${me.name}</b>${me.note ? ', ' + me.note.charAt(0).toLowerCase() + me.note.slice(1) : ''}, a new page of the Hitchhikers' guide · ${d.stars} star${d.stars === 1 ? '' : 's'} across ${on.length || 1} night${on.length === 1 || !on.length ? '' : 's'} · <a href="chain/?event=${me.id}" style="color:inherit">see the chain →</a>${others ? '<br><span style="opacity:.7">Other nights: ' + others + '</span>' : ''}`;
-  document.getElementById('ceremony').href = 'chain/?event=' + me.id;
+  document.getElementById('ceremony').href = 'chain/?event=' + me.id; document.getElementById('begins').href += '&event=' + me.id;
   document.querySelectorAll('a.door[href^="guide/"]').forEach(a => a.href += (a.href.includes('?') ? '&' : '?') + 'event=' + me.id);
 } catch (e) {} })();
 </script>
