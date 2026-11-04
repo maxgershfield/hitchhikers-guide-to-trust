@@ -194,11 +194,11 @@ svg text{font-family:var(--mono)}
 <section class="scene" data-part="II" data-sec="Opportunity">
   <div class="frame"></div>
   <div class="kick">II · The movement</div>
-  <h1><span class="n">1.</span> Many projects, <b>one community</b></h1>
+  <h1><span class="n">1.</span> A community and <b>their towels</b></h1>
   <div class="sub" id="opp-sub">Each holds one part of how a community comes to trust itself. Touch each one.</div>
   <svg id="opp" width="1060" height="600" viewBox="0 0 1060 600" style="left:40px;top:190px"></svg>
   <div class="hint">Touch each one</div>
-  <aside class="notes">Six projects in the Hitchhiker presentations, one community. Bonfires turns chat into knowledge graphs; the local co-op co-owns the nodes; Chathackers bring agents into group chats. The Hitchhikers bring guides and guidance: the story and the reason to gather. OpenVTC (one of the first projects from the DTG working group; assume the room knows it) brings the trust graph: who belongs, what was promised, what was kept. agentprivacy's Mages City brings open autoresearch and agentic privacy: agents that do checkable research in the open, and act on your behalf without giving you away. Where all three overlap is a community that keeps its own trust.</aside>
+  <aside class="notes">The projects in the Hitchhiker presentations, one community (this scene also carries what the old Towels and embassies map showed: each person's towel, embassies that host, VTA Farm, and the open stack under every node). Bonfires turns chat into knowledge graphs; the local co-op co-owns the nodes; Chathackers bring agents into group chats. The Hitchhikers bring guides and guidance: the story and the reason to gather. OpenVTC (one of the first projects from the DTG working group; assume the room knows it) brings the trust graph: who belongs, what was promised, what was kept. agentprivacy's Mages City brings open autoresearch and agentic privacy: agents that do checkable research in the open, and act on your behalf without giving you away. Where all three overlap is a community that keeps its own trust.</aside>
 </section>
 
 <!-- 01 one centre or many -->
@@ -262,15 +262,6 @@ svg text{font-family:var(--mono)}
   <aside class="notes">Max's half: Field Guide (fieldguide.earth) makes Guides, playable spatial adventures that turn real places into stories, characters and discovery; "every place unlocks the next chapter". The handover to trust: each place you reach is witnessed (you stood here), a trust task your towel keeps; walk a guide with others and it becomes guidance: who walked it, what they found, what to fix. The guide a community walks together is the first thing it owns. [Max's handover line goes here.]</aside>
 </section>
 
-<section class="scene dark" data-part="II" data-sec="Local">
-  <div class="frame"></div>
-  <div class="kick">II · The movement</div>
-  <h1><span class="n">5.</span> Towels and <b>embassies</b></h1>
-  <div class="sub" id="net-sub">Embassies host; personal machines visit. “Small enough to know your stewards. Sovereign enough to leave.”</div>
-  <svg id="net" width="1500" height="500" viewBox="0 0 1500 500" style="left:50px;top:300px"></svg>
-  <div class="hint" style="left:auto;right:62px;bottom:auto;top:250px">A potential map, not a census · touch a node</div>
-  <aside class="notes">In the Hitchhikers' words: an Embassy is a small sovereign group ("Small enough to know your stewards. Sovereign enough to leave.", hitchhikers.earth, "Embassy"); embassies host and personal machines visit; each person carries a towel. A potential VTI implementation map, not a census. Every node runs an expression of OpenVTC: a community node or a trust agent. Some communities are human first (the Hitchhikers, the First Person network), some agent first (Mages City). Specialist agents make the network work: VTA Farm hosts trust agents (a DID in minutes), Bonfires turns chat into knowledge graphs, Chathackers put agents in group chats. Personal devices carry their own VTA: Keyring on the phone, Star Key in the browser. They run on personal devices, local nodes the community owns (a Pi per room, the co-op's hardware), or hosted. Under all of them: OpenVTC and VTI, and the Trust Spanning Protocol; Trust Stackers' open P2P Trust Stack is another implementation. The Hitchhikers' node kit is built and reviewed; it has not yet run on a real Pi.</aside>
-</section>
 
 <!-- three kinds of node -->
 <section class="scene" data-part="III" data-sec="Three nodes">
@@ -574,15 +565,15 @@ svg text{font-family:var(--mono)}
 /* ---------- paths through the guide: a main thread, with deeper scenes as branches of the scene they belong to ---------- */
 (function () {
   // two halves: the Hitchhikers (their story, method and ceremonies), then the implementation (OpenVTC + VTI)
-  const HH = ['Request', 'Public intelligence', 'Inheritance', 'Method', 'Knowing to doing', 'Principles', 'Consent', 'Ceremonies', 'Field Guide', 'The guide', 'Local', 'Speed of trust', 'Opportunity', 'Contribute'];
+  const HH = ['Request', 'Public intelligence', 'Inheritance', 'Method', 'Knowing to doing', 'Principles', 'Consent', 'Ceremonies', 'Field Guide', 'The guide', 'Opportunity', 'Speed of trust', 'Contribute'];
   const VTI = ['Split', 'OpenVTC', 'Three nodes', 'Flow', 'Privacy', 'Thumbs up', 'Three graphs', 'Trust', 'Games', 'A visit', 'The pathway', 'Cities', 'Evidence', 'Hitchhiker mage', 'Baby Dragon', 'Built'];
   const PATHS = {
     iiw: ['Cover', ...HH, ...VTI, 'Genesis', 'Discussion', 'Close'],
-    lightning: ['Cover', 'Request', 'Public intelligence', 'Ceremonies', 'Field Guide', 'Local', 'Contribute', 'Split', 'OpenVTC', 'Thumbs up', 'Genesis', 'Close'],
+    lightning: ['Cover', 'Request', 'Public intelligence', 'Ceremonies', 'Field Guide', 'Opportunity', 'Contribute', 'Split', 'OpenVTC', 'Thumbs up', 'Genesis', 'Close'],
     guide: ['Cover', ...HH, ...VTI, 'Genesis', 'Close']};
   // where each scene belongs when it is not on the main thread (always inside its own half)
   const PARENT = {'Inheritance': 'Public intelligence', 'Method': 'Public intelligence', 'Knowing to doing': 'Method', 'Principles': 'Method', 'Consent': 'Public intelligence',
-    'The guide': 'Field Guide', 'Speed of trust': 'Local', 'Opportunity': 'Local',
+    'The guide': 'Field Guide', 'Speed of trust': 'Opportunity',
     'OpenVTC': 'Split', 'Three nodes': 'OpenVTC', 'Flow': 'OpenVTC', 'Privacy': 'Split', 'Three graphs': 'Thumbs up', 'Trust': 'Thumbs up', 'Games': 'Thumbs up',
     'A visit': 'OpenVTC', 'The pathway': 'OpenVTC', 'Evidence': 'Split', 'Hitchhiker mage': 'Split', 'Cities': 'OpenVTC', 'Baby Dragon': 'Split', 'Built': 'OpenVTC', 'Genesis': 'Close'};
   PATHS.workshop = PATHS.iiw; // older links
@@ -768,61 +759,6 @@ function ct(stepN) {
 }
 ct(0);
 
-/* ---------- 05 local network ---------- */
-// [name, column (0 personal device · 1 local node · 2 hosted), y, type, one line, what it is]
-// types: human = human-first community · agent = agent-first community · spec = specialist trust agent · own = personal VTA
-const NET = [
-  ['Keyring', 0, 120, 'own', 'your phone', 'A phone app that drives your trust agent, hosted for you (VTA Farm) or self-run.'],
-  ['Star Key', 0, 250, 'own', 'your browser', 'A browser extension: join a community by DID (paste, QR or camera) and bring your own terms (MyTerms).'],
-  ['Local AI', 0, 380, 'spec', 'your own machine', 'A model on your own machine that answers from the guides you hold; the data never leaves.'],
-  ['The Hitchhikers', 1, 120, 'human', 'human first', 'Guides and guidance, the timebank and the local exchange: a human-first embassy. Its node kit is built; it has not yet run on a real Pi.'],
-  ['Mages City', 1, 120, 'agent', 'agent first', 'Open autoresearch and agentic privacy: an agent-first embassy, live on OpenVTC, on a home node reached through a tunnel.'],
-  ['Bonfires', 1, 250, 'spec', 'knowledge from chat', 'A specialist agent: turns a group chat into a knowledge graph the community keeps.'],
-  ['Chathackers', 1, 250, 'spec', 'agents in chats', 'Specialist agents that live in the group chats and help, like the bot that answers a claim with a proverb.'],
-  ['The local co-op', 1, 380, 'human', 'owns the hardware', 'Members co-own the hardware and pool its compute for local AI: the Pi is the co-op\'s, not a platform\'s.'],
-  ['A room\'s Pi', 1, 380, 'spec', 'one per room', 'Each room at Newspeak House can hold its own gate and chain, feeding the night\'s guide.'],
-  ['Culture Vault', 2, 120, 'spec', 'culture, kept', 'A curated vault for culture, from physical to digital: works and their provenance kept on Arweave and Ethereum. Where a community\'s guides, art and editions can live.'],
-  ['First Person network', 2, 120, 'human', 'human first', 'People, each with their own trust graph, recognised across communities. It began with the First VTC (first.openvtc.net).'],
-  ['VTA Farm', 2, 250, 'spec', 'trust agents, hosted', 'Sets up a Trust Agent for you in minutes: a DID that is yours, for anyone without a node of their own (vta.farm).'],
-  ['Hitchhiker FM', 2, 250, 'spec', 'a voice for nature', "The Hitchhikers' station: fork, cast, transmit. Its Rights of Nature spell puts Ecuador's constitutional rights of Pacha Mama on air, in Morse."],
-  ['Internet Archive', 2, 380, 'spec', 'the record, kept', 'A library of the web and of what people make, kept for anyone to look back on. One of the nights of this guide.'],
-  ['This guide\'s chain', 2, 380, 'spec', (location.protocol.startsWith('http') && !/^(localhost|127\.|\[?::1)/.test(location.hostname) ? location.hostname : 'trust.hitchhikers.earth'), 'The night\'s evidence chain, kept on a Pi the community runs: trust.hitchhikers.earth for the Hitchhikers, trust.mages.city as a second home and backup.']];
-const NET_COL = [[160, 'Towels · your devices'], [590, 'Embassies · local nodes'], [1000, 'Hosted']];
-const NET_EDGES = [[0, 3], [1, 4], [10, 0], [10, 1], [4, 9], [5, 3], [6, 3], [7, 3], [8, 12], [2, 3], [3, 9], [11, 3]];
-const NET_TYPE = {human: ['Human-first embassy', '#F6F1E6'], agent: ['Agent-first embassy', '#1F4BFF'], spec: ['Specialist trust agent', '#8EA4FF'], own: ['Your towel', '#E8C873']};
-let netSel = -1;
-const netAt = i => { const n = NET[i], col = NET_COL[n[1]][0], pair = NET.filter(m => m[1] === n[1] && m[2] === n[2]), k = pair.indexOf(n); return [pair.length > 1 ? col + (k ? 110 : -110) : col, n[2] - 30 - (n[2] - 120) * .1]; };
-function netDraw() {
-  const s = $('#net'); s.innerHTML = '';
-  // where each node runs
-  NET_COL.forEach(([x, name], c) => { s.append(el('rect', {x: x - (c === 1 ? 220 : 145), y: 54, width: c === 1 ? 440 : 290, height: 340, rx: 8, fill: '#ffffff', opacity: .035}));
-    s.append(el('text', {x, y: 48, 'text-anchor': 'middle', 'font-size': 14, 'font-weight': 700, fill: '#8EA4FF', 'letter-spacing': '.08em'}, name.toUpperCase())); });
-  NET_EDGES.forEach(([a, b]) => { const [x1, y1] = netAt(a), [x2, y2] = netAt(b), on = netSel === a || netSel === b;
-    s.append(el('line', {x1, y1, x2, y2, stroke: on ? '#F6F1E6' : C.pale, 'stroke-width': on ? 2 : 1.2, 'stroke-dasharray': '3 7', opacity: on ? .9 : .45})); });
-  NET.forEach((n, i) => { const [x, y] = netAt(i), on = netSel === i, col = NET_TYPE[n[3]][1], g = el('g', {class: 'click'});
-    if (n[3] === 'agent') g.append(el('rect', {x: x - 26, y: y - 26, width: 52, height: 52, transform: `rotate(45 ${x} ${y})`, fill: on ? col : '#0c0d0e', stroke: col, 'stroke-width': 2.5}));
-    else if (n[3] === 'spec') g.append(el('rect', {x: x - 22, y: y - 22, width: 44, height: 44, rx: 4, fill: on ? col : '#0c0d0e', stroke: col, 'stroke-width': 2}));
-    else g.append(el('circle', {cx: x, cy: y, r: n[3] === 'own' ? 22 : 30, fill: on ? col : '#0c0d0e', stroke: col, 'stroke-width': n[3] === 'own' ? 2 : 3}));
-    g.append(el('circle', {cx: x, cy: y, r: 5, fill: on ? '#0c0d0e' : col}));
-    g.append(el('text', {x, y: y + 54, 'text-anchor': 'middle', fill: C.off, 'font-size': 15, 'font-weight': 700}, n[0].toUpperCase()));
-    g.append(el('text', {x, y: y + 73, 'text-anchor': 'middle', fill: '#8f8c84', 'font-size': 12}, n[4].toUpperCase()));
-    g.onclick = () => { netSel = i; netDraw(); }; s.append(g); });
-  // Field Guide: guides played in real places; reading a member's towel is an idea, not built
-  s.append(el('rect', {x: 15, y: 2, width: 1130, height: 26, rx: 13, fill: '#E8C873', opacity: .14}));
-  s.append(el('text', {x: 580, y: 20, 'text-anchor': 'middle', 'font-size': 12, 'font-weight': 700, fill: '#E8C873'}, 'FIELD GUIDE · GUIDES PLAYED IN REAL PLACES · READING YOUR TOWEL IS AN IDEA, NOT BUILT'));
-  // the hitchhiker mage's path between embassies
-  { const pts = [3, 4, 9].map(netAt); s.append(el('path', {d: 'M' + pts.map(p => p.join(',')).join(' L'), fill: 'none', stroke: '#E8C873', 'stroke-width': 1.6, 'stroke-dasharray': '2 7', opacity: .8}));
-    s.append(el('text', {x: (pts[1][0] + pts[2][0]) / 2, y: pts[1][1] - 40, 'text-anchor': 'middle', 'font-size': 11, fill: '#E8C873'}, "THE MAGE'S PATH")); }
-  // under all of them: the open trust stack
-  s.append(el('rect', {x: 15, y: 408, width: 1130, height: 52, rx: 6, fill: '#1F4BFF', opacity: .9}));
-  s.append(el('text', {x: 580, y: 431, 'text-anchor': 'middle', 'font-size': 15, 'font-weight': 700, fill: '#FFFFFF'}, 'UNDER EVERY NODE: OPENVTC · VTI · THE TRUST SPANNING PROTOCOL'));
-  s.append(el('text', {x: 580, y: 450, 'text-anchor': 'middle', 'font-size': 11, fill: '#DCE3FF'}, "AND OTHER OPEN STACKS, LIKE TRUST STACKERS' P2P TRUST STACK (TSP, CRAFTED VTAS, CREDENTIALS)"));
-  // the legend
-  Object.values(NET_TYPE).forEach(([name, col], k) => { const x = 30 + k * 280; s.append(el('rect', {x: x - 7, y: 477, width: 14, height: 14, fill: col, transform: k === 1 ? `rotate(45 ${x} 484)` : ''}));
-    s.append(el('text', {x: x + 16, y: 489, 'font-size': 12, fill: '#CFC9BB'}, name.toUpperCase())); });
-  if (netSel >= 0) { const n = NET[netSel]; pop(sceneOf('#net'), 1150, 130, {tag: NET_TYPE[n[3]][0] + ' · ' + NET_COL[n[1]][1].toLowerCase(), title: n[0], body: n[5]}); }
-}
-netDraw();
 
 /* ---------- 06 the guide: fork, countersign, merge ---------- */
 let gStep = 0;
@@ -891,18 +827,20 @@ const sceneOf = id => $(id).closest('.scene');
 /* ---------- opportunity: many projects, one community ---------- */
 C.brass = '#8A857A';
 const OPP = [
-  {name: 'The Hitchhikers', role: 'Guides and guidance', col: C.ink, card: {tag: 'Guides and guidance', title: 'The Hitchhikers', body: 'The story, and the reason to gather.', list: ['Guides a community writes, follows and keeps', 'Guidance anyone can fork; the community decides what merges', 'The timebank and the local exchange: an hour given, a favour returned', "Towels, quests, Don't Panic: a narrative people want to join"]}},
-  {name: 'OpenVTC', role: 'Trust graphs', col: C.cobalt, card: {tag: 'Trust graphs', title: 'OpenVTC', body: 'The trust layer, from the DTG working group.', list: ['Members join a community by DID', 'Promises and vouches become credentials', 'Each community holds its own graph']}},
-  {name: 'Mages City', pre: 'agentprivacy', role: 'Open autoresearch · agentic privacy', col: '#6B665C', card: {tag: 'agentprivacy · open autoresearch · agentic privacy', title: 'Mages City', body: 'From agentprivacy: agents that do research in the open, and act on your behalf without giving you away.', list: ['Open autoresearch: every run sealed, anyone can re-check it', 'Agentic privacy: one agent protects, one connects', 'Hitchhiker mages that travel between communities and help']}},
-  {name: 'Bonfires', role: 'Knowledge graphs from chat', col: '#B5651D', card: {tag: 'Knowledge graphs from chat', title: 'Bonfires', body: "Turns a group chat's conversation into a shared knowledge graph.", list: ['What a community learns in chat becomes knowledge it keeps', 'Talk becomes guidance the guide can hold']}},
-  {name: 'The local co-op', role: 'Cooperative ownership', col: '#3E7A3A', card: {tag: 'Cooperative ownership', title: 'The local co-op', body: 'Members co-own the hardware and the local infrastructure: the nodes that hold the community\'s trust.', list: ["The Pi is the co-op's, not a platform's", 'Pooled compute: local AI the members run together', 'Who hosts, and how, is decided together']}},
+  {name: 'The Hitchhikers', role: 'Guides and guidance', col: C.ink, card: {tag: 'Guides and guidance', title: 'The Hitchhikers', body: 'The story, and the reason to gather.', list: ['Guides a community writes, follows and keeps', 'Towels: each person carries their own trust agent', 'Embassies: small sovereign groups that host; towels visit. “Small enough to know your stewards. Sovereign enough to leave.”', 'The timebank and the local exchange: an hour given, a favour returned', 'Hitchhiker FM: fork, cast, transmit']}},
+  {name: 'Field Guide', role: 'Guides in real places', col: '#D9541E', card: {tag: 'Guides in real places', title: 'Field Guide', body: 'Real places, playable stories: every place unlocks the next chapter.', list: ['Guides played on the ground, chapter by chapter', "Where a community's guidance meets the places it lives"]}},
+  {name: 'OpenVTC', role: 'Trust graphs', col: C.cobalt, card: {tag: 'Trust graphs', title: 'OpenVTC', body: 'The trust layer, from the DTG working group.', list: ['Members join a community by DID', 'Promises and vouches become credentials', 'Each community holds its own graph', 'Under every node: OpenVTC, VTI and the Trust Spanning Protocol', 'The First Person network: your own trust graph, recognised across communities']}},
+  {name: 'VTA Farm', role: 'Trust agents, hosted', col: '#3F6E9C', card: {tag: 'Trust agents, hosted', title: 'VTA Farm', body: 'Sets up a trust agent for you in minutes: a DID that is yours, for anyone without a node of their own.', list: ['Your towel, driven from your phone (Keyring) or your browser (Star Key)', 'Hosted for you now; self-run when you are ready']}},
+  {name: 'Mages City', pre: 'agentprivacy', role: 'Autoresearch · agent privacy', col: '#6B665C', card: {tag: 'agentprivacy · open autoresearch · agentic privacy', title: 'Mages City', body: 'From agentprivacy: agents that do research in the open, and act on your behalf without giving you away.', list: ['Open autoresearch: every run sealed, anyone can re-check it', 'Agentic privacy: one agent protects, one connects', 'Hitchhiker mages that travel between communities and help']}},
+  {name: 'Bonfires', role: 'Knowledge from chat', col: '#B5651D', card: {tag: 'Knowledge graphs from chat', title: 'Bonfires', body: "Turns a group chat's conversation into a shared knowledge graph.", list: ['What a community learns in chat becomes knowledge it keeps', 'Talk becomes guidance the guide can hold']}},
+  {name: 'The local co-op', role: 'Cooperative ownership', col: '#3E7A3A', card: {tag: 'Cooperative ownership', title: 'The local co-op', body: 'Members co-own the hardware and the local infrastructure: the nodes that hold the community\'s trust.', list: ["The Pi is the co-op's, not a platform's", 'Pooled compute: local AI the members run together', "A Pi per room, each feeding the night's guide", 'Who hosts, and how, is decided together']}},
   {name: 'Chathackers', role: 'Agents in group chats', col: '#7A4FB5', card: {tag: 'Agents in group chats', title: 'Chathackers', body: "Bots and agents that live in a community's chats and help it.", list: ['Like the bot that welcomes your claim with a proverb', 'Help in the chat, without taking the chat away']}},
   {name: 'Culture Vault', role: 'Culture, kept', col: '#9C3D54', card: {tag: 'Culture, kept', title: 'Culture Vault', body: 'A curated vault for culture, from physical to digital.', list: ['Works and their provenance kept on Arweave and Ethereum', "Where a community's guides, art and editions can live"]}},
   {name: 'Internet Archive', role: 'The record, kept', col: '#5B6B7A', card: {tag: 'The record, kept', title: 'Internet Archive', body: 'A library of the web and of what people make, kept for anyone to look back on.', list: ['Each night of the guide keeps its own page; the Archive keeps the long memory', 'One of the nights: the guide opens a page there too']}}];
 const oppOn = new Set();
 function oppDraw() {
-  const s = $('#opp'), cx = 530, cy = 318, R = 188; s.innerHTML = '';
-  const at = i => { const a = -Math.PI / 2 + i * 2 * Math.PI / OPP.length; return [cx + R * 1.45 * Math.cos(a), cy + R * Math.sin(a)]; };
+  const s = $('#opp'), cx = 530, cy = 300, R = 182; s.innerHTML = '';
+  const at = i => { const a = -Math.PI / 2 + (i + .5) * 2 * Math.PI / OPP.length; return [cx + R * 1.62 * Math.cos(a), cy + R * Math.sin(a)]; };
   // threads: each project to the community, and around the ring
   OPP.forEach((o, i) => { const [x, y] = at(i), [x2, y2] = at((i + 1) % OPP.length), on = oppOn.has(i);
     s.append(el('line', {x1: x, y1: y, x2: cx, y2: cy, stroke: on ? o.col : '#8f8c84', 'stroke-width': on ? 2.5 : 1.2, 'stroke-dasharray': on ? '' : '4 7', opacity: on ? .9 : .6}));
@@ -920,7 +858,7 @@ function oppDraw() {
     g.append(el('circle', {cx: x, cy: y, r: 6, fill: on ? '#F6F1E6' : o.col}));
     const ty = y + dy * (up ? 48 : 52);
     if (o.pre) g.append(el('text', {x, y: ty + (up ? -26 : 0), 'text-anchor': 'middle', 'font-size': 13, 'font-weight': 700, fill: on ? o.col : '#8f8c84'}, o.pre.toUpperCase()));
-    const t = el('text', {x, y: ty + (o.pre && !up ? 26 : 0), 'text-anchor': 'middle', 'font-size': 26, fill: on ? o.col : C.ink}); t.style.fontFamily = 'var(--head)'; t.textContent = o.name.toUpperCase(); g.append(t);
+    const t = el('text', {x, y: ty + (o.pre && !up ? 26 : 0), 'text-anchor': 'middle', 'font-size': 23, fill: on ? o.col : C.ink}); t.style.fontFamily = 'var(--head)'; t.textContent = o.name.toUpperCase(); g.append(t);
     g.append(el('text', {x, y: ty + (o.pre && !up ? 26 : 0) + (up ? -28 : 22), 'text-anchor': 'middle', 'font-size': 13, 'font-weight': 700, fill: '#6B665C'}, o.role.toUpperCase()));
     g.onclick = () => { const was = oppOn.size; oppOn.add(i); oppDraw(); oppCard(was === OPP.length - 1 && oppOn.size === OPP.length ? -1 : i); }; s.append(g); });
 }

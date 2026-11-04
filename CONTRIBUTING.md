@@ -18,13 +18,13 @@ below; no build step.
 
 | Project | Where it appears | What to search for |
 |---|---|---|
-| **Bonfires** | *Many projects, one community* (the ring card) · *Towels and embassies* (the network map) · *Three different graphs* (the knowledge row) · *How the pieces fit* | `{name: 'Bonfires'` · `['Bonfires', 1,` · `const GR =` · `const BUILT =` |
-| **Chathackers** | the ring card · the network map · *Four principles* (the Chat first card) · *How the pieces fit* | `{name: 'Chathackers'` · `['Chathackers', 1,` · `{name: 'Chat', card:` · `const BUILT =` |
-| **The local co-op** | the ring card · the network map · *Four principles* (the Local first card) · *How the pieces fit* | `{name: 'The local co-op'` · `['The local co-op', 1,` · `{name: 'Local', card:` · `const BUILT =` |
+| **Bonfires** | *A community and their towels* (the ring card) · *Three different graphs* (the knowledge row) · *How the pieces fit* | `{name: 'Bonfires'` · `const GR =` · `const BUILT =` |
+| **Chathackers** | the ring card · *Four principles* (the Chat first card) · *How the pieces fit* | `{name: 'Chathackers'` · `{name: 'Chat', card:` · `const BUILT =` |
+| **The local co-op** | the ring card · *Four principles* (the Local first card) · *How the pieces fit* | `{name: 'The local co-op'` · `{name: 'Local', card:` · `const BUILT =` |
 | **Field Guide** | *Every place unlocks the next chapter* · *What a community owns first* · *Connected cities* (the guide walked through the city) · *How the pieces fit* | `data-sec="Field Guide"` · `data-sec="The guide"` · `WALK_TXT = [` · `const BUILT =` |
-| **First Person project** | the network map · *The hitchhiker mage* (the higher network) | `['First Person network', 2,` · `const HIGHER =` |
+| **First Person project** | *A community and their towels* (the OpenVTC card) · *The hitchhiker mage* (the higher network) | `The First Person network:` · `const HIGHER =` |
 | **Internet Identity Workshop** | its night on the chain (`/iiw43`) · the IIW path's cover and *Over to you* questions | `iiw43:` in `site/src/worker.js` · `data-sec="Cover"` · `data-sec="Discussion"` |
-| **Internet Archive** | the ring card · the network map · its night on the chain (`/archive`), the same night as Newspeak House · *Don't panic: tonight, a new page* (the genesis scene that opens each night) | `{name: 'Internet Archive'` · `['Internet Archive', 2,` · `archive:` in `site/src/worker.js` · `data-sec="Genesis"` |
+| **Internet Archive** | the ring card · its night on the chain (`/archive`), the same night as Newspeak House · *Don't panic: tonight, a new page* (the genesis scene that opens each night) | `{name: 'Internet Archive'` · `archive:` in `site/src/worker.js` · `data-sec="Genesis"` |
 
 Each entry is a few short fields: a name, a role in a few words, one or two sentences, and sometimes a short list.
 The speaker notes (`<aside class="notes">`) are where longer context and sources go.
