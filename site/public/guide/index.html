@@ -764,7 +764,7 @@ ct(0);
 // [name, column (0 personal device · 1 local node · 2 hosted), y, type, one line, what it is]
 // types: human = human-first community · agent = agent-first community · spec = specialist trust agent · own = personal VTA
 const NET = [
-  ['Keyring', 0, 120, 'own', 'your phone', 'A phone app (Harvard\'s Berkman Klein Center) that drives your trust agent, hosted for you (VTA Farm) or self-run.'],
+  ['Keyring', 0, 120, 'own', 'your phone', 'A phone app that drives your trust agent, hosted for you (VTA Farm) or self-run.'],
   ['Star Key', 0, 250, 'own', 'your browser', 'A browser extension: join a community by DID (paste, QR or camera) and bring your own terms (MyTerms).'],
   ['Local AI', 0, 380, 'spec', 'your own machine', 'A model on your own machine that answers from the guides you hold; the data never leaves.'],
   ['The Hitchhikers', 1, 120, 'human', 'human first', 'Guides and guidance, the timebank and the local exchange: a human-first embassy. Its node kit is built; it has not yet run on a real Pi.'],
@@ -857,7 +857,7 @@ async function seal() { pub = await sha($('#run').textContent.trim()); $('#root-
 $('#run').addEventListener('input', sealDraw); sealDraw();
 
 /* ---------- 10 what exists ---------- */
-const BUILT = [['The Hitchhikers', "Guides and guidance, the timebank and the local exchange; towels and Don't Panic: a narrative people want to join", 'guides'], ['OpenVTC', 'The trust layer, from the DTG working group: communities, members, credentials', 'trust graphs'], ['Mages City', 'agentprivacy: open autoresearch and agentic privacy; agents with checkable work, travelling as hitchhiker mages', 'autoresearch'], ['Bonfires', "Turns a group chat's conversation into a shared knowledge graph", 'knowledge'], ['The local co-op', 'Members co-own the nodes, with local AI on them; embassies host, personal machines visit', 'ownership'], ['Chathackers', "Agents that live in a community's group chats and help it", 'chat agents'], ['Field Guide', 'Where guides are created and played, in real places', 'field guides'], ['Keyring · Star Key', 'Your agent from your phone (Keyring, from Harvard\'s Berkman Klein Center, with a hosted trust agent) and in your browser (Star Key): join a community by DID, bring your own terms', 'your agent']];
+const BUILT = [['The Hitchhikers', "Guides and guidance, the timebank and the local exchange; towels and Don't Panic: a narrative people want to join", 'guides'], ['OpenVTC', 'The trust layer, from the DTG working group: communities, members, credentials', 'trust graphs'], ['Mages City', 'agentprivacy: open autoresearch and agentic privacy; agents with checkable work, travelling as hitchhiker mages', 'autoresearch'], ['Bonfires', "Turns a group chat's conversation into a shared knowledge graph", 'knowledge'], ['The local co-op', 'Members co-own the nodes, with local AI on them; embassies host, personal machines visit', 'ownership'], ['Chathackers', "Agents that live in a community's group chats and help it", 'chat agents'], ['Field Guide', 'Where guides are created and played, in real places', 'field guides'], ['Keyring · Star Key', 'Your agent from your phone (Keyring, with a hosted trust agent) and in your browser (Star Key): join a community by DID, bring your own terms', 'your agent']];
 let bSel = -1;
 function builtDraw() {
   const s = $('#built'); s.innerHTML = '';
@@ -992,7 +992,7 @@ cityDraw();
 
 /* ---------- three kinds of node ---------- */
 const KINDS = [
-  ['Your device', 'Holds you', 'Your keys and your agent: the verifiable trust agent the Hitchhikers call the Towel. On a phone, Keyring (from Harvard\'s Berkman Klein Center) drives a trust agent hosted for you or self-run.', 'phone'],
+  ['Your device', 'Holds you', 'Your keys and your agent: the verifiable trust agent the Hitchhikers call the Towel. On a phone, Keyring drives a trust agent hosted for you or self-run.', 'phone'],
   ['Community node', 'Holds the community', 'A Pi or any small machine running OpenVTC for one community, its guides, and a local AI model that answers from them. The graph\'s edges live here.', 'pi'],
   ['Embassy', 'Holds the meeting place', 'The stronger node: trusted to receive visitors from many communities, witness what happens and countersign it. Personal machines visit; embassies host.', 'embassy']];
 const KIND_LIST = [['Keyring on your phone, Star Key in your browser', 'Keys never leave it; your agent joins communities by DID', 'Your own story, shared only by choice'],
@@ -1045,7 +1045,7 @@ visitDraw();
 /* ---------- the pathway: one Pi to a network ---------- */
 const PATH = [['A gate on one Pi', 'This site: a small node holds the door. Unplug it and no one can add to the graph.', 'built'],
   ['A community node', 'OpenVTC on a Raspberry Pi 5, built from source, keeping its own keys, with the community\'s guides and a local model beside it. The kit exists; the first Hitchhikers node is being stood up.', 'building'],
-  ['Every member\'s agent', 'Each member holds a verifiable trust agent (the Towel) and joins by DID: Keyring on your phone (from Harvard\'s Berkman Klein Center, with a hosted agent), Star Key in your browser.', 'built'],
+  ['Every member\'s agent', 'Each member holds a verifiable trust agent (the Towel) and joins by DID: Keyring on your phone (with a hosted agent), Star Key in your browser.', 'built'],
   ['Embassies', 'Pi-class nodes host; personal machines visit, closed by default. The first embassy and a signed visit are prototyped.', 'prototyped'],
   ['Witnessed seals', 'Embassies witness one another: sealed visits become credentials, shown as proofs without the edges.', 'designed'],
   ['Federation', 'Communities link through their embassies, proofs not people; cities grow from the districts up.', 'direction']];
@@ -1155,7 +1155,7 @@ fgDraw();
 
 /* ---------- openvtc and vti: the parts (live or in the spec) and a member's path ---------- */
 const OVP = [
-  ['Clients', 'openvtc (terminal) · Star Key (browser) · Keyring (phone)', 'live', 'How a member drives their agent. The openvtc TUI joins communities by DID; Star Key is a browser extension (Mitch\'s, with join by DID and MyTerms); Keyring is a phone app from Harvard\'s Berkman Klein Center that works with a hosted trust agent such as VTA Farm.'],
+  ['Clients', 'openvtc (terminal) · Star Key (browser) · Keyring (phone)', 'live', 'How a member drives their agent. The openvtc TUI joins communities by DID; Star Key is a browser extension (Mitch\'s, with join by DID and MyTerms); Keyring is a phone app that works with a hosted trust agent such as VTA Farm.'],
   ['VTC: the community', 'members, credentials, the gates', 'live', 'Manages a community of members, their credentials and the policies that gate them. It runs on top of a VTA; one VTA can host many communities. Live: Mages City, the First VTC (first.openvtc.net).'],
   ['VTA: the trust agent', 'keys, DIDs, access policies', 'live', 'Manages the keys, DIDs and access policies for one identity. A person, a community or an agent each has one. The Hitchhikers call theirs the Towel.'],
   ['Mediator', 'TSP and DIDComm relay', 'live', 'Members and communities never talk directly: messages go through a mediator, over the Trust Spanning Protocol (the default) or DIDComm v2.'],
