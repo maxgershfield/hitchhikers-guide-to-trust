@@ -9,12 +9,14 @@
 // /api/* call is handed to that node instead. The pages stay up here; when the node is unplugged, the gate is
 // closed and nothing can be submitted. Hosting the graph is what lets people in.
 
-const LIMIT = { title: 40, text: 160, by: 40 }, PER_MINUTE = 30, QUEUE_MAX = 500, GATE_TIMEOUT_MS = 4000, CHAIN_MAX = 20000;
+const LIMIT = { title: 40, text: 160, poem: 1500, by: 40 }, PER_MINUTE = 30, QUEUE_MAX = 500, GATE_TIMEOUT_MS = 4000, CHAIN_MAX = 20000;
 const VOICE_MAX_B64 = 480000, VOICES_MAX = 400; // ~45 s of opus per note, sealed; a few hundred notes per event
 const CORS = { 'access-control-allow-origin': '*', 'access-control-allow-headers': 'content-type, authorization', 'access-control-allow-methods': 'GET, POST, OPTIONS' };
 
 const json = (data, status = 200) => new Response(JSON.stringify(data), { status, headers: { 'content-type': 'application/json', 'cache-control': 'no-store', ...CORS } });
 const clean = (s, n) => String(s || '').replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, n);
+// a poem keeps its line breaks (at most one blank line between stanzas); everything else is cleaned as above
+const cleanLines = (s, n) => String(s || '').replace(/\r\n?/g, '\n').split('\n').map(l => clean(l, n)).join('\n').replace(/\n{3,}/g, '\n\n').trim().slice(0, n);
 const load = async (env, key) => (await env.PROVERBS.get(key, 'json')) || [];
 const save = (env, key, v) => env.PROVERBS.put(key, JSON.stringify(v));
 
@@ -46,6 +48,7 @@ function wikiPages(list, name) {
   const page = (title, paras) => { const story = paras.map(text => ({ type: 'paragraph', id: id(), text })); return { slug: slug(title), page: { title, story, journal: [{ type: 'create', item: { title, story }, date: Date.now() }] } }; };
   const live = list.filter(x => !x.hidden), credit = x => x.by ? ` (${x.by})` : '';
   return [page("Don't Panic", [`Proverbs left by visitors to ${name}.`, ...live.filter(x => x.kind === 'proverb').map(x => x.text + credit(x))])]
+    .concat(live.filter(x => x.kind === 'poem').length ? [page('Poems', [`Poems left by visitors to ${name}.`, ...live.filter(x => x.kind === 'poem').map(x => (x.title ? x.title + '\n\n' : '') + x.text + credit(x))])] : [])
     .concat(live.filter(x => x.kind === 'guide').map(x => page(x.title, [`A Hitchhiker guide, launched at ${name}.`, x.text + credit(x)])));
 }
 
@@ -79,7 +82,7 @@ const isDid = d => /^did:[a-z0-9]+:[A-Za-z0-9._:%-]{3,300}$/.test(String(d || ''
 // The OpenVTC community this guide leads into (Mages City by default): its daemon's public API and join page.
 const cityApi = env => (env.CITY_API || 'https://vtc.mages.city').replace(/\/$/, '');
 const MANIFEST = 'https://trusttasks.org/spec/vtc/join-requests/manifest/0.3';
-const isSealed = b => b && typeof b.iv === 'string' && typeof b.ct === 'string' && b.iv.length <= 24 && b.ct.length <= 2400 && /^[A-Za-z0-9+/=]+$/.test(b.iv + b.ct);
+const isSealed = (b, max = 2400) => b && typeof b.iv === 'string' && typeof b.ct === 'string' && b.iv.length <= 24 && b.ct.length <= max && /^[A-Za-z0-9+/=]+$/.test(b.iv + b.ct);
 async function push(chain, kind, content, mark, extra) {
   const at = new Date().toISOString(), prev = chain.length ? chain[chain.length - 1].hash : '0'.repeat(64), seq = chain.length;
   const leaf = await hex(JSON.stringify({ kind, content, at })), m = isMark(mark) ? mark : '';
@@ -104,7 +107,7 @@ async function addLink(env, ev, kind, content, mark, sealed, extra) {
   const chain = await chainOf(env); if (chain.length >= CHAIN_MAX) return null;
   if (ev && !gathered(chain, ev)) { const g = { event: ev, ...events(env)[ev] }; await push(chain, 'genesis', g, '', { event: ev, genesis: g }); } // the night opens
   const link = await push(chain, kind, content, mark, { event: ev, ...(extra || {}) });
-  if (isSealed(sealed)) link.sealed = { iv: sealed.iv, ct: sealed.ct }; // only its owner's key opens it
+  if (isSealed(sealed, kind === 'poem' ? 8000 : 2400)) link.sealed = { iv: sealed.iv, ct: sealed.ct }; // only its owner's key opens it
   await save(env, CK(env), chain);
   if (env.SCROLL_ORIGIN && env.ROOM_NAME && env.ROOM_KEY && !link.room) { // a room node: pass the star up to the scroll
     const up = fetch(env.SCROLL_ORIGIN.replace(/\/$/, '') + '/api/room/link', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + env.ROOM_KEY },
@@ -240,15 +243,15 @@ async function api(req, env, path, body) {
   }
 
   if (path === '/api/submit' && req.method === 'POST') {
-    const kind = body.kind === 'guide' ? 'guide' : 'proverb';
-    const title = clean(body.title, LIMIT.title), text = clean(body.text, LIMIT.text), by = clean(body.by, LIMIT.by);
+    const kind = body.kind === 'guide' ? 'guide' : body.kind === 'poem' ? 'poem' : 'proverb';
+    const title = clean(body.title, LIMIT.title), text = kind === 'poem' ? cleanLines(body.text, LIMIT.poem) : clean(body.text, LIMIT.text), by = clean(body.by, LIMIT.by);
     if (kind === 'guide' && title.length < 3) return json({ error: 'Give your guide a name.' }, 400);
-    if (text.length < 3) return json({ error: kind === 'guide' ? 'Write its first line.' : 'Write a proverb first.' }, 400);
+    if (text.length < 3) return json({ error: kind === 'guide' ? 'Write its first line.' : kind === 'poem' ? 'Write your poem first.' : 'Write a proverb first.' }, 400);
     if (await limited(env, req)) return json({ error: 'Slow down a moment, then try again.' }, 429);
     const queue = await load(env, Q);
     if (queue.length >= QUEUE_MAX) return json({ error: 'The keeper is catching up. Try again later.' }, 503);
     const place = kind === 'guide' ? clean(body.place, 60) : '', fm = !!body.fm;
-    queue.push({ id: Date.now() * 100 + Math.floor(Math.random() * 100), kind, title: kind === 'guide' ? title : '', text, by, place, fm, event: ev, at: new Date().toISOString() });
+    queue.push({ id: Date.now() * 100 + Math.floor(Math.random() * 100), kind, title: kind === 'proverb' ? '' : title, text, by, place, fm, event: ev, at: new Date().toISOString() });
     await save(env, Q, queue);
     const link = await addLink(env, ev, kind, { title, text, by, place }, body.mark, body.sealed, fm ? { fm: true } : null);
     return json({ ok: true, held: true, link });
@@ -317,7 +320,7 @@ async function api(req, env, path, body) {
     if (action === 'approve') {
       const i = queue.findIndex(x => x.id === id); if (i < 0) return json({ error: 'Not in the queue.' }, 404);
       const [x] = queue.splice(i, 1);
-      if (body.text) x.text = clean(body.text, LIMIT.text); if (body.title && x.kind === 'guide') x.title = clean(body.title, LIMIT.title);
+      if (body.text) x.text = x.kind === 'poem' ? cleanLines(body.text, LIMIT.poem) : clean(body.text, LIMIT.text); if (x.kind === 'poem' ? body.title !== undefined : body.title && x.kind === 'guide') x.title = clean(body.title, LIMIT.title);
       approved.push(x); await save(env, A, approved); await save(env, Q, queue);
       return json({ ok: true });
     }

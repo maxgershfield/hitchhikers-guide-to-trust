@@ -32,7 +32,7 @@ button.no{border-color:var(--red);color:var(--red)}
 <main>
   <div class="micro">The Hitchhiker's Guide to Trust · keeper <span id="host"></span></div>
   <h1>Keeper</h1>
-  <p>Proverbs and new guides wait here until you approve them. You can fix a typo or a guide's name first.</p>
+  <p>Proverbs, poems and new guides wait here until you approve them. You can fix a typo or a guide's name first.</p>
   <div id="login"><input id="key" type="password" placeholder="keeper key" autocomplete="current-password"><button class="go" onclick="login()">Open</button></div>
   <div class="micro" id="msg"></div>
   <h2>Waiting <span id="nq"></span></h2>
@@ -60,8 +60,8 @@ async function refresh() {
   try {
     const {queue, approved, host, nights} = await api('state'); NIGHTS = nights || {}; extras(); $('#msg').textContent = ''; $('#login').style.display = 'none'; $('#host').textContent = '· held by ' + host;
     $('#nq').textContent = `(${queue.length})`; $('#na').textContent = `(${approved.length})`;
-    $('#queue').innerHTML = queue.map(x => `<div class="row"><div><div class="kind">${x.kind === 'guide' ? 'new guide' : 'proverb'}${x.event ? ' · ' + esc(NIGHTS[x.event] || x.event) : ''}</div>${x.kind === 'guide' ? `<input id="tt${x.id}" value="${esc(x.title)}">` : ''}<textarea id="t${x.id}" rows="2">${esc(x.text)}</textarea><small>${x.by ? esc(x.by) + ' · ' : ''}${esc(x.at || '')}</small></div><div class="acts"><button class="go" onclick="act('approve',${x.id})">Approve</button><button class="no" onclick="act('reject',${x.id})">Reject</button></div></div>`).join('') || '<p class="micro">Nothing waiting.</p>';
-    $('#approved').innerHTML = approved.slice().reverse().map(x => `<div class="row ${x.hidden ? 'hidden' : ''}"><div><div class="kind">${x.kind === 'guide' ? 'guide' : 'proverb'}${x.event ? ' · ' + esc(NIGHTS[x.event] || x.event) : ''}${x.hidden ? ' · hidden' : ''}</div>${x.kind === 'guide' ? '<b>' + esc(x.title) + '</b>: ' : ''}${esc(x.text)}<small>${x.by ? esc(x.by) : ''}</small></div><div class="acts"><button onclick="act('${x.hidden ? 'show' : 'hide'}',${x.id})">${x.hidden ? 'Show' : 'Hide'}</button></div></div>`).join('') || '<p class="micro">Nothing approved yet.</p>';
+    $('#queue').innerHTML = queue.map(x => `<div class="row"><div><div class="kind">${{guide: 'new guide', poem: 'poem'}[x.kind] || 'proverb'}${x.event ? ' · ' + esc(NIGHTS[x.event] || x.event) : ''}</div>${x.kind === 'guide' || x.kind === 'poem' ? `<input id="tt${x.id}" value="${esc(x.title || '')}" placeholder="${x.kind === 'poem' ? 'title (optional)' : ''}">` : ''}<textarea id="t${x.id}" rows="${x.kind === 'poem' ? 10 : 2}">${esc(x.text)}</textarea><small>${x.by ? esc(x.by) + ' · ' : ''}${esc(x.at || '')}</small></div><div class="acts"><button class="go" onclick="act('approve',${x.id})">Approve</button><button class="no" onclick="act('reject',${x.id})">Reject</button></div></div>`).join('') || '<p class="micro">Nothing waiting.</p>';
+    $('#approved').innerHTML = approved.slice().reverse().map(x => `<div class="row ${x.hidden ? 'hidden' : ''}"><div><div class="kind">${{guide: 'guide', poem: 'poem'}[x.kind] || 'proverb'}${x.event ? ' · ' + esc(NIGHTS[x.event] || x.event) : ''}${x.hidden ? ' · hidden' : ''}</div>${x.kind === 'guide' ? '<b>' + esc(x.title) + '</b>: ' : ''}${x.kind === 'poem' ? `<div style="white-space:pre-line">${x.title ? '<b>' + esc(x.title) + '</b>\n' : ''}${esc(x.text)}</div>` : esc(x.text)}<small>${x.by ? esc(x.by) : ''}</small></div><div class="acts"><button onclick="act('${x.hidden ? 'show' : 'hide'}',${x.id})">${x.hidden ? 'Show' : 'Hide'}</button></div></div>`).join('') || '<p class="micro">Nothing approved yet.</p>';
   } catch (e) { $('#msg').textContent = 'Could not open: ' + e.message; $('#login').style.display = 'flex'; }
 }
 async function act(action, id) {

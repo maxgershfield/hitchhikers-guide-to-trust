@@ -78,6 +78,7 @@ It's off by default: on the day of a talk you may prefer to choose when the room
 | logs | `journalctl -u trust-guide -n 50` (tunnel: `-u trust-guide-tunnel`) |
 | restart | `sudo systemctl restart trust-guide` |
 | keeper key | `~/trust-data/keeper-key.txt` (keeper page: `https://<domain>/keeper`) |
+| backups | a dated copy of the chain every night at 03:30 in `~/trust-data/backups/` (last 30 kept): `pi/backup.sh --list`, or `pi/backup.sh` for one now. `install.sh` sets the timer up; on a Pi installed before it existed, run `~/trust/site/pi/backup.sh --install` once. The copies share the card with the chain, so now and then `scp` one to another machine, and keep them private: they hold everyone's sealed stars and voice notes. |
 | back up the chain | copy `~/trust-data/store.json` while the server runs |
 
 ## Rooms: Pis feeding the aggregate

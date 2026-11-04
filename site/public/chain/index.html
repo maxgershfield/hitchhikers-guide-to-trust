@@ -144,7 +144,7 @@ drawQR(); if (SCREEN) setInterval(drawQR, 30000);
 /* ---------- the chain ---------- */
 let links = [], head = null, born = new Map();
 let MINE = new Set(window.DP ? DP.mine() : []); let MY_MARK = null;
-const COLOR = {witness: [255, 160, 90], meet: [255, 120, 190], thumb: [246, 241, 230], proverb: [142, 164, 255], guide: [31, 75, 255], chat: [255, 255, 255], claim: [232, 200, 115], voice: [120, 220, 190], genesis: [255, 214, 120]};
+const COLOR = {witness: [255, 160, 90], meet: [255, 120, 190], thumb: [246, 241, 230], proverb: [142, 164, 255], poem: [196, 150, 255], guide: [31, 75, 255], chat: [255, 255, 255], claim: [232, 200, 115], voice: [120, 220, 190], genesis: [255, 214, 120]};
 const KIND = l => (l.kind === 'witness' ? 'witnessed in the room' + (l.place ? ' · ' + l.place : '') : l.kind === 'meet' ? 'a meeting · two yeses' : l.kind === 'claim' ? (l.did ? 'claimed with a DID' : 'claimed in the group chat') : l.kind === 'voice' ? 'voice note' + (l.secs ? ' · ' + l.secs + ' s' : '') : l.kind === 'genesis' ? (l.genesis && l.genesis.event ? 'a night opens · ' + shortNight(l.genesis.name) : 'genesis · ' + ((l.genesis || {}).name || 'the guide begins')) : l.kind) + (l.event && l.kind !== 'genesis' && NIGHTS[l.event] ? ' · ' + shortNight(NIGHTS[l.event].name) : '');
 // a person's evidence root: their stars (same mark), chained in order
 const ROOTS = new Map();
@@ -261,7 +261,7 @@ function frame(now) {
   if (hot) { g.lineWidth = 1.4 * D; g.strokeStyle = 'rgba(232,200,115,.85)'; g.beginPath(); [HOT - 1, HOT + 1].forEach(j => { if (j >= 0 && j < Q.length) { g.moveTo(Q[HOT].x, Q[HOT].y); g.lineTo(Q[j].x, Q[j].y); } });
     sameMark.forEach(j => { if (j !== HOT) { g.moveTo(Q[HOT].x, Q[HOT].y); g.lineTo(Q[j].x, Q[j].y); } }); g.stroke(); }
   links.map((l, i) => i).sort((a, b) => Q[b].z - Q[a].z).forEach(i => { const l = links[i], q = Q[i], c = COLOR[l.kind] || COLOR.chat, fresh = Math.max(0, 1 - (now - (born.get(l.hash) || 0)) / 4000);
-    const depth = .55 + .45 * Math.max(0, Math.min(1, .62 - q.z * .3)), lit = sameMark.has(i) || MINE.has(l.hash), near = 1 / (1 + q.z * .18), r = (l.kind === 'genesis' ? 9 : l.kind === 'guide' ? 7 : l.kind === 'voice' ? 6 : l.kind === 'claim' ? 6.2 : l.kind === 'proverb' ? 5.6 : 4.4) * D * near * (1 + 1.6 * fresh);
+    const depth = .55 + .45 * Math.max(0, Math.min(1, .62 - q.z * .3)), lit = sameMark.has(i) || MINE.has(l.hash), near = 1 / (1 + q.z * .18), r = (l.kind === 'genesis' ? 9 : l.kind === 'guide' ? 7 : l.kind === 'voice' ? 6 : l.kind === 'claim' ? 6.2 : l.kind === 'proverb' || l.kind === 'poem' ? 5.6 : 4.4) * D * near * (1 + 1.6 * fresh);
     g.globalAlpha = FADE(l); { const gr = r * (fresh > 0 || lit ? 4.5 : 3.2), gl = g.createRadialGradient(q.x, q.y, 0, q.x, q.y, gr); gl.addColorStop(0, `rgba(${c},${(fresh > 0 || lit ? .38 : .2) * depth + .45 * fresh})`); gl.addColorStop(1, `rgba(${c},0)`); g.fillStyle = gl; g.beginPath(); g.arc(q.x, q.y, gr, 0, 6.283); g.fill(); }
     g.globalAlpha = (lit ? 1 : depth * .85) * FADE(l); g.fillStyle = sameMark.has(i) ? '#e8c873' : `rgb(${c})`; g.beginPath();
     if (l.kind === 'thumb' || l.kind === 'chat' || l.kind === 'witness') g.rect(q.x - r * .7, q.y - r * .7, r * 1.4, r * 1.4); else g.arc(q.x, q.y, r, 0, 6.283); g.fill(); g.globalAlpha = 1;

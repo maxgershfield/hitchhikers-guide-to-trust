@@ -21,6 +21,7 @@
 #   trust-guide.service            the server
 #   trust-guide-tunnel.service     the tunnel (--via tunnel), config in ~/.cloudflared/trust-guide.yml
 #   trust-guide-update.timer       the auto-update (--auto-update)
+#   trust-guide-backup.timer       a dated copy of the chain every night (~/trust-data/backups, last 30)
 set -euo pipefail
 
 DOMAIN='' VIA='' PORT=8788 BIND=127.0.0.1 NAME='' AUTO=0 DRY=0
@@ -33,7 +34,7 @@ while [ $# -gt 0 ]; do
     --name) NAME="$2"; shift 2 ;;
     --auto-update) AUTO=1; shift ;;
     --dry-run) DRY=1; shift ;;
-    -h|--help) sed -n '2,24p' "$0"; exit 0 ;;
+    -h|--help) sed -n '2,25p' "$0"; exit 0 ;;
     *) echo "unknown option: $1 (see --help)"; exit 2 ;;
   esac
 done
@@ -193,6 +194,7 @@ run sudo systemctl daemon-reload
 run sudo systemctl enable --now trust-guide
 [ "$VIA" = tunnel ] && run sudo systemctl enable --now trust-guide-tunnel
 [ "$AUTO" = 1 ] && run sudo systemctl enable --now trust-guide-update.timer
+if [ "$DRY" = 1 ]; then echo "  would run: $SITE/pi/backup.sh --install"; else "$SITE/pi/backup.sh" --install; fi
 
 if [ "$DRY" = 0 ]; then
   CHECK="http://127.0.0.1:$PORT/api/gate"; [ "$BIND" = 127.0.0.1 ] || CHECK="http://$BIND:$PORT/api/gate"
