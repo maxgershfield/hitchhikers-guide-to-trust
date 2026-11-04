@@ -618,10 +618,11 @@ const store = {get(k, d) { try { const v = localStorage.getItem('hgt2:' + k); re
 const scenes = $$('.scene'), stage = $('#stage'); let cur = 0;
 function settle(sc) { const h = sc.querySelector('h1'), b = sc.querySelector('.sub'); if (!h || !b) return; const want = h.offsetTop + h.offsetHeight + 16; if (b.offsetTop < want) b.style.top = want + 'px'; }
 const titleOf0 = x => (x.querySelector('h1') ? x.querySelector('h1').textContent.replace(/^\s*[\d]+[a-p]?\.\s*/, '') : x.dataset.sec);
-const PARTS = [['Start', 'Start'], ['HH', 'The Hitchhikers'], ['VTI', 'The implementation · VTI'], ['Discuss', 'Over to you'], ['Close', 'Close']].filter(([k]) => scenes.some(x => x.dataset.part === k));
+const PARTS = [['Start', 'Start'], ['HH', 'The Hitchhikers'], ['VTI', 'The implementation · VTI'], ['Discuss', 'Over to you'], ['Close', "Don't Panic"]].filter(([k]) => scenes.some(x => x.dataset.part === k));
 let t0 = null, paused = 0, pausedAt = null;
 $('#tabs').innerHTML = PARTS.map(([k, l]) => `<button class="tab" data-p="${k}">${l}</button>`).join('');
-$$('.tab').forEach(b => b.onclick = () => go(scenes.findIndex(x => x.dataset.part === b.dataset.p)));
+// the Don't Panic tab goes straight to the last page (thumbs up, proverb, launch a guide), not the steps before it
+$$('.tab').forEach(b => b.onclick = () => go(b.dataset.p === 'Close' && idxOf('Close') >= 0 ? idxOf('Close') : scenes.findIndex(x => x.dataset.part === b.dataset.p)));
 $('#overview').innerHTML = scenes.map((x, i) => `<div class="ov" data-i="${i}" style="${x.dataset.branch ? 'margin-left:18px;border-style:dashed' : ''}"><b>${x.dataset.branch ? '↳ ' + x.dataset.branch : ((PARTS.find(p => p[0] === x.dataset.part) || [0, x.dataset.part])[1])}</b>${titleOf0(x)}</div>`).join('');
 $$('.ov').forEach(o => o.onclick = () => { document.body.classList.remove('showov'); const t = scenes[+o.dataset.i]; if (t.dataset.branch) branch(t.dataset.sec, idxOf(t.dataset.branch)); else go(+o.dataset.i); });
 setInterval(() => { if (!t0) return; const now = pausedAt || Date.now(), q = Math.floor((now - t0 - paused) / 1000); $('#timer').textContent = String(Math.floor(q / 60)).padStart(2, '0') + ':' + String(q % 60).padStart(2, '0') + (pausedAt ? ' (paused)' : ''); }, 500);
