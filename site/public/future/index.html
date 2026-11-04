@@ -149,6 +149,20 @@ footer{
 .card .links{margin-top:8px;display:flex;flex-direction:column;gap:3px;font-size:12px}
 .card .soon{opacity:.55;font-size:12px}
 .participants .note{font-size:11px;margin-top:10px;opacity:.7;letter-spacing:.04em}
+/* ---- clearer map: light rooms, blue lines, one look for every floor ---- */
+.floor-label{display:flex;justify-content:space-between;align-items:baseline;background:#1037b9;color:#f6f1e5;padding:7px 14px}
+.floor-label span:last-child{font-weight:400;opacity:.8;text-transform:none;letter-spacing:.06em}
+.terrace{background:#e8edff;color:#1037b9;min-height:0;padding:16px 16px 60px;gap:10px 14px}
+.terrace .zone-name{color:#1037b9;grid-column:1}.terrace .tw{grid-column:2;align-self:center;text-align:right}
+.table{border:3px solid #1037b9;background:#fffef8;color:#1037b9;max-width:132px}
+.table .who{color:#1037b9}
+.table:hover{background:#fff}.table.lit{background:#1037b9;color:#f6f1e5}.table.lit .who{color:#f6f1e5}
+.desk{background:#1037b9;color:#f6f1e5;border:0}
+.kitchen,.upstairs{border-top:0}
+.room,.conference{background:#fffef8}
+.hosts{font-size:15px}
+.card .top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.card .logo{width:46px;height:46px;object-fit:contain;flex:none;border-radius:4px;background:#fff}
 </style>
 </head>
 <body>
@@ -169,9 +183,10 @@ footer{
   <section class="panel">
     <h2>01 / Venue map</h2>
     <div class="plan" aria-label="Newspeak House floor plan">
-      <div class="floor-label">Outside · Terrace</div>
+      <div class="floor-label"><span>Outside</span><span>the terrace</span></div>
       <div class="terrace" data-place="terrace" tabindex="0" role="button">
         <div class="zone-name">Terrace</div>
+        <div class="when tw">Intro 7:20 · Close 10:00</div>
         <div class="table" data-place="t1" tabindex="0" role="button">
           <span class="pin">T1</span>
           <span class="who">Chathackers / Field Guide</span>
@@ -183,7 +198,7 @@ footer{
         <div class="desk" data-place="desk" tabindex="0" role="button">Info desk</div>
       </div>
 
-      <div class="floor-label">Ground · Kitchen</div>
+      <div class="floor-label"><span>Ground floor</span><span>the kitchen</span></div>
       <div class="kitchen">
         <div class="room" data-place="sofa" tabindex="0" role="button">
           <div class="zone-name">Sofa room</div>
@@ -198,7 +213,7 @@ footer{
         </div>
       </div>
 
-      <div class="floor-label">Upstairs · Second floor</div>
+      <div class="floor-label"><span>Upstairs</span><span>second floor</span></div>
       <div class="upstairs">
         <div class="conference" data-place="conf" tabindex="0" role="button">
           <div class="zone-name">Conference</div>
@@ -224,15 +239,15 @@ footer{
         <span class="time">7:20</span>
         <div>
           <b>Introduction</b>
-          <p>Welcome, event overview, partner cloud and locations.</p>
+          <p>Welcome, and an introduction to the night.</p>
           <div class="where">Terrace (proposed)</div>
         </div>
       </div>
-      <div class="item" id="s-lightning" data-places="terrace sofa" data-start="19:30" data-end="20:00" tabindex="0" role="button">
+      <div class="item" id="s-lightning" data-places="terrace sofa" data-people="hitchhikers" data-start="19:30" data-end="20:00" tabindex="0" role="button">
         <span class="time">7:30</span>
         <div>
           <b>Hitchhiker's Lightning Talk</b>
-          <p>Short path through the Guide to Trust.</p>
+          <p>A short path through the Guide to Trust.</p>
           <div class="where">Terrace or Sofa room · TBC</div>
           <div class="go"><a href="/guide/?path=lightning&amp;event=newspeak">Follow the talk on your phone →</a></div>
         </div>
@@ -246,12 +261,12 @@ footer{
           <div class="go"><a href="/guide/?path=lightning&amp;at=Ceremonies&amp;event=newspeak">Record your pledge at T2 →</a><a href="#people">Who is hosting →</a></div>
         </div>
       </div>
-      <div class="item" id="s-close" data-places="terrace" data-start="22:00" data-end="22:30" tabindex="0" role="button">
+      <div class="item" id="s-close" data-places="terrace" data-people="hitchhikers newspeak" data-start="22:00" data-end="22:30" tabindex="0" role="button">
         <span class="time">10:00</span>
         <div>
           <b>Closing Ceremony</b>
-          <p>Bisey's poem.</p>
-          <div class="where">Terrace</div>
+          <p>Poetry reading.</p>
+          <div class="where">Terrace · the Hitchhikers and Newspeak House</div>
           <div class="go"><a href="/chain/?event=newspeak">See the night's star chain →</a></div>
         </div>
       </div>
@@ -285,31 +300,31 @@ const PLACES = {
 };
 // Links: only addresses we are sure of. Add the rest as they come in; an empty list shows "link to come".
 const PEOPLE = [
-  {name: 'The Hitchhikers', role: "The guide's community, and the Hitchhiker's Ceremony", place: 't2', links: [['hitchhikers.earth', 'https://hitchhikers.earth'], ['The Guide to Trust', '/']]},
-  {name: 'Field Guide', role: 'Real places, playable stories', place: 't1', links: [['fieldguide.earth', 'https://www.fieldguide.earth/']]},
-  {name: 'Chathackers', role: 'Chat-first tools for organisers, with Campaign Lab and Newspeak House', place: 't1', links: [['chathackers.uk', 'https://chathackers.uk/']]},
-  {name: 'Agent Privacy', role: 'Knowledge café in the sofa room', place: 'sofa', links: [['agentprivacy.ai', 'https://agentprivacy.ai']]},
-  {name: 'GLF', role: 'Knowledge café in the lab', place: 'lab', links: []},
-  {name: 'Bonfires', role: 'Knowledge graphs for communities, in the lab', place: 'lab', links: [['bonfires.ai', 'https://bonfires.ai']]},
-  {name: 'Aether', role: 'Knowledge café in the lab', place: 'lab', links: []},
-  {name: 'Newspeak House', role: "The host: London's home for political technology", place: 'terrace', links: [['newspeak.house', 'https://newspeak.house']]}
+  {id: 'hitchhikers', logo: 'hitchhikers.svg', name: 'The Hitchhikers', role: "The guide's community, and the Hitchhiker's Ceremony", place: 't2', links: [['hitchhikers.earth', 'https://hitchhikers.earth'], ['The Guide to Trust', '/']]},
+  {id: 'fieldguide', logo: 'fieldguide.png', name: 'Field Guide', role: 'Real places, playable stories', place: 't1', links: [['fieldguide.earth', 'https://www.fieldguide.earth/']]},
+  {id: 'chathackers', logo: 'chathackers.png', name: 'Chathackers', role: 'Chat-first tools for organisers, with Campaign Lab and Newspeak House', place: 't1', links: [['chathackers.uk', 'https://chathackers.uk/']]},
+  {id: 'agentprivacy', logo: 'agentprivacy.png', name: 'Agent Privacy', role: 'Knowledge café in the sofa room', place: 'sofa', links: [['agentprivacy.ai', 'https://agentprivacy.ai']]},
+  {id: 'glf', logo: '', name: 'GLF', role: 'Knowledge café in the lab', place: 'lab', links: []},
+  {id: 'bonfires', logo: 'bonfires.svg', name: 'Bonfires', role: 'Knowledge graphs for communities, in the lab', place: 'lab', links: [['bonfires.ai', 'https://bonfires.ai']]},
+  {id: 'aether', logo: '', name: 'Aether', role: 'Knowledge café in the lab', place: 'lab', links: []},
+  {id: 'newspeak', logo: 'newspeak.jpg', name: 'Newspeak House', role: "The host: London's home for political technology", place: 'terrace', links: [['newspeak.house', 'https://newspeak.house']]}
 ];
 const $ = q => document.querySelector(q), $$ = q => [...document.querySelectorAll(q)];
 const esc = t => String(t).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'})[c]);
 const ext = u => /^https?:/.test(u) ? ' target="_blank" rel="noopener"' : '';
-$('#cards').innerHTML = PEOPLE.map((p, i) => `<div class="card" data-at="${p.place}" tabindex="0" role="button"><span class="number">${String(i + 1).padStart(2, '0')}</span>
+$('#cards').innerHTML = PEOPLE.map((p, i) => `<div class="card" data-at="${p.place}" data-id="${p.id}" tabindex="0" role="button"><div class="top"><span class="number">${String(i + 1).padStart(2, '0')}</span>${p.logo ? `<img class="logo" src="logos/${p.logo}" alt="${esc(p.name)} logo" loading="lazy">` : ''}</div>
   <span class="name">${esc(p.name)}</span><p class="role">${esc(p.role)}</p>
   <div class="links">${p.links.length ? p.links.map(([t, u]) => `<a href="${esc(u)}"${ext(u)}>${esc(t)} ${ext(u) ? '↗' : '→'}</a>`).join('') : '<span class="soon">link to come</span>'}</div></div>`).join('');
 // the terrace holds its tables and the desk, so picking the terrace lights them too
 const INSIDE = {terrace: ['t1', 't2', 'desk']};
 let picked = '';
-function light(places, key, scroll) {
-  picked = key; const set = new Set(places); places.forEach(p => (INSIDE[p] || []).forEach(q => set.add(q)));
+function light(places, key, scroll, people) {
+  picked = key; const set = new Set(places); const sess = key.startsWith('s-'); if (!sess) places.forEach(p => (INSIDE[p] || []).forEach(q => set.add(q)));
   $$('[data-place]').forEach(e => e.classList.toggle('lit', set.has(e.dataset.place)));
   $$('.item').forEach(e => e.classList.toggle('lit', key.startsWith('s-') ? e.id === key : e.dataset.places.split(' ').some(p => set.has(p))));
-  $$('.card').forEach(e => e.classList.toggle('lit', set.has(e.dataset.at)));
-  const d = $('#detail'), P = places.length === 1 && PLACES[places[0]];
-  if (P) { const who = PEOPLE.filter(x => x.place === places[0]).map(x => x.name);
+  $$('.card').forEach(e => e.classList.toggle('lit', people ? people.includes(e.dataset.id) : set.has(e.dataset.at)));
+  const d = $('#detail'), P = !sess && PLACES[key];
+  if (P) { const who = PEOPLE.filter(x => x.place === key).map(x => x.name);
     d.innerHTML = `<b>${esc(P.name)}</b>${esc(P.floor)} · ${esc(P.what)}${who.length ? '<br>Here: ' + who.map(esc).join(', ') : ''}${P.go ? '<div class="go">' + P.go.map(([t, u]) => `<a href="${u}">${esc(t)} →</a>`).join('') + '</div>' : ''}`;
     d.classList.add('on'); } else d.classList.remove('on');
   history.replaceState(null, '', '#' + key);
@@ -320,12 +335,13 @@ const act = (el, f) => { el.addEventListener('click', e => { if (e.target.closes
   el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); f(); } }); };
 // a second tap on the same thing clears it
 $$('[data-place]').forEach(el => act(el, () => { const p = el.dataset.place; picked === p ? clear() : light([p], p, false); }));
-$$('.item').forEach(el => act(el, () => picked === el.id ? clear() : light(el.dataset.places.split(' '), el.id, true)));
+const who = el => el.dataset.people ? el.dataset.people.split(' ') : null;
+$$('.item').forEach(el => act(el, () => picked === el.id ? clear() : light(el.dataset.places.split(' '), el.id, true, who(el))));
 $$('.card').forEach(el => act(el, () => { const p = el.dataset.at; picked === p ? clear() : light([p], p, true); }));
 document.addEventListener('keydown', e => { if (e.key === 'Escape') clear(); });
 // a link to #t2, #lab, #s-cafes ... opens with it lit
 { const h = decodeURIComponent(location.hash.slice(1)), it = h.startsWith('s-') && document.getElementById(h);
-  if (PLACES[h]) light([h], h, false); else if (it) light(it.dataset.places.split(' '), h, false); }
+  if (PLACES[h]) light([h], h, false); else if (it) light(it.dataset.places.split(' '), h, false, who(it)); }
 // on the night (London time): mark what is on now, and fade what has finished
 function now() { const f = new Intl.DateTimeFormat('en-GB', {timeZone: 'Europe/London', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23'}).formatToParts(new Date()), g = t => f.find(x => x.type === t).value;
   if (`${g('year')}-${g('month')}-${g('day')}` !== '2026-11-05') return;
