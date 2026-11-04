@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Event Map and Timetable · Newspeak House · Hitchhiker's Guide to Trust</title>
+<meta name="description" content="Venue map and timetable for Who Owns the Future? at Newspeak House, London, 5 Nov 2026.">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700;800;900&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{
+  min-height:100%;
+  color:#092caa;
+  font-family:'IBM Plex Mono',monospace;
+  background:#f6f1e5;
+  background-image:radial-gradient(#1639b014 .7px,transparent .7px);
+  background-size:5px 5px;
+  padding:28px 24px 64px;
+}
+h1,h2,h3,.time,.zone-name,.pin{
+  font-family:'Barlow Condensed',Impact,sans-serif;
+  font-weight:900;text-transform:uppercase;
+}
+.wrap{max-width:1180px;margin:0 auto}
+header{
+  display:grid;grid-template-columns:1fr auto;gap:16px 24px;
+  align-items:end;border-bottom:3px dotted #234bc1;padding-bottom:18px;margin-bottom:28px;
+}
+.eyebrow{font-size:13px;letter-spacing:.18em;font-weight:600;margin-bottom:8px}
+h1{font-size:clamp(42px,7vw,72px);letter-spacing:-.5px;line-height:.95}
+.meta{text-align:right;font-size:13px;letter-spacing:.12em;line-height:1.7}
+.meta a{color:inherit;text-decoration:none;border-bottom:1px dotted currentColor}
+.grid{display:grid;grid-template-columns:1.15fr .85fr;gap:32px;align-items:start}
+@media (max-width:900px){.grid{grid-template-columns:1fr}header{grid-template-columns:1fr}.meta{text-align:left}}
+.panel>h2{font-size:clamp(28px,4vw,36px);border-bottom:2px dotted #2045b8;margin-bottom:16px;line-height:1.1}
+
+/* Floor plan: read top → bottom as outdoor → kitchen → upstairs */
+.plan{
+  border:3px solid #1037b9;
+  background:#fffef8;
+  display:grid;
+  grid-template-rows:auto auto auto;
+  gap:0;
+}
+.floor-label{
+  font-size:12px;letter-spacing:.16em;font-weight:600;
+  padding:8px 12px;background:#1037b9;color:#f6f1e5;
+}
+.terrace{
+  min-height:180px;padding:16px;background:#1037b9;color:#f6f1e5;
+  display:grid;grid-template-columns:1fr 1fr;gap:14px;position:relative;
+}
+.terrace .zone-name{grid-column:1/-1;font-size:28px;letter-spacing:1px}
+.table{
+  border:3px solid #f6f1e5;border-radius:50%;aspect-ratio:1;
+  max-width:120px;margin:0 auto;width:100%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:10px;
+}
+.table .pin{font-size:36px;line-height:1}
+.table .who{font-size:12px;line-height:1.35;font-weight:600;margin-top:4px;max-width:9em}
+.desk{
+  position:absolute;right:14px;bottom:14px;
+  background:#f6f1e5;color:#1037b9;padding:6px 12px;font-weight:700;font-size:12px;letter-spacing:.08em;
+}
+.kitchen{
+  display:grid;grid-template-columns:1fr 1fr;min-height:220px;
+  border-top:3px solid #1037b9;
+}
+.room{
+  padding:16px;border-right:3px solid #1037b9;position:relative;
+  display:flex;flex-direction:column;gap:8px;
+}
+.room:last-child{border-right:0}
+.zone-name{font-size:28px;letter-spacing:1px;color:#1037b9}
+.when{font-size:12px;font-weight:700;letter-spacing:.08em;color:#1037b9;opacity:.8}
+.hosts{font-size:14px;line-height:1.55;font-weight:600;margin-top:auto}
+.fixture{
+  margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;
+}
+.fixture span{
+  border:2px solid #1037b9;padding:4px 8px;font-size:11px;font-weight:700;letter-spacing:.06em;
+}
+.upstairs{
+  border-top:3px solid #1037b9;
+  display:grid;grid-template-columns:1fr auto;min-height:110px;
+}
+.conference{padding:16px;display:flex;flex-direction:column;justify-content:center;gap:6px}
+.stairs{
+  writing-mode:vertical-rl;transform:rotate(180deg);
+  border-left:3px solid #1037b9;padding:12px 10px;
+  font:700 18px 'Barlow Condensed',Impact,sans-serif;letter-spacing:.12em;
+  background:repeating-linear-gradient(90deg,#f6f1e5 0 10px,#d7e0ff 10px 14px);
+  color:#1037b9;
+}
+.key{
+  margin-top:14px;padding-top:12px;border-top:2px dotted #1037b9;
+  display:grid;gap:6px;font-size:13px;line-height:1.5;
+}
+.key b{display:inline-block;min-width:5.5em;font:800 18px 'Barlow Condensed',Impact,sans-serif}
+
+.agenda{border:2px solid #1037b9;background:#fffef8}
+.item{
+  display:grid;grid-template-columns:88px 1fr;gap:14px;
+  padding:14px 14px;border-bottom:1px dotted #6682d0;
+}
+.item:last-child{border-bottom:0}
+.time{
+  background:#1037b9;color:#f6f1e5;text-align:center;padding:8px 4px;
+  font-size:26px;line-height:1;align-self:start;
+}
+.item b{display:block;font:800 24px 'Barlow Condensed',Impact,sans-serif;letter-spacing:.02em;margin-bottom:4px}
+.item p{font-size:13px;line-height:1.5}
+.item .where{margin-top:6px;font-size:12px;font-weight:700;letter-spacing:.06em;color:#1037b9}
+
+.participants{margin-top:28px}
+.participants h2{font-size:clamp(28px,4vw,36px);border-bottom:2px dotted #1037b9;margin-bottom:14px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media (max-width:600px){.cards{grid-template-columns:1fr 1fr}.kitchen{grid-template-columns:1fr}.room{border-right:0;border-bottom:3px solid #1037b9}.room:last-child{border-bottom:0}}
+.card{border:2px solid #1037b9;padding:12px;min-height:100px;background:#fffef8}
+.card .number{font:900 28px 'Barlow Condensed',Impact,sans-serif;opacity:.35}
+.card p{font-size:12px;margin-top:8px;font-weight:600;line-height:1.4}
+
+footer{
+  margin-top:36px;padding-top:12px;border-top:2px dotted #1037b9;
+  display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  font-size:11px;letter-spacing:.14em;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div>
+    <div class="eyebrow">// Newspeak House · Hitchhiker's Guide to the Galaxy</div>
+    <h1>Event Map and Timetable</h1>
+  </div>
+  <div class="meta">
+    London / 05 Nov 2026<br>
+    <a href="/?event=newspeak">← guide</a> · <a href="/chain/?event=newspeak">chain</a>
+  </div>
+</header>
+
+<div class="grid">
+  <section class="panel">
+    <h2>01 / Venue map</h2>
+    <div class="plan" aria-label="Newspeak House floor plan">
+      <div class="floor-label">Outside · Terrace</div>
+      <div class="terrace">
+        <div class="zone-name">Terrace</div>
+        <div class="table">
+          <span class="pin">T1</span>
+          <span class="who">Chathackers / Field Guide</span>
+        </div>
+        <div class="table">
+          <span class="pin">T2</span>
+          <span class="who">Hitchhiker's Ceremony</span>
+        </div>
+        <div class="desk">Info desk</div>
+      </div>
+
+      <div class="floor-label">Ground · Kitchen</div>
+      <div class="kitchen">
+        <div class="room">
+          <div class="zone-name">Sofa room</div>
+          <div class="when">Knowledge café · 8:00</div>
+          <div class="hosts">Agent Privacy</div>
+          <div class="fixture"><span>Sofas</span><span>Screen</span></div>
+        </div>
+        <div class="room">
+          <div class="zone-name">Lab</div>
+          <div class="when">Knowledge café · 8:00</div>
+          <div class="hosts">GLF<br>Bonfires<br>Aether</div>
+        </div>
+      </div>
+
+      <div class="floor-label">Upstairs · Second floor</div>
+      <div class="upstairs">
+        <div class="conference">
+          <div class="zone-name">Conference</div>
+          <div class="hosts">Quiet / overflow · via stairs</div>
+        </div>
+        <div class="stairs" aria-hidden="true">Stairs</div>
+      </div>
+    </div>
+
+    <div class="key">
+      <div><b>T1</b> Chathackers / Field Guide · terrace table</div>
+      <div><b>T2</b> Hitchhiker's Ceremony · terrace table</div>
+      <div><b>Sofa</b> Agent Privacy · kitchen</div>
+      <div><b>Lab</b> GLF / Bonfires / Aether · kitchen</div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>02 / Timetable</h2>
+    <div class="agenda">
+      <div class="item">
+        <span class="time">7:20</span>
+        <div>
+          <b>Introduction</b>
+          <p>Welcome, event overview, partner cloud and locations.</p>
+          <div class="where">Terrace (proposed)</div>
+        </div>
+      </div>
+      <div class="item">
+        <span class="time">7:30</span>
+        <div>
+          <b>Hitchhiker's Lightning Talk</b>
+          <p>Short path through the Guide to Trust.</p>
+          <div class="where">Terrace or Sofa room · TBC</div>
+        </div>
+      </div>
+      <div class="item">
+        <span class="time">8:00</span>
+        <div>
+          <b>Knowledge Cafés</b>
+          <p>Parallel discussions across the house.</p>
+          <div class="where">Lab · T1 · T2 · Sofa room</div>
+        </div>
+      </div>
+      <div class="item">
+        <span class="time">10:00</span>
+        <div>
+          <b>Closing Ceremony</b>
+          <p>Bisey's poem.</p>
+          <div class="where">Terrace</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="participants">
+      <h2>03 / Participants</h2>
+      <div class="cards">
+        <div class="card"><span class="number">01</span><p>Participant details<br>coming soon</p></div>
+        <div class="card"><span class="number">02</span><p>Participant details<br>coming soon</p></div>
+        <div class="card"><span class="number">03</span><p>Participant details<br>coming soon</p></div>
+        <div class="card"><span class="number">04</span><p>Participant details<br>coming soon</p></div>
+        <div class="card"><span class="number">05</span><p>Participant details<br>coming soon</p></div>
+        <div class="card"><span class="number">06</span><p>Participant details<br>coming soon</p></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <span>Real places / real people / better tomorrows</span>
+  <span>Explore / connect / build</span>
+</footer>
+
+</div>
+</body>
+</html>
