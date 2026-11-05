@@ -71,7 +71,7 @@ async function act(action, id) {
 async function extras() {
   try { const sc = await api('screen'); $('#screens').innerHTML = sc.nights.map(n => `<div class="row"><div><b>${esc(NIGHTS[n] || n)}</b><br><a href="/chain/?event=${n}#screen=${sc.key}" target="_blank">open the room screen →</a></div></div>`).join(''); } catch (e) {}
   try { const f = await api('fm'); $('#fm').innerHTML = (f.proverbs.map(x => `<div class="row"><div><div class="kind">proverb · ${esc(NIGHTS[x.event] || x.event || '')}</div>${esc(x.text)}${x.by ? ' · ' + esc(x.by) : ''}</div></div>`).join('')
-      + f.voices.map(v => `<div class="row"><div><div class="kind">voice note · ${v.secs} s · ${esc(NIGHTS[v.event] || v.event || '')}</div><button onclick="playFm('${v.id}', this)">▶ listen</button></div></div>`).join('')) || '<p class="micro">Nothing offered yet.</p>'; } catch (e) {}
+      + f.voices.map(v => `<div class="row"><div><div class="kind">voice note${v.as ? ' · ' + esc(v.as) : ''} · ${v.secs} s · ${esc(NIGHTS[v.event] || v.event || '')}</div><button onclick="playFm('${v.id}', this)">▶ listen</button></div></div>`).join('')) || '<p class="micro">Nothing offered yet.</p>'; } catch (e) {}
 }
 async function playFm(id, b) { try { const v = await api('fmvoice', {id}); const a = new Audio('data:' + v.type + ';base64,' + v.b64); a.play(); b.textContent = '▶ playing'; } catch (e) { b.textContent = 'could not play'; } }
 async function exportDrafts() { try { const d = await api('drafts'); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(d, null, 1)], {type: 'application/json'})); a.download = 'field-guide-drafts.json'; a.click(); } catch (e) { $('#msg').textContent = e.message; } }

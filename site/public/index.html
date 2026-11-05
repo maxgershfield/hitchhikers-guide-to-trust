@@ -60,8 +60,9 @@ footer a{color:var(--pale)}
     <a class="door" href="https://www.fieldguide.earth/" target="_blank" rel="noopener"><div class="micro">With Field Guide</div><h2>Play a <span>Guide</span></h2><p>Real places, playable stories: every place unlocks the next chapter. Discover, download, play, return. ↗</p></a>
     <a class="door" href="notes"><div class="micro">How it works</div><h2>Work <span>notes</span></h2><p>The technical side, written down plainly: OpenVTC, community nodes, Trust Tasks, guides, and what happens to what you send.</p></a>
     <a class="door" href="future/"><div class="micro">Newspeak House · 05 Nov 2026</div><h2>Event <span>map</span></h2><p>Venue map and tonight's agenda: terrace, lab, sofa room, knowledge cafés. Edit the page in the repo; the Pi pulls it live.</p></a>
+    <a class="door" href="over-to-you"><div class="micro">Questions for your table</div><h2>Over to <span>you</span></h2><p>Who owns the future? The questions to talk through tonight, and a one-button voice note for your answer: put a phone on the table and record it onto the Pi.</p></a>
   </div>
-  <div style="margin-top:34px;border-top:1px solid var(--line);padding-top:22px"><div class="micro" style="color:var(--pale);margin-bottom:12px">Start here: the first trust task</div><div data-prompt></div></div>
+  <div id="start" style="margin-top:34px;border-top:1px solid var(--line);padding-top:22px"><div class="micro" style="color:var(--pale);margin-bottom:12px">Start here: the first trust task</div><div data-prompt></div></div>
   <div class="gate micro" id="gate" style="display:none"></div>
   <footer class="micro">With the Hitchhikers and Field Guide · built on OpenVTC · <a href="notes">work notes</a> · hitchhikers.earth · mages.city</footer>
 </main>
@@ -75,7 +76,7 @@ footer a{color:var(--pale)}
   const others = d.events.filter(e => e.id !== me.id).map(e => `<a href="/${e.id}" style="color:inherit">${e.name} →</a>`).join(' · ');
   document.getElementById('tonight').innerHTML = `Tonight: <b>${me.name}</b>${me.note ? ', ' + me.note.charAt(0).toLowerCase() + me.note.slice(1) : ''}, a new page of the Hitchhikers' guide · ${d.stars} star${d.stars === 1 ? '' : 's'} across ${on.length || 1} night${on.length === 1 || !on.length ? '' : 's'} · <a href="chain/?event=${me.id}" style="color:inherit">see the chain →</a>${others ? '<br><span style="opacity:.7">Other nights: ' + others + '</span>' : ''}`;
   document.getElementById('ceremony').href = 'chain/?event=' + me.id; document.getElementById('begins').href += '&event=' + me.id;
-  document.querySelectorAll('a.door[href^="guide/"]').forEach(a => a.href += (a.href.includes('?') ? '&' : '?') + 'event=' + me.id);
+  document.querySelectorAll('a.door[href^="guide/"], a.door[href="over-to-you"]').forEach(a => a.href += (a.href.includes('?') ? '&' : '?') + 'event=' + me.id);
 } catch (e) {} })();
 </script>
 </body>
