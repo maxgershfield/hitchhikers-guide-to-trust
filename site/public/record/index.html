@@ -25,7 +25,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .own::placeholder{color:var(--muted);font-weight:400}
 .qbtns{display:flex;flex-wrap:wrap;gap:4px 18px;margin-top:4px}
 .qbtns button{background:none;border:0;padding:8px 0;color:var(--pale);min-height:38px}
-.stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:8px 0;min-height:calc(var(--size) + 74px)}
+.stage{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:8px 0;min-height:calc(var(--size) + 74px)}
 .rec{position:relative;width:var(--size);height:var(--size);border-radius:50%;border:0;padding:0;background:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
 .rec:focus-visible{outline:3px solid var(--pale);outline-offset:6px}
 .rec:disabled{cursor:default}
@@ -44,6 +44,16 @@ button{font:inherit;color:inherit;cursor:pointer}
 .say{font-family:var(--mono);font-size:14px;text-align:center;line-height:1.4;min-height:2.8em;margin:0;max-width:34em;overflow-wrap:anywhere}
 .say.ok{color:var(--ok)}.say.bad{color:var(--hot)}
 .say a{white-space:nowrap}
+.hidebtn{position:absolute;right:0;top:6px;min-height:44px;padding:8px 2px 8px 10px;background:none;border:0;color:var(--pale)}
+.hideme{position:fixed;inset:0;z-index:10;background:#0B0B0D;display:none;touch-action:manipulation}
+.hidden-mode .hideme{display:block}
+.hidden-mode{overflow:hidden}
+.field{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hstar{position:absolute;left:50%;top:50%;width:min(66vw,66vh);height:min(66vw,66vh);transform:translate(-50%,-50%);border:0;border-radius:50%;background:none;-webkit-tap-highlight-color:transparent}
+.hstar:focus-visible{outline:2px solid var(--pale);outline-offset:6px}
+.hsay{position:absolute;left:16px;right:16px;bottom:max(62px,calc(env(safe-area-inset-bottom) + 50px));text-align:center;color:var(--cream);font-family:var(--mono);font-size:13px;line-height:1.4;pointer-events:none;transition:opacity 1.2s}
+.hsay.live{color:var(--hot)}.hsay.ok{color:var(--ok)}.hsay.bad{color:var(--hot)}.hsay.fade{opacity:0}
+.hshow{position:absolute;right:8px;bottom:max(8px,env(safe-area-inset-bottom));min-width:64px;min-height:44px;background:none;border:0;color:var(--cream);opacity:.45}
 .drop{background:none;border:0;color:var(--muted);text-decoration:underline;padding:6px}
 .as{border-top:1px solid var(--line);padding:8px 0 10px}
 .as .micro{color:var(--muted);margin-bottom:6px}
@@ -67,7 +77,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 <script src="/questions.js"></script>
 </head>
 <body data-state="idle">
-<div class="top micro"><span id="night">The Hitchhiker's Guide to Trust</span><a id="more" href="/over-to-you/">All the questions →</a></div>
+<div class="top micro"><span id="night">The Hitchhiker's Guide to Trust</span><a id="more" href="/over-to-you/">All the questions →</a><a id="alone" href="/record/" target="_blank" rel="noopener" style="display:none">On its own ↗</a></div>
 
 <div class="ask">
   <div class="q" id="q"></div>
@@ -76,6 +86,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 </div>
 
 <div class="stage">
+  <button class="hidebtn micro" id="hideit" type="button" aria-label="Hide everything but the star">◐ Hide</button>
   <button class="rec" id="rec" type="button" aria-label="Record">
     <canvas class="sky" id="sky" width="400" height="400" aria-hidden="true"></canvas>
     <svg viewBox="0 0 100 100" aria-hidden="true"><circle class="track" cx="50" cy="50" r="48"/><circle class="ring" id="ring" cx="50" cy="50" r="48" pathLength="100" stroke-dasharray="0 100"/></svg>
@@ -98,6 +109,13 @@ button{font:inherit;color:inherit;cursor:pointer}
   <label class="fm"><input type="checkbox" id="fm"><span>Offer this note to Hitchhiker FM: the keeper can listen, and could play it on air.</span></label>
 </div>
 
+<div class="hideme" id="hideme">
+  <canvas class="field" id="field" aria-hidden="true"></canvas>
+  <button class="hstar" id="hstar" type="button" aria-label="Record"></button>
+  <div class="hsay" id="hsay" role="status" aria-live="polite"></div>
+  <button class="hshow micro" id="hshow" type="button" aria-label="Show the page again">Show</button>
+</div>
+
 <script>
 (function () {
   const MAX = 45, READY = 'Tap to record, up to ' + MAX + ' seconds. Tap again to stop and send.';
@@ -117,6 +135,7 @@ button{font:inherit;color:inherit;cursor:pointer}
   $('own').addEventListener('blur', () => { const v = $('own').value.trim(); store.set(v); mine = !!v; showQ(); });
   $('more').href = withEvent('/over-to-you/'); if (inGuide('dpQuestions')) $('more').onclick = e => { e.preventDefault(); window.parent.dpQuestions(); };
   showQ(); if (q.has('own')) editOwn();
+  if (EMBED) { $('alone').href = withEvent('/record/'); $('alone').style.display = ''; }
 
   // what kind of thing it is: one word, kept with the star
   let as = '';
@@ -136,9 +155,14 @@ button{font:inherit;color:inherit;cursor:pointer}
   let state = 'idle', rec = null, stream = null, started = 0, tick = null, blob = null, secs = 0, audio = null, raf = 0, stopping = false, sentAs = '';
   const CORE = {idle: 'Record', asking: 'Allow the mic', recording: '', sending: 'Sealing…', failed: 'Send again'};
   const LABEL = {idle: 'Record', asking: 'Waiting for the microphone', recording: 'Stop and send', sending: 'Sending', failed: 'Send again'};
-  const setState = s => { state = s; document.body.dataset.state = s; $('core').textContent = CORE[s]; $('rec').setAttribute('aria-label', LABEL[s]); $('rec').disabled = s === 'asking' || s === 'sending';
+  const setState = s => { state = s; document.body.dataset.state = s; $('core').textContent = CORE[s]; $('rec').setAttribute('aria-label', LABEL[s]); $('hstar').setAttribute('aria-label', LABEL[s]); $('hstar').disabled = s === 'asking' || s === 'sending'; $('rec').disabled = s === 'asking' || s === 'sending';
     $('drop').style.display = s === 'failed' ? '' : 'none'; if (s !== 'recording') $('ring').setAttribute('stroke-dasharray', '0 100'); };
-  const say = (html, cls) => { $('say').className = 'say' + (cls ? ' ' + cls : ''); $('say').innerHTML = html; };
+  const say = (html, cls) => { $('say').className = 'say' + (cls ? ' ' + cls : ''); $('say').innerHTML = html; hideSay(cls); };
+  // hide mode says as little as it can, but while it records it always says so, and that line never fades
+  let hsayT = 0;
+  const hideSay = cls => { const h = $('hsay'), rec = state === 'recording', plain = $('say').textContent.split(' · ').slice(0, rec ? 2 : 1).join(' · ').split('See the chain')[0];
+    h.textContent = state === 'idle' && !cls ? (plain.startsWith('Tap to record') ? 'Tap the star to record' : plain.split('. ')[0]) : plain; h.className = 'hsay' + (rec ? ' live' : cls ? ' ' + cls : '');
+    clearTimeout(hsayT); if (!rec && state !== 'sending' && state !== 'failed') hsayT = setTimeout(() => { if (state !== 'recording') h.classList.add('fade'); }, 4000); };
   const mmss = n => Math.floor(n / 60) + ':' + String(n % 60).padStart(2, '0');
 
   // while it records, the button is the Star: two interlocking tetrahedra floating among the stars, and your voice moves it
@@ -146,22 +170,49 @@ button{font:inherit;color:inherit;cursor:pointer}
   let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
   const dust = [...Array(110)].map(() => ({a: rnd() * 6.283, r: .3 + .7 * Math.sqrt(rnd()), s: rnd() * 1.6 + .5, o: .15 + .5 * rnd(), p: rnd() * 6.283}));
   const STILL = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let analyser = null, buf = null, level = 0, spin = 0;
-  function drawStar(t) { const cv = $('sky'), g = cv.getContext('2d'), W = cv.width, c = W / 2, R = c;
+  let analyser = null, buf = null, level = 0, spin = 0, hidden = false, looping = false;
+
+  // every six seconds, another constellation: a few stars joined up, drawing themselves in, spreading out from the Star
+  const EVERY = 6000, SKY_MAX = 48, sky = []; let skyN = 0, skyNext = 0;
+  function addConstellation(t) { const i = skyN++, n = 4 + Math.floor(rnd() * 4), ang = i * 2.39996, r = .46 + .5 * Math.sqrt(((i * .618034) % 1)), pts = []; let x = 0, y = 0, dir = rnd() * 6.283;
+    for (let k = 0; k < n; k++) { pts.push([x, y, .8 + rnd() * 1.1, rnd() * 6.283]); dir += (rnd() - .5) * 2.2; const step = .05 + rnd() * .05; x += Math.cos(dir) * step; y += Math.sin(dir) * step; }
+    sky.push({x: Math.cos(ang) * r, y: Math.sin(ang) * r, pts, born: t}); if (sky.length > SKY_MAX) sky.shift(); }
+  function drawSky(g, W, H, t, k) { const span = Math.min(W, H), ease = u => 1 - (1 - u) * (1 - u);
+    sky.forEach((c, idx) => { const u = STILL ? 1 : Math.min(1, (t - c.born) / 1500), age = sky.length - idx, old = Math.max(.35, 1 - age / SKY_MAX), cx = W / 2 + c.x * W * .47, cy = H / 2 + c.y * H * .47, P = q => [cx + q[0] * span, cy + q[1] * span], segs = c.pts.length - 1, drawn = ease(u) * segs;
+      g.globalAlpha = (.42 + level * .3) * old; g.strokeStyle = '#8EA4FF'; g.lineWidth = 1.1 * k; g.beginPath();
+      for (let i = 0; i < segs && i < drawn; i++) { const A = P(c.pts[i]), B = P(c.pts[i + 1]), f = Math.min(1, drawn - i); g.moveTo(A[0], A[1]); g.lineTo(A[0] + (B[0] - A[0]) * f, A[1] + (B[1] - A[1]) * f); } g.stroke();
+      c.pts.forEach((q, i) => { if (i > drawn + .01) return; const [X, Y] = P(q), tw = STILL ? 1 : .72 + .28 * Math.sin(t / 650 + q[3]); g.globalAlpha = Math.min(1, old * tw * (.75 + level * .25)); g.fillStyle = '#F6F1E6'; g.beginPath(); g.arc(X, Y, q[2] * k * (1 + level * .35), 0, 6.283); g.fill(); }); }); }
+
+  function paint(cv, t, round) { const g = cv.getContext('2d'), W = cv.width, H = cv.height, c = W / 2, m = H / 2, R = round ? W / 2 : Math.min(W, H) * .33, k = round ? W / 400 : Math.max(1, Math.min(W, H) / 400), far = round ? W / 2 : Math.hypot(W, H) / 2;
+    g.clearRect(0, 0, W, H); g.save(); if (round) { g.beginPath(); g.arc(c, m, R, 0, 6.283); g.clip(); } g.fillStyle = '#0B0B0D'; g.fillRect(0, 0, W, H);
+    dust.forEach(d => { const a = d.a + spin * .05; g.globalAlpha = Math.min(1, d.o * (STILL ? 1 : .75 + .25 * Math.sin(t / 700 + d.p)) + level * .35); g.fillStyle = '#F6F1E6'; g.beginPath(); g.arc(c + d.r * far * Math.cos(a), m + d.r * far * Math.sin(a), d.s * k * (round ? 1 : .8), 0, 6.283); g.fill(); });
+    drawSky(g, W, H, t, k);
+    const bob = STILL ? 0 : Math.sin(t / 900) * R * .035, cy0 = m + bob, glow = R * (.6 + .36 * level); g.globalAlpha = 1;
+    const gr = g.createRadialGradient(c, cy0, 0, c, cy0, glow); [[0, 'rgba(255,255,255,1)'], [.18, 'rgba(157,178,255,.95)'], [.5, 'rgba(31,75,255,.55)'], [1, 'rgba(31,75,255,0)']].forEach(([o, col]) => gr.addColorStop(o, col)); g.fillStyle = gr; g.fillRect(c - glow, cy0 - glow, glow * 2, glow * 2);
+    // rocked to one side of 315 degrees and above the body diagonal, so it never lines up and flattens into a hexagram
+    const yaw = 5.85 + .2 * Math.sin(spin * .9), pit = 1.14 + .09 * Math.sin(spin * .6 + 1), cy = Math.cos(yaw), sy = Math.sin(yaw), cp = Math.cos(pit), sp = Math.sin(pit), sc = R * .6 * (1 + .22 * level);
+    const P = v => { const X = v[0] * cy + v[2] * sy, Z = -v[0] * sy + v[2] * cy, Y = v[1] * cp - Z * sp, D = v[1] * sp + Z * cp, f = 1 / (1 + D * .12); return [c + X * sc * f, cy0 + Y * sc * f, D]; };
+    const polys = []; [[TA, '246,241,230', .14], [TB, '61,99,255', .3]].forEach(([T, col, fa]) => { const q = T.map(v => P(v.map(n => n / 1.732))); FC.forEach(f => polys.push({m: f.map(i => q[i]), d: (q[f[0]][2] + q[f[1]][2] + q[f[2]][2]) / 3, col, fa})); });
+    polys.sort((a, b) => b.d - a.d).forEach(o => { g.beginPath(); o.m.forEach((v, i) => i ? g.lineTo(v[0], v[1]) : g.moveTo(v[0], v[1])); g.closePath(); g.fillStyle = 'rgba(' + o.col + ',' + o.fa + ')'; g.fill(); g.strokeStyle = 'rgba(' + o.col + ',.9)'; g.lineWidth = 2 * k; g.lineJoin = 'round'; g.stroke(); });
+    // in hide mode the ring is drawn here, so a recording always shows
+    if (!round && state === 'recording') { const s = (Date.now() - started) / 1000; g.globalAlpha = .25; g.strokeStyle = '#F6F1E6'; g.lineWidth = 2 * k; g.beginPath(); g.arc(c, m, R * 1.12, 0, 6.283); g.stroke(); g.globalAlpha = 1; g.strokeStyle = '#FF6C55'; g.lineWidth = 3 * k; g.lineCap = 'round'; g.beginPath(); g.arc(c, m, R * 1.12, -1.5708, -1.5708 + Math.min(1, s / MAX) * 6.283); g.stroke(); g.lineCap = 'butt'; }
+    g.restore(); }
+
+  function frame(t) { if (state !== 'recording' && !hidden) { looping = false; return; }
     let target = 0; if (analyser) { analyser.getByteTimeDomainData(buf); let sum = 0; for (const v of buf) sum += (v - 128) * (v - 128); target = Math.min(1, Math.sqrt(sum / buf.length) / 26); }
     level += (target - level) * .22; if (!STILL) spin += .012 + level * .06;
-    g.clearRect(0, 0, W, W); g.save(); g.beginPath(); g.arc(c, c, R, 0, 6.283); g.clip(); g.fillStyle = '#0B0B0D'; g.fillRect(0, 0, W, W);
-    dust.forEach(d => { const a = d.a + spin * .05; g.globalAlpha = Math.min(1, d.o * (STILL ? 1 : .75 + .25 * Math.sin(t / 700 + d.p)) + level * .35); g.fillStyle = '#F6F1E6'; g.beginPath(); g.arc(c + d.r * R * Math.cos(a), c + d.r * R * Math.sin(a), d.s, 0, 6.283); g.fill(); });
-    const bob = STILL ? 0 : Math.sin(t / 900) * R * .035, cy0 = c + bob, glow = R * (.6 + .36 * level); g.globalAlpha = 1;
-    const gr = g.createRadialGradient(c, cy0, 0, c, cy0, glow); [[0, 'rgba(255,255,255,1)'], [.18, 'rgba(157,178,255,.95)'], [.5, 'rgba(31,75,255,.55)'], [1, 'rgba(31,75,255,0)']].forEach(([o, col]) => gr.addColorStop(o, col)); g.fillStyle = gr; g.fillRect(0, 0, W, W);
-    // rocked around one pose, never along a body diagonal, where it would flatten into a hexagram
-    const yaw = 5.5 + .34 * Math.sin(spin * .9), pit = 1.08 + .13 * Math.sin(spin * .6 + 1), cy = Math.cos(yaw), sy = Math.sin(yaw), cp = Math.cos(pit), sp = Math.sin(pit), sc = R * .6 * (1 + .22 * level);
-    const P = v => { const X = v[0] * cy + v[2] * sy, Z = -v[0] * sy + v[2] * cy, Y = v[1] * cp - Z * sp, D = v[1] * sp + Z * cp, f = 1 / (1 + D * .12); return [c + X * sc * f, cy0 + Y * sc * f, D]; };
-    const polys = []; [[TA, '246,241,230', .14], [TB, '61,99,255', .3]].forEach(([T, col, fa]) => { const m = T.map(v => P(v.map(k => k / 1.732))); FC.forEach(f => polys.push({m: f.map(i => m[i]), d: (m[f[0]][2] + m[f[1]][2] + m[f[2]][2]) / 3, col, fa})); });
-    polys.sort((a, b) => b.d - a.d).forEach(o => { g.beginPath(); o.m.forEach((v, i) => i ? g.lineTo(v[0], v[1]) : g.moveTo(v[0], v[1])); g.closePath(); g.fillStyle = 'rgba(' + o.col + ',' + o.fa + ')'; g.fill(); g.strokeStyle = 'rgba(' + o.col + ',.9)'; g.lineWidth = 2; g.lineJoin = 'round'; g.stroke(); });
-    g.restore(); raf = requestAnimationFrame(drawStar); }
-  function listen(s) { analyser = null; level = 0; try { audio = new (window.AudioContext || window.webkitAudioContext)(); const an = audio.createAnalyser(); an.fftSize = 512; audio.createMediaStreamSource(s).connect(an); buf = new Uint8Array(an.fftSize); analyser = an; } catch (e) {} raf = requestAnimationFrame(drawStar); }
-  const quiet = () => { cancelAnimationFrame(raf); analyser = null; if (audio) { audio.close().catch(() => {}); audio = null; } if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; } };
+    if (!skyNext) { skyNext = t + EVERY; addConstellation(t); } while (t >= skyNext) { addConstellation(t); skyNext += EVERY; }
+    paint(hidden ? $('field') : $('sky'), t, !hidden); raf = requestAnimationFrame(frame); }
+  const runStar = () => { if (!looping) { looping = true; raf = requestAnimationFrame(frame); } };
+  function listen(s) { analyser = null; if (!hidden) { sky.length = 0; skyNext = 0; } try { audio = new (window.AudioContext || window.webkitAudioContext)(); const an = audio.createAnalyser(); an.fftSize = 512; audio.createMediaStreamSource(s).connect(an); buf = new Uint8Array(an.fftSize); analyser = an; } catch (e) {} runStar(); }
+  const quiet = () => { analyser = null; if (audio) { audio.close().catch(() => {}); audio = null; } if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; } };
+
+  // hide mode: only the Star, in the middle. It still works: tap the Star to record or stop.
+  const sizeField = () => { const cv = $('field'), d = Math.min(2, window.devicePixelRatio || 1); cv.width = Math.round(innerWidth * d); cv.height = Math.round(innerHeight * d); };
+  function setHidden(on) { hidden = on; document.documentElement.classList.toggle('hidden-mode', on); if (on) { sizeField(); stayAwake(); hideSay($('say').className.includes('ok') ? 'ok' : $('say').className.includes('bad') ? 'bad' : ''); runStar(); $('hshow').focus({preventScroll: true}); } else $('hideit').focus({preventScroll: true}); }
+  addEventListener('resize', () => { if (hidden) sizeField(); });
+  $('hideit').onclick = () => setHidden(true); $('hshow').onclick = () => setHidden(false);
+  $('hstar').onclick = () => $('rec').click();
 
   function stop() { clearInterval(tick); if (rec && rec.state === 'recording' && !stopping) { stopping = true; rec.stop(); } }
   const writeInstead = () => ' <a href="' + esc(withEvent('/#start')) + '" target="_top">Write it instead →</a>';
@@ -197,7 +248,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 
   $('rec').onclick = () => { if (state === 'idle') { stayAwake(); start(); } else if (state === 'recording') { if (Date.now() - started > 600) stop(); } else if (state === 'failed') send(); };
   $('drop').onclick = () => { blob = null; setState('idle'); say('Deleted. ' + READY); };
-  setState('idle'); say(READY);
+  setState('idle'); say(READY); if (q.has('hide')) setHidden(true);
 })();
 </script>
 </body>

@@ -160,7 +160,7 @@ svg text{font-family:var(--mono)}
   <iframe id="rd-frame" title="Over to you" allow="microphone; screen-wake-lock"></iframe>
   <div id="rd-act"></div>
   <details id="rd-nw"><summary>Notes</summary><p id="rd-n"></p></details></div>
-  <div id="rd-nav"><button onclick="step(-1)">&larr; Back</button><a href="../chain/">The chain</a><button onclick="step(1)">Next &rarr;</button></div></div>
+  <div id="rd-nav"><button onclick="step(-1)">&larr; Back</button><a href="../chain/">The chain</a><a class="go-rec" href="../record/" target="_blank" rel="noopener">● Record</a><button onclick="step(1)">Next &rarr;</button></div></div>
 <button id="rd-close" onclick="full(false)" aria-label="Back to reading">&times;</button>
 <div class="stage" id="stage">
 <div class="top"><span class="brand">The Hitchhiker's Guide to Trust</span><span id="tabs"></span><div class="prog" id="prog"></div></div>
@@ -582,7 +582,7 @@ svg text{font-family:var(--mono)}
 </section>
 
 <div class="overview" id="overview"></div>
-<div class="bottom"><span id="where"></span><span id="deeper" style="display:flex;gap:6px;align-items:center;margin-left:14px"></span><a id="teleport" style="display:none;margin-left:14px;color:var(--ink);font-weight:700;text-decoration:none;border:1px solid var(--ink);padding:3px 8px"></a><a id="stars" href="../chain/" target="_blank" rel="noopener" style="display:none;margin-left:10px;color:var(--cobalt);text-decoration:none;font-weight:700"></a><span class="sp"></span><span id="timer">00:00</span><button title="Notes (N)" onclick="document.body.classList.toggle('shownotes')">Notes</button><button title="Overview (O)" onclick="document.body.classList.toggle('showov')">All</button><button title="Full screen (F)" onclick="fs()">⛶</button><button onclick="step(-1)">←</button><button onclick="step(1)">→</button></div>
+<div class="bottom"><span id="where"></span><span id="deeper" style="display:flex;gap:6px;align-items:center;margin-left:14px"></span><a id="teleport" style="display:none;margin-left:14px;color:var(--ink);font-weight:700;text-decoration:none;border:1px solid var(--ink);padding:3px 8px"></a><a class="go-rec" href="../record/" target="_blank" rel="noopener" title="The one-button recorder, for a phone on a table" style="margin-left:10px;color:#C4301F;text-decoration:none;font-weight:700">● Record ↗</a><a id="stars" href="../chain/" target="_blank" rel="noopener" style="display:none;margin-left:10px;color:var(--cobalt);text-decoration:none;font-weight:700"></a><span class="sp"></span><span id="timer">00:00</span><button title="Notes (N)" onclick="document.body.classList.toggle('shownotes')">Notes</button><button title="Overview (O)" onclick="document.body.classList.toggle('showov')">All</button><button title="Full screen (F)" onclick="fs()">⛶</button><button onclick="step(-1)">←</button><button onclick="step(1)">→</button></div>
 </div>
 
 <script>
@@ -1479,7 +1479,7 @@ const piPage = p => { const home = location.protocol.startsWith('http') ? locati
 function piLoadQR() { return window.qrcode ? Promise.resolve() : new Promise(r => { const sc = document.createElement('script'); sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js'; sc.onload = r; sc.onerror = r; document.head.append(sc); }); }
 async function piQR(page) { const url = piPage(page), box = $('#pi-qr'); $('#pi-qr-url').textContent = url.replace(/^https?:\/\//, ''); if (box.dataset.url === url) return; box.dataset.url = url; box.innerHTML = ''; await piLoadQR();
   if (box.dataset.url !== url) return; try { const q = qrcode(0, 'M'); q.addData(url); q.make(); box.innerHTML = q.createSvgTag({cellSize: 5, margin: 0}); box.querySelector('svg').style.cssText = 'position:static;display:block;width:230px;height:230px'; } catch (e) { box.parentElement.firstElementChild.style.display = 'none'; } }
-piQ(0);
+piQ(0); document.querySelectorAll('.go-rec').forEach(a => a.href = piPage('record'));
 let piS = 0; const piOn = new Set();
 function piStep() { piS = (piS + 1) % PI_T.length; piOn.clear(); clearPop('#pi'); piDraw(); }
 function piDraw() {
