@@ -476,6 +476,13 @@ svg text{font-family:var(--mono)}
   <aside class="notes">The boundary (the Hitchhikers' deck): an inspectable, bounded and revocable mandate bridges human deliberation to authorised agent action. Converse, mandate, act; scope, review, revocation. Cryptographic signatures establish provenance, not truth or legitimacy. This is the towel saying no on your behalf; a mandate is one of the Trust Tasks ("agree these terms").</aside>
 </section>
 
+
+<!-- Doop: Hitchhiker's Introduction — A Blueprint for Navigating Reality (IQsWwADEIL) -->
+<section class="scene poster" data-part="I" data-sec="Blueprint" style="background:#f3ebdb">
+  <img src="img/dont-panic-blueprint.jpg" alt="A blueprint for navigating reality. Don't Panic." width="1600" height="900" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block;pointer-events:none">
+  <aside class="notes">From the Hitchhikers introduction (Doop frame IQsWwADEIL): a blueprint for navigating reality. The world is bigger, faster and more complex than ever. The Guide helps you make sense of the places, people and ideas around you: explore places, meet people, discover ideas, find belonging. Don't Panic.</aside>
+</section>
+
 <!-- slides 8–10: three ceremonies -->
 <section class="scene" data-part="IV" data-sec="Ceremonies">
   <div class="kick">IV · Trust by doing</div>
@@ -589,11 +596,11 @@ svg text{font-family:var(--mono)}
 /* ---------- paths through the guide: a main thread, with deeper scenes as branches of the scene they belong to ---------- */
 (function () {
   // two halves: the Hitchhikers (their story, method and ceremonies), then the implementation (OpenVTC + VTI)
-  const HH = ['Request', 'Public intelligence', 'Inheritance', 'Method', 'Knowing to doing', 'Principles', 'Consent', 'Ceremonies', 'Field Guide', 'The guide', 'Opportunity', 'Speed of trust', 'Contribute'];
+  const HH = ['Request', 'Public intelligence', 'Inheritance', 'Method', 'Knowing to doing', 'Principles', 'Consent', 'Blueprint', 'Ceremonies', 'Field Guide', 'The guide', 'Opportunity', 'Speed of trust', 'Contribute'];
   const VTI = ['Split', 'OpenVTC', 'Three nodes', 'Flow', 'Privacy', 'Thumbs up', 'Three graphs', 'Trust', 'Games', 'A visit', 'The pathway', 'Cities', 'Evidence', 'Hitchhiker mage', 'Baby Dragon', 'Built'];
   const PATHS = {
     iiw: ['Cover', ...HH, ...VTI, 'Genesis', 'Discussion', 'Record', 'Close'],
-    lightning: ['Cover', 'Request', 'Public intelligence', 'Ceremonies', 'Field Guide', 'Opportunity', 'Contribute', 'Split', 'OpenVTC', 'Thumbs up', 'Discussion', 'Record', 'Genesis', 'Close'],
+    lightning: ['Cover', 'Request', 'Public intelligence', 'Blueprint', 'Ceremonies', 'Field Guide', 'Opportunity', 'Contribute', 'Split', 'OpenVTC', 'Thumbs up', 'Discussion', 'Record', 'Genesis', 'Close'],
     guide: ['Cover', ...HH, ...VTI, 'Discussion', 'Record', 'Genesis', 'Close']};
   // where each scene belongs when it is not on the main thread (always inside its own half)
   const PARENT = {'Inheritance': 'Public intelligence', 'Method': 'Public intelligence', 'Knowing to doing': 'Method', 'Principles': 'Method', 'Consent': 'Public intelligence',
