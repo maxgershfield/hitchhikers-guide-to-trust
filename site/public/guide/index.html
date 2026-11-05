@@ -1470,6 +1470,7 @@ const PI_C = [
 const PI_MID = {tag: 'People + knowledge + AI', title: 'Public intelligence', body: 'Lived experience, science, institutional memory, legitimate authority and AI, working together, for a more human future.', list: ['Shared experiences', 'Open knowledge', 'Collective decisions']};
 const PI_V = [[680, 150, C.ink, 600, 118], [820, 150, '#6B665C', 900, 118], [750, 268, C.cobalt, 750, 335]];
 const PI_LAST = PI_T.length - 1, PI_PUBLIC = 4, PI_ASK = 5, PI_REC = 6;
+const PI_BRANDS = {1: ['Chathackers', 'chathackers.png'], 3: ['Field Guide', 'fieldguide.png'], 5: ['Newspeak House', 'newspeak.jpg'], 7: ['Bonfires', 'bonfires.svg'], 9: ['agentprivacy', 'agentprivacy.png'], 11: ['GPU Coop']};
 // the two hand-over beats: the questions (questions.js, shared with /over-to-you and /record) and the recorder
 const piAll = window.OVER_TO_YOU_ALL || []; let piQn = 0;
 function piQ(d) { piQn = (piQn + d + piAll.length) % piAll.length; $('#pi-q').textContent = piAll[piQn]; $('#pi-q-n').textContent = `Question ${piQn + 1} of ${piAll.length}`; }
@@ -1482,7 +1483,7 @@ piQ(0);
 let piS = 0; const piOn = new Set();
 function piStep() { piS = (piS + 1) % PI_T.length; piOn.clear(); clearPop('#pi'); piDraw(); }
 function piDraw() {
-  const s = $('#pi'), T = PI_T[piS], gy = 440, xs = [...Array(11)].map((_, i) => 230 + i * 104); s.innerHTML = '';
+  const s = $('#pi'), T = PI_T[piS], gy = 440, xs = piS === 0 ? [...Array(13)].map((_, i) => 174 + i * 96) : [...Array(11)].map((_, i) => 230 + i * 104); s.innerHTML = '';
   $('#pi-h').innerHTML = T[0]; $('#pi-sub').textContent = T[1]; settle(sceneOf('#pi'));
   $('#pi-step').textContent = `${piS + 1} / ${PI_T.length} · ${T[2]}`; $('#pi-btn').textContent = piS < PI_LAST ? 'Read on →' : 'From the top ↺';
   s.append(el('line', {x1: 60, y1: gy, x2: 1440, y2: gy, stroke: C.ink, 'stroke-width': 1.5}));
@@ -1556,7 +1557,14 @@ function piDraw() {
     handSvg(s, 190, 60, 'People + knowledge\n+ AI, for a more\nhuman future.', {size: 22, rot: -5});
     s.append(el('text', {x: 1440, y: 470, 'text-anchor': 'end', 'font-size': 13, 'font-weight': 700, fill: C.cobalt}, 'GROUND THE POWER · BUILD WITH WISDOM'));
   }
-  if (people) xs.forEach(x => person(s, x, gy - 4, piS >= PI_PUBLIC ? C.cobalt : C.ink, .9));
+  // on the opening beat, some of the people are the groups in the room, as labels (not the Hitchhikers: they are all of them)
+  const brands = piS === 0 ? PI_BRANDS : {};
+  if (people) xs.forEach((x, i) => { const b = brands[i]; if (!b) { person(s, x, gy - 4, piS >= PI_PUBLIC ? C.cobalt : C.ink, .9); return; }
+    s.append(el('circle', {cx: x, cy: gy - 32, r: 30, fill: '#fff', stroke: C.ink, 'stroke-width': 1.5}));
+    // no logo yet: the name itself is the badge
+    if (!b[1]) { b[0].split(' ').forEach((w, k) => headText(s, {x, y: gy - 35 + k * 20, 'text-anchor': 'middle', 'font-size': 18, fill: C.cobalt}, w.toUpperCase())); return; }
+    const im = el('image', {x: x - 22, y: gy - 54, width: 44, height: 44, preserveAspectRatio: 'xMidYMid meet'}); im.setAttribute('href', '../future/logos/' + b[1]); s.append(im);
+    s.append(el('text', {x, y: gy + 20, 'text-anchor': 'middle', 'font-size': 12, 'font-weight': 700, fill: C.ink}, b[0].toUpperCase())); });
 }
 piDraw();
 
