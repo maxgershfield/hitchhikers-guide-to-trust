@@ -57,6 +57,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .drop{background:none;border:0;color:var(--muted);text-decoration:underline;padding:6px}
 .as{border-top:1px solid var(--line);padding:8px 0 10px}
 .as .micro{color:var(--muted);margin-bottom:6px}
+.where{margin-top:9px}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chips button{flex:1 1 auto;min-height:44px;padding:8px 9px;border:1.5px solid var(--line);border-radius:22px;background:none;font-family:var(--mono);font-size:13px;font-weight:700}
 @media (max-width:430px){.chips{gap:5px}.chips button{padding:8px 5px;font-size:12px}}
@@ -77,7 +78,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 <script src="/questions.js"></script>
 </head>
 <body data-state="idle">
-<div class="top micro"><span id="night">The Hitchhiker's Guide to Trust</span><a id="more" href="/over-to-you/">All the questions →</a><a id="alone" href="/record/" target="_blank" rel="noopener" style="display:none">On its own ↗</a></div>
+<div class="top micro"><span id="night">The Hitchhiker's Guide to Trust</span><a id="more" href="/over-to-you/">Over to you →</a><a id="alone" href="/record/" target="_blank" rel="noopener" style="display:none">On its own ↗</a></div>
 
 <div class="ask">
   <div class="q" id="q"></div>
@@ -102,10 +103,16 @@ button{font:inherit;color:inherit;cursor:pointer}
   <div class="chips" id="chips" role="group" aria-labelledby="as-label">
     <button type="button" data-as="proverb" aria-pressed="false">Proverb</button><button type="button" data-as="poem" aria-pressed="false">Poem</button><button type="button" data-as="pledge" aria-pressed="false">Pledge</button><button type="button" data-as="question" aria-pressed="false">Question</button><button type="button" data-as="42" aria-pressed="false">42</button>
   </div>
+  <div class="where">
+    <div class="micro" id="where-label">Where are you?</div>
+    <div class="chips" id="where" role="group" aria-labelledby="where-label">
+      <button type="button" data-where="personal" aria-pressed="false">Personal</button><button type="button" data-where="table" aria-pressed="false">Table</button><button type="button" data-where="palava" aria-pressed="false">Palava</button>
+    </div>
+  </div>
 </div>
 
 <div class="foot">
-  <p><b>Only when everyone at the table says yes.</b> Sealed on this phone; only this phone can play it back. The Pi keeps the sealed note. Its star, with the word you tap above, is public.</p>
+  <p><b>Only when everyone at the table says yes.</b> Sealed on this phone; only this phone can play it back. The Pi keeps the sealed note. Its star, with the words you tap above, is public.</p>
   <label class="fm"><input type="checkbox" id="fm"><span>Offer this note to Hitchhiker FM: the keeper can listen, and could play it on air.</span></label>
 </div>
 
@@ -130,10 +137,13 @@ button{font:inherit;color:inherit;cursor:pointer}
   const showQ = () => { $('own').style.display = 'none'; $('q').style.display = ''; $('q').textContent = mine ? store.get() : (list[at] || ''); };
   const editOwn = () => { $('own').value = store.get(); $('q').style.display = 'none'; $('own').style.display = ''; $('own').focus(); };
   $('next').onclick = () => { if (mine) mine = false; else at = (at + 1) % list.length; showQ(); };
+  // with one question, leaving your own question is done by emptying it
+
   $('mine').onclick = editOwn;
   $('own').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); $('own').blur(); } });
   $('own').addEventListener('blur', () => { const v = $('own').value.trim(); store.set(v); mine = !!v; showQ(); });
   $('more').href = withEvent('/over-to-you/'); if (inGuide('dpQuestions')) $('more').onclick = e => { e.preventDefault(); window.parent.dpQuestions(); };
+  if (list.length < 2) $('next').style.display = 'none'; else $('more').textContent = 'All the questions →';
   showQ(); if (q.has('own')) editOwn();
   if (EMBED) { $('alone').href = withEvent('/record/'); $('alone').style.display = ''; }
 
@@ -141,6 +151,13 @@ button{font:inherit;color:inherit;cursor:pointer}
   let as = '';
   const chips = [...$('chips').querySelectorAll('button')], paintAs = () => chips.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.as === as)));
   chips.forEach(b => b.onclick = () => { as = as === b.dataset.as ? '' : b.dataset.as; paintAs(); });
+
+  // which ceremony: it stays set between notes, because the phone stays where it is. ?where=palava sets it from a link
+  const WHERE = {personal: 'as personal', table: 'at a Table', palava: 'at the Palava'}, places = [...$('where').querySelectorAll('button')];
+  const remembered = () => { try { return localStorage.getItem('dp-where') || ''; } catch (e) { return ''; } };
+  let where = WHERE[q.get('where')] ? q.get('where') : WHERE[remembered()] ? remembered() : '';
+  const paintWhere = () => { places.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.where === where))); try { localStorage.setItem('dp-where', where); } catch (e) {} };
+  places.forEach(b => b.onclick = () => { where = where === b.dataset.where ? '' : b.dataset.where; paintWhere(); }); paintWhere();
 
   // which night this goes to
   let chainNight = DP.event;
@@ -239,10 +256,10 @@ button{font:inherit;color:inherit;cursor:pointer}
     setState('sending'); say('Sealing it on this phone and sending it to the Pi…');
     try { const fm = $('fm').checked, type = new TextEncoder().encode((blob.type || 'audio/webm') + '\n'), bytes = new Uint8Array(await blob.arrayBuffer()), all = new Uint8Array(type.length + bytes.length); all.set(type); all.set(bytes, type.length);
       let open; if (fm) { let s = ''; for (let i = 0; i < bytes.length; i += 8192) s += String.fromCharCode(...bytes.subarray(i, i + 8192)); open = btoa(s); }
-      const box = await DP.sealBytes(all), r = await fetch(DP.u('/api/voice'), {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({mark: await DP.mark(), iv: box.iv, ct: box.ct, secs, fm, open, type: blob.type, as: as || undefined})});
+      const box = await DP.sealBytes(all), r = await fetch(DP.u('/api/voice'), {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({mark: await DP.mark(), iv: box.iv, ct: box.ct, secs, fm, open, type: blob.type, as: as || undefined, where: where || undefined})});
       const d = await r.json().catch(() => ({})); if (!r.ok) throw new Error(d.error || 'That did not go through.');
       DP.remember(d.link.hash); blob = null; sentAs = as; as = ''; paintAs(); $('fm').checked = false; setState('idle');
-      say('✓ On the star' + (sentAs ? ' as ' + esc(sentAs === '42' ? '42' : 'a ' + sentAs) : '') + ', note #' + d.link.seq + ' · ' + DP.sigil(d.link.hash) + ' ' + esc(DP.spell(d.link.hash)) + (fm ? ' · offered to the keeper' : '') + '<br><a href="' + esc('/chain/' + (chainNight ? '?event=' + chainNight : '')) + '" target="_blank" rel="noopener">See the chain →</a> · ready for the next one', 'ok');
+      say('✓ On the star' + (sentAs ? ' as ' + esc(sentAs === '42' ? '42' : 'a ' + sentAs) : '') + (where ? ', ' + WHERE[where] : '') + ', note #' + d.link.seq + ' · ' + DP.sigil(d.link.hash) + ' ' + esc(DP.spell(d.link.hash)) + (fm ? ' · offered to the keeper' : '') + '<br><a href="' + esc('/chain/' + (chainNight ? '?event=' + chainNight : '')) + '" target="_blank" rel="noopener">See the chain →</a> · ready for the next one', 'ok');
     } catch (e) { setState('failed'); say(esc(e.message && !/fetch|network/i.test(e.message) ? e.message : 'No connection.') + ' Your note is still here: keep this page open and tap to send it again.', 'bad'); }
   }
 

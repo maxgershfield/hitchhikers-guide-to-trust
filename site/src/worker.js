@@ -10,7 +10,7 @@
 // closed and nothing can be submitted. Hosting the graph is what lets people in.
 
 const LIMIT = { title: 40, text: 160, poem: 1500, by: 40 }, PER_MINUTE = 120, QUEUE_MAX = 500, GATE_TIMEOUT_MS = 4000, CHAIN_MAX = 20000;
-const VOICE_AS = ['proverb', 'poem', 'pledge', 'question', '42']; // the one public word a voice note can carry
+const VOICE_AS = ['proverb', 'poem', 'pledge', 'question', '42'], VOICE_WHERE = ['personal', 'table', 'palava']; // the public words a voice note can carry: what it is, and which ceremony
 const VOICE_MAX_B64 = 480000, VOICES_MAX = 400; // ~45 s of opus per note, sealed; a few hundred notes per event
 const CORS = { 'access-control-allow-origin': '*', 'access-control-allow-headers': 'content-type, authorization', 'access-control-allow-methods': 'GET, POST, OPTIONS' };
 
@@ -262,16 +262,16 @@ async function api(req, env, path, body) {
   // Its star records that hash, so the note can't be swapped later; only its owner's key plays it.
   if (path === '/api/voice' && req.method === 'POST') {
     if (!isMark(body.mark)) return json({ error: 'Open the page again to make your mark.' }, 400);
-    const as = VOICE_AS.includes(body.as) ? body.as : '', iv = String(body.iv || ''), ct = String(body.ct || ''), secs = Math.max(0, Math.min(60, Math.round(+body.secs || 0)));
+    const as = VOICE_AS.includes(body.as) ? body.as : '', where = VOICE_WHERE.includes(body.where) ? body.where : '', iv = String(body.iv || ''), ct = String(body.ct || ''), secs = Math.max(0, Math.min(60, Math.round(+body.secs || 0)));
     if (iv.length > 24 || !ct || ct.length > VOICE_MAX_B64 || !/^[A-Za-z0-9+/=]+$/.test(iv + ct)) return json({ error: 'That note is too long (about 45 seconds at most).' }, 400);
     if (await limited(env, req)) return json({ error: 'Slow down a moment, then try again.' }, 429);
     const n = parseInt(await env.PROVERBS.get('voices:' + ev) || '0', 10); if (n >= VOICES_MAX) return json({ error: 'The guide has all the voice notes it can hold tonight.' }, 503);
     const id = await hex('voice|' + iv + '|' + ct);
     await env.PROVERBS.put('voice:' + id, JSON.stringify({ iv, ct })); await env.PROVERBS.put('voices:' + ev, String(n + 1));
     const offer = body.fm && typeof body.open === 'string' && body.open.length <= VOICE_MAX_B64 && /^[A-Za-z0-9+/=]+$/.test(body.open);
-    if (offer) { await env.PROVERBS.put('fm:' + id, JSON.stringify({ type: clean(body.type, 40) || 'audio/webm', b64: body.open })); const q = await load(env, 'fmq'); q.push({ id, secs, event: ev, at: new Date().toISOString(), ...(as ? { as } : {}) }); await save(env, 'fmq', q.slice(-300)); }
-    // the word goes into the leaf too, so it can't be changed later
-    const link = await addLink(env, ev, 'voice', as ? id + '|' + as : id, body.mark, null, { voice: id, secs, ...(as ? { as } : {}), ...(offer ? { fm: true } : {}) });
+    if (offer) { await env.PROVERBS.put('fm:' + id, JSON.stringify({ type: clean(body.type, 40) || 'audio/webm', b64: body.open })); const q = await load(env, 'fmq'); q.push({ id, secs, event: ev, at: new Date().toISOString(), ...(as ? { as } : {}), ...(where ? { where } : {}) }); await save(env, 'fmq', q.slice(-300)); }
+    // the words go into the leaf too, so they can't be changed later
+    const link = await addLink(env, ev, 'voice', [id, as, where].filter(Boolean).join('|'), body.mark, null, { voice: id, secs, ...(as ? { as } : {}), ...(where ? { where } : {}), ...(offer ? { fm: true } : {}) });
     return link ? json({ ok: true, link }) : json({ error: 'The chain is full tonight.' }, 503);
   }
   if (path === '/api/voice' && req.method === 'GET') {

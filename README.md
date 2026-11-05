@@ -34,7 +34,7 @@ Neither is ever committed.
 | `/chain/` | **the evidence chain**: every thumbs up, proverb, guide and voice note is a star. `H` hides the text; `?demo&from=1&every=3` grows an example night from its genesis |
 | `/` · `/newspeak` · `/iiw43` · `/archive` | home, and each night's own door to the one chain |
 | `/keeper` | the keeper's page: approve, hide, export guides as wiki pages |
-| `/over-to-you/` | **Over to You**: the questions for the tables, for phones. Edit them in `site/public/questions.js` (the talk's slide and `/record` use the same list). Also a scene inside the guide |
+| `/over-to-you/` | **Over to You**: the one question for the tables, for phones. Edit it in `site/public/questions.js` (the talk's slide and `/record` use the same list). Also a scene inside the guide |
 | `/record/` | a one-button voice note for a phone on a table: sealed on the phone, kept on the Pi, its star on the chain, optionally labelled proverb, poem, pledge, question or 42. Also a scene inside the guide |
 | `/future/` | **Who Owns the Future?** venue map + agenda (Newspeak House): edit `site/public/future/index.html` |
 

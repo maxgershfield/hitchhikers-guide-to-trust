@@ -415,7 +415,7 @@ svg text{font-family:var(--mono)}
     <div id="pi-over-q" style="position:absolute;left:0;top:0;width:1120px">
       <div class="label" id="pi-q-n" style="color:var(--cobalt);margin-bottom:12px"></div>
       <div id="pi-q" style="font-family:var(--body);font-weight:700;font-size:50px;line-height:1.18;min-height:178px"></div>
-      <div style="display:flex;gap:14px;margin-top:18px"><button class="act" onclick="piQ(1)">Another question →</button><a class="act" id="pi-q-all" href="../over-to-you/" target="_blank" rel="noopener" style="text-decoration:none">All the questions →</a></div>
+      <div style="display:flex;gap:14px;margin-top:18px"><button class="act" id="pi-q-next" onclick="piQ(1)">Another question →</button><a class="act" id="pi-q-all" href="../over-to-you/" target="_blank" rel="noopener" style="text-decoration:none">Over to you →</a></div>
     </div>
     <div id="pi-over-r" style="position:absolute;left:0;top:0;width:620px;font-family:var(--body);font-size:27px;line-height:1.3">
       <ol style="margin:0;padding:0 0 0 38px"><li>Ask everyone at the table. Record only if they all say yes.</li><li style="margin-top:10px">Put a phone down. Press the one button. Say it.</li><li style="margin-top:10px">Sealed on the phone, kept on the Pi. Its star joins tonight's chain.</li></ol>
@@ -424,7 +424,7 @@ svg text{font-family:var(--mono)}
     <div style="position:absolute;right:0;top:0;width:250px;text-align:center"><div id="pi-qr" style="background:#fff;padding:10px;line-height:0;height:250px;width:250px"></div><div class="label" id="pi-qr-url" style="margin-top:9px;color:var(--cobalt);font-size:13px;text-transform:none;overflow-wrap:anywhere"></div></div>
   </div>
   <div style="position:absolute;left:62px;top:730px;display:flex;gap:14px;align-items:center"><button class="act" id="pi-btn" onclick="piStep()">Read on →</button><span class="label" id="pi-step" style="color:var(--cobalt)">1 / 7 · The question</span></div>
-  <aside class="notes">From the Hitchhikers' "Public Intelligence" deck. Five beats, after the reviewed assembly (v2), then two that hand it to the room: a question for the tables (more on the Over to You page), and the one-button recorder, with a code to scan. Open with possibility, not AI-driven economic doom: the crisis to address is trust in institutions, information and public authority. Two futures: AI could widen agency or concentrate power; neither is inevitable. The clouds: we need ways to ground powerful systems in real places, communities, law, knowledge and accountable institutions; the cloud is not the enemy. Capability: AI changes what one person can explore, understand, create and connect, but capability is not authority. Public intelligence: Public Intelligence is not AI supplied to the public, nor crowd wisdom displacing expertise. It is lived experience, science, institutional memory, legitimate authority and AI working together. Touch each circle, then the centre.</aside>
+  <aside class="notes">From the Hitchhikers' "Public Intelligence" deck. Five beats, after the reviewed assembly (v2), then two that hand it to the room: the one question for the tables, and the one-button recorder, with a code to scan. Open with possibility, not AI-driven economic doom: the crisis to address is trust in institutions, information and public authority. Two futures: AI could widen agency or concentrate power; neither is inevitable. The clouds: we need ways to ground powerful systems in real places, communities, law, knowledge and accountable institutions; the cloud is not the enemy. Capability: AI changes what one person can explore, understand, create and connect, but capability is not authority. Public intelligence: Public Intelligence is not AI supplied to the public, nor crowd wisdom displacing expertise. It is lived experience, science, institutional memory, legitimate authority and AI working together. Touch each circle, then the centre.</aside>
 </section>
 
 <!-- slide 4: radical humility -->
@@ -547,9 +547,9 @@ svg text{font-family:var(--mono)}
 <section class="scene dark" data-part="Discuss" data-sec="Discussion" data-embed="over-to-you">
   <div class="kick" style="color:var(--off)">Over to you</div>
   <h1>Over to <b>you</b></h1>
-  <div class="sub" style="color:var(--off)">Pick a question, talk it through at your table, then record your answer.</div>
-  <iframe data-frame title="Over to you: the questions" allow="microphone; screen-wake-lock" style="position:absolute;left:62px;top:192px;width:1476px;height:596px;border:0;background:#0B0B0D"></iframe>
-  <aside class="notes">Same page as /over-to-you: the questions live in questions.js. Take them in any order and let the room pull in any deeper scene (All, bottom right). Touching a question opens the recorder, the next scene.</aside>
+  <div class="sub" style="color:var(--off)">Talk it through at your table, then record your answer.</div>
+  <iframe data-frame title="Over to you: the question" allow="microphone; screen-wake-lock" style="position:absolute;left:62px;top:192px;width:1476px;height:596px;border:0;background:#0B0B0D"></iframe>
+  <aside class="notes">Same page as /over-to-you/: the question lives in questions.js. One question, on purpose. Let the room pull in any deeper scene (All, bottom right). Touching the question opens the recorder, the next scene.</aside>
 </section>
 
 <section class="scene dark" data-part="Discuss" data-sec="Record" data-embed="record">
@@ -1461,7 +1461,7 @@ const PI_T = [['Who owns <b>the future?</b>', 'AI opens up extraordinary possibi
   ['Our heads are <b>in the clouds</b>', 'Trust in institutions is fraying. So is our ability to know who is accountable.', 'The problem'],
   ['A new kind of <b>capability.</b>', 'AI changes what individuals can explore, understand and create. But capability isn\'t the same as authority.', 'Capability'],
   ['Public <b>intelligence.</b>', 'What becomes possible when lived experience, inherited wisdom and AI are brought together, with people keeping the authority to decide? Touch each.', 'The proposition'],
-  ['Over to <b>you.</b>', 'Turn to your table. Here is a question to start with.', 'Over to you'],
+  ['Over to <b>you.</b>', 'Turn to your table.', 'Over to you'],
   ['Say it <b>out loud.</b>', 'One button on a phone on the table: a voice note, kept on the Pi.', 'Record']];
 const PI_C = [
   {tag: 'People', title: 'Lived experience', body: 'The people who live with the outcome, and the local knowledge only they hold.', list: ['Not crowd wisdom displacing expertise', 'People keep the authority to decide']},
@@ -1473,7 +1473,7 @@ const PI_LAST = PI_T.length - 1, PI_PUBLIC = 4, PI_ASK = 5, PI_REC = 6;
 const PI_BRANDS = {1: ['Chathackers', 'chathackers.png'], 3: ['Field Guide', 'fieldguide.png'], 5: ['Newspeak House', 'newspeak.jpg'], 7: ['Bonfires', 'bonfires.svg'], 9: ['agentprivacy', 'agentprivacy.png'], 11: ['GPU Coop']};
 // the two hand-over beats: the questions (questions.js, shared with /over-to-you and /record) and the recorder
 const piAll = window.OVER_TO_YOU_ALL || []; let piQn = 0;
-function piQ(d) { piQn = (piQn + d + piAll.length) % piAll.length; $('#pi-q').textContent = piAll[piQn]; $('#pi-q-n').textContent = `Question ${piQn + 1} of ${piAll.length}`; }
+function piQ(d) { piQn = (piQn + d + piAll.length) % piAll.length; $('#pi-q').textContent = piAll[piQn]; $('#pi-q-n').textContent = piAll.length > 1 ? `Question ${piQn + 1} of ${piAll.length}` : 'The question'; $('#pi-q-next').style.display = piAll.length > 1 ? '' : 'none'; }
 const piOpen = (a, fn) => { a.onclick = e => { e.preventDefault(); fn(); }; };
 const piPage = p => { const home = location.protocol.startsWith('http') ? location.origin : 'https://trust.mages.city'; return home + '/' + p + '/' + (DP.event ? '?event=' + DP.event : ''); };
 function piLoadQR() { return window.qrcode ? Promise.resolve() : new Promise(r => { const sc = document.createElement('script'); sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js'; sc.onload = r; sc.onerror = r; document.head.append(sc); }); }

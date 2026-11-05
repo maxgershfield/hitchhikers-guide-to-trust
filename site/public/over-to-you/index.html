@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0B0B0D">
 <title>Over to You · The Hitchhiker's Guide to Trust</title>
-<meta name="description" content="Questions to talk through at the table, and a one-button voice note for your answer.">
+<meta name="description" content="What does trust mean to you? Talk it through at the table, and leave your answer as a one-button voice note.">
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{--night:#0B0B0D;--cream:#F6F1E6;--blue:#1F4BFF;--pale:#8EA4FF;--muted:#9E998C;--line:rgba(246,241,230,.22);--red:#E0402F;
@@ -30,6 +30,9 @@ h2{font-family:var(--mono);font-weight:700;font-size:13px;text-transform:upperca
 .cta{pointer-events:auto;display:flex;align-items:center;justify-content:center;gap:12px;max-width:788px;margin:0 auto;padding:16px 20px;border-radius:40px;background:var(--red);color:var(--cream);text-decoration:none;font-family:var(--head);text-transform:uppercase;font-size:26px;letter-spacing:.03em;line-height:1}
 .cta:hover{background:#EE5443}.cta i{width:15px;height:15px;border-radius:50%;background:var(--cream);flex:none}
 .alt{margin-top:26px;color:var(--muted)}
+/* just the one question: it is the page */
+.one h2{display:none}.one .card{border-bottom:0;padding:26px 0 18px}.one .card .t{font-size:clamp(38px,10vw,76px);line-height:1.08}.one .card .go{font-size:14px;margin-top:14px}
+.embed .one{columns:1!important}
 .mine{display:block;margin-top:18px;padding:14px 16px;border:1.5px solid var(--blue);border-radius:6px;text-decoration:none;color:inherit;font-size:clamp(19px,4.8vw,23px);font-weight:700;line-height:1.25}
 .mine span{display:block;margin-top:5px;color:var(--pale);font-weight:400}
 /* inside the guide: the guide supplies the title, and wide screens get two columns */
@@ -45,7 +48,7 @@ h2{font-family:var(--mono);font-weight:700;font-size:13px;text-transform:upperca
 <main>
   <div class="top micro"><a id="home" href="/">← The guide</a><span id="night" style="text-align:right">Who owns the future?</span></div>
   <h1>Over to <span>you</span></h1>
-  <p class="lede">Pick a question and talk it through at your table. When you have an answer worth keeping, put a phone down and record it.</p>
+  <p class="lede">Talk it through at your table. When you have an answer worth keeping, put a phone down and record it.</p>
   <a class="mine" id="mine" href="/record/?own=1">✎ Ask your own question<span class="micro">It stays on your phone</span></a>
   <div id="list"></div>
   <p class="alt micro">Prefer to write it? <a id="write" href="/#start">Leave a proverb or a poem →</a></p>
@@ -54,13 +57,14 @@ h2{font-family:var(--mono);font-weight:700;font-size:13px;text-transform:upperca
 <script>
 (function () {
   const $ = id => document.getElementById(id), withEvent = p => { const [a, h] = p.split('#'); return a + (DP.event ? (a.includes('?') ? '&' : '?') + 'event=' + DP.event : '') + (h ? '#' + h : ''); };
-  let n = 0; const list = $('list'), EMBED = new URLSearchParams(location.search).has('embed');
+  const ONE = (window.OVER_TO_YOU_ALL || []).length === 1; let n = 0; const list = $('list'), EMBED = new URLSearchParams(location.search).has('embed');
   document.documentElement.classList.toggle('embed', EMBED);
   // inside the guide, the recorder is the guide's next scene; on its own, this page links to the standalone recorder
   const toRecord = (a, q) => { a.href = withEvent('/record/' + (q ? '?' + q : '')); if (EMBED && window.parent !== window && typeof window.parent.dpRecord === 'function') a.onclick = e => { e.preventDefault(); window.parent.dpRecord(q); }; };
   (window.OVER_TO_YOU || []).forEach(g => { const box = document.createElement('div'), h = document.createElement('h2'); h.textContent = g.group; box.append(h);
     g.q.forEach(text => { const a = document.createElement('a'); a.className = 'card'; toRecord(a, 'q=' + n++);
-      const t = document.createElement('span'); t.className = 't'; t.textContent = text; const go = document.createElement('span'); go.className = 'go micro'; go.textContent = 'Answer this one →'; a.append(t, go); box.append(a); }); list.append(box); });
+      const t = document.createElement('span'); t.className = 't'; t.textContent = text; const go = document.createElement('span'); go.className = 'go micro'; go.textContent = ONE ? 'Record your answer →' : 'Answer this one →'; a.append(t, go); box.append(a); }); list.append(box); });
+  if (ONE) { list.classList.add('one'); list.after($('mine')); }
   toRecord($('cta'), ''); toRecord($('mine'), 'own=1'); $('home').href = withEvent('/'); $('write').href = withEvent('/#start'); if (EMBED) $('write').target = '_top';
   (async () => { try { const d = await (await fetch('/api/events', {cache: 'no-store'})).json(), me = d.events.find(e => e.id === (DP.event || d.default)); if (me) $('night').textContent = me.name; } catch (e) {} })();
 })();
