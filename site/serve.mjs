@@ -36,8 +36,9 @@ const ASSETS = { async fetch(req) {
   if (raw.includes('..')) return new Response('Not found', { status: 404 });
   // /talk/ → talk/index.html, /keeper → keeper.html, /talk → redirect to /talk/ (so relative links resolve)
   const tries = raw.endsWith('/') ? [raw + 'index.html'] : /\.\w+$/.test(raw) ? [raw] : [raw + '.html'];
+  // no-cache on pages and scripts: a tunnel's cache would otherwise keep the old script for hours after an update
   for (const p of tries) {
-    try { return new Response(await readFile(new URL('.' + p, dir)), { headers: { 'content-type': TYPES[p.split('.').pop()] || 'application/octet-stream' } }); } catch (e) {}
+    try { return new Response(await readFile(new URL('.' + p, dir)), { headers: { 'content-type': TYPES[p.split('.').pop()] || 'application/octet-stream', ...(/\.(js|css|html)$/.test(p) ? { 'cache-control': 'no-cache' } : {}) } }); } catch (e) {}
   }
   if (!raw.endsWith('/') && !/\.\w+$/.test(raw) && existsSync(new URL('.' + raw + '/index.html', dir))) return new Response(null, { status: 301, headers: { location: raw + '/' + new URL(req.url).search } });
   return new Response('Not found', { status: 404 });
