@@ -314,6 +314,24 @@ async function api(req, env, path, body) {
       const link = await addLink(env, ev, clean(body.kind, 20) || 'chat', digest, body.mark);
       return link ? json({ ok: true, link }) : json({ error: 'The chain is full.' }, 503);
     }
+    // ChatHackers ceremony: a text contribution already consented in chat and approved by the ceremony admin.
+    // Writes a chat star (digest only on the chain) and puts the text on the approved wall for that night.
+    if (action === 'ceremony') {
+      const night = clean(body.event, 40).toLowerCase(), EV = events(env);
+      if (!night || !EV[night]) return json({ error: 'Give a known night (event), e.g. newspeak or iiw43.' }, 400);
+      const text = clean(body.text, 400); if (text.length < 3) return json({ error: 'Write the contribution first.' }, 400);
+      const sourceId = clean(body.sourceId, 200); if (!sourceId) return json({ error: 'sourceId required.' }, 400);
+      const by = clean(body.by, LIMIT.by) || 'ChatHackers';
+      const channel = ['whatsapp', 'signal', 'test'].includes(body.channel) ? body.channel : 'unknown';
+      const prior = approved.find(x => x.source === 'chathackers' && x.sourceId === sourceId);
+      if (prior) return json({ ok: true, already: true, id: prior.id, seq: prior.seq, hash: prior.hash, event: prior.event });
+      const digest = await hex('chathackers|' + sourceId + '|' + text);
+      const link = await addLink(env, night, 'chat', digest, '', null, { source: 'chathackers' });
+      if (!link) return json({ error: 'The chain is full tonight.' }, 503);
+      const item = { id: Date.now() * 100 + Math.floor(Math.random() * 100), kind: 'proverb', text, by, event: night, at: new Date().toISOString(), source: 'chathackers', sourceId, channel, seq: link.seq, hash: link.hash };
+      approved.push(item); await save(env, A, approved);
+      return json({ ok: true, id: item.id, event: night, seq: link.seq, hash: link.hash, link });
+    }
     if (action === 'approve') {
       const i = queue.findIndex(x => x.id === id); if (i < 0) return json({ error: 'Not in the queue.' }, 404);
       const [x] = queue.splice(i, 1);
