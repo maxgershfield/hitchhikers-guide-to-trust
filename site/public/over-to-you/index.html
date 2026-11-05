@@ -46,18 +46,18 @@ h2{font-family:var(--mono);font-weight:700;font-size:13px;text-transform:upperca
   <div class="top micro"><a id="home" href="/">← The guide</a><span id="night" style="text-align:right">Who owns the future?</span></div>
   <h1>Over to <span>you</span></h1>
   <p class="lede">Pick a question and talk it through at your table. When you have an answer worth keeping, put a phone down and record it.</p>
-  <a class="mine" id="mine" href="/record?own=1">✎ Ask your own question<span class="micro">It stays on your phone</span></a>
+  <a class="mine" id="mine" href="/record/?own=1">✎ Ask your own question<span class="micro">It stays on your phone</span></a>
   <div id="list"></div>
   <p class="alt micro">Prefer to write it? <a id="write" href="/#start">Leave a proverb or a poem →</a></p>
 </main>
-<div class="dock"><a class="cta" id="cta" href="/record"><i></i>Record a voice note</a></div>
+<div class="dock"><a class="cta" id="cta" href="/record/"><i></i>Record a voice note</a></div>
 <script>
 (function () {
   const $ = id => document.getElementById(id), withEvent = p => { const [a, h] = p.split('#'); return a + (DP.event ? (a.includes('?') ? '&' : '?') + 'event=' + DP.event : '') + (h ? '#' + h : ''); };
   let n = 0; const list = $('list'), EMBED = new URLSearchParams(location.search).has('embed');
   document.documentElement.classList.toggle('embed', EMBED);
   // inside the guide, the recorder is the guide's next scene; on its own, this page links to the standalone recorder
-  const toRecord = (a, q) => { a.href = withEvent('/record' + (q ? '?' + q : '')); if (EMBED && window.parent !== window && typeof window.parent.dpRecord === 'function') a.onclick = e => { e.preventDefault(); window.parent.dpRecord(q); }; };
+  const toRecord = (a, q) => { a.href = withEvent('/record/' + (q ? '?' + q : '')); if (EMBED && window.parent !== window && typeof window.parent.dpRecord === 'function') a.onclick = e => { e.preventDefault(); window.parent.dpRecord(q); }; };
   (window.OVER_TO_YOU || []).forEach(g => { const box = document.createElement('div'), h = document.createElement('h2'); h.textContent = g.group; box.append(h);
     g.q.forEach(text => { const a = document.createElement('a'); a.className = 'card'; toRecord(a, 'q=' + n++);
       const t = document.createElement('span'); t.className = 't'; t.textContent = text; const go = document.createElement('span'); go.className = 'go micro'; go.textContent = 'Answer this one →'; a.append(t, go); box.append(a); }); list.append(box); });

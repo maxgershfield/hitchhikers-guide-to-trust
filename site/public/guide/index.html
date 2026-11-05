@@ -415,11 +415,11 @@ svg text{font-family:var(--mono)}
     <div id="pi-over-q" style="position:absolute;left:0;top:0;width:1120px">
       <div class="label" id="pi-q-n" style="color:var(--cobalt);margin-bottom:12px"></div>
       <div id="pi-q" style="font-family:var(--body);font-weight:700;font-size:50px;line-height:1.18;min-height:178px"></div>
-      <div style="display:flex;gap:14px;margin-top:18px"><button class="act" onclick="piQ(1)">Another question →</button><a class="act" id="pi-q-all" href="../over-to-you" target="_blank" rel="noopener" style="text-decoration:none">All the questions →</a></div>
+      <div style="display:flex;gap:14px;margin-top:18px"><button class="act" onclick="piQ(1)">Another question →</button><a class="act" id="pi-q-all" href="../over-to-you/" target="_blank" rel="noopener" style="text-decoration:none">All the questions →</a></div>
     </div>
     <div id="pi-over-r" style="position:absolute;left:0;top:0;width:620px;font-family:var(--body);font-size:27px;line-height:1.3">
       <ol style="margin:0;padding:0 0 0 38px"><li>Ask everyone at the table. Record only if they all say yes.</li><li style="margin-top:10px">Put a phone down. Press the one button. Say it.</li><li style="margin-top:10px">Sealed on the phone, kept on the Pi. Its star joins tonight's chain.</li></ol>
-      <a class="act" id="pi-r-open" href="../record" target="_blank" rel="noopener" style="display:inline-block;margin-top:22px;text-decoration:none">Open the recorder →</a>
+      <a class="act" id="pi-r-open" href="../record/" target="_blank" rel="noopener" style="display:inline-block;margin-top:22px;text-decoration:none">Open the recorder →</a>
     </div>
     <div style="position:absolute;right:0;top:0;width:250px;text-align:center"><div id="pi-qr" style="background:#fff;padding:10px;line-height:0;height:250px;width:250px"></div><div class="label" id="pi-qr-url" style="margin-top:9px;color:var(--cobalt);font-size:13px;text-transform:none;overflow-wrap:anywhere"></div></div>
   </div>
@@ -671,7 +671,7 @@ function fit() { const ph = PHONE(), rd = $('#rd'); ROT = ph && FULL; if (!(ph &
 function full(on) { FULL = on; fit(); }
 // the Over to You scenes hold the real pages. A frame loads only while its scene is showing, so leaving turns the microphone off.
 // On a phone the slide is too small to use, so the reader shows the page in its own frame instead.
-const embedUrl = x => { const u = new URLSearchParams({embed: '1'}); if (window.DP && DP.event) u.set('event', DP.event); new URLSearchParams(x.dataset.q || '').forEach((v, k) => u.set(k, v)); return '../' + x.dataset.embed + '?' + u; };
+const embedUrl = x => { const u = new URLSearchParams({embed: '1'}); if (window.DP && DP.event) u.set('event', DP.event); new URLSearchParams(x.dataset.q || '').forEach((v, k) => u.set(k, v)); return '../' + x.dataset.embed + '/?' + u; };
 function embedSync() { const x = scenes[cur], reader = document.body.classList.contains('reader'), on = reader && x.dataset.embed, rf = $('#rd-frame');
   const set = (f, u) => { if (f.dataset.u !== u) { f.dataset.u = u; f.src = u; } };
   scenes.forEach(y => { const f = y.querySelector('iframe[data-frame]'); if (f) set(f, y === x && !reader ? embedUrl(y) : 'about:blank'); });
@@ -1475,7 +1475,7 @@ const PI_BRANDS = {1: ['Chathackers', 'chathackers.png'], 3: ['Field Guide', 'fi
 const piAll = window.OVER_TO_YOU_ALL || []; let piQn = 0;
 function piQ(d) { piQn = (piQn + d + piAll.length) % piAll.length; $('#pi-q').textContent = piAll[piQn]; $('#pi-q-n').textContent = `Question ${piQn + 1} of ${piAll.length}`; }
 const piOpen = (a, fn) => { a.onclick = e => { e.preventDefault(); fn(); }; };
-const piPage = p => { const home = location.protocol.startsWith('http') ? location.origin : 'https://trust.mages.city'; return home + '/' + p + (DP.event ? '?event=' + DP.event : ''); };
+const piPage = p => { const home = location.protocol.startsWith('http') ? location.origin : 'https://trust.mages.city'; return home + '/' + p + '/' + (DP.event ? '?event=' + DP.event : ''); };
 function piLoadQR() { return window.qrcode ? Promise.resolve() : new Promise(r => { const sc = document.createElement('script'); sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js'; sc.onload = r; sc.onerror = r; document.head.append(sc); }); }
 async function piQR(page) { const url = piPage(page), box = $('#pi-qr'); $('#pi-qr-url').textContent = url.replace(/^https?:\/\//, ''); if (box.dataset.url === url) return; box.dataset.url = url; box.innerHTML = ''; await piLoadQR();
   if (box.dataset.url !== url) return; try { const q = qrcode(0, 'M'); q.addData(url); q.make(); box.innerHTML = q.createSvgTag({cellSize: 5, margin: 0}); box.querySelector('svg').style.cssText = 'position:static;display:block;width:230px;height:230px'; } catch (e) { box.parentElement.firstElementChild.style.display = 'none'; } }

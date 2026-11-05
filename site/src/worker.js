@@ -342,9 +342,9 @@ export default {
     if (req.method === 'OPTIONS') return new Response(null, { headers: CORS });
     // short addresses for each night: /newspeak → that guide's home
     const short = path.replace(/^\/|\/$/g, '').toLowerCase();
-    if (short && !short.includes('/') && events(env)[short]) return Response.redirect(u.origin + '/?event=' + short, 302);
-    let mm = short.match(/^w\/([a-z0-9-]+)\/([0-9a-f]{10})$/); if (mm && events(env)[mm[1]]) return Response.redirect(u.origin + '/?event=' + mm[1] + '&w=' + mm[2], 302);
-    mm = short.match(/^m\/([a-z0-9]{5})$/); if (mm) return Response.redirect(u.origin + '/?meet=' + mm[1], 302);
+    if (short && !short.includes('/') && events(env)[short]) return new Response(null, { status: 302, headers: { location: '/?event=' + short } }); // relative: behind a tunnel this server sees http, and the phone must stay on https
+    let mm = short.match(/^w\/([a-z0-9-]+)\/([0-9a-f]{10})$/); if (mm && events(env)[mm[1]]) return new Response(null, { status: 302, headers: { location: '/?event=' + mm[1] + '&w=' + mm[2] } });
+    mm = short.match(/^m\/([a-z0-9]{5})$/); if (mm) return new Response(null, { status: 302, headers: { location: '/?meet=' + mm[1] } });
     if (!path.startsWith('/api/')) return env.ASSETS.fetch(req);
     if (env.GATE_ORIGIN) return viaGate(req, env, path);
     if (ctx && ctx.waitUntil && !env.waitUntil) env = { ...env, waitUntil: p => ctx.waitUntil(p) };

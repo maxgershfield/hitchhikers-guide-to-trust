@@ -67,7 +67,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 <script src="/questions.js"></script>
 </head>
 <body data-state="idle">
-<div class="top micro"><span id="night">The Hitchhiker's Guide to Trust</span><a id="more" href="/over-to-you">All the questions →</a></div>
+<div class="top micro"><span id="night">The Hitchhiker's Guide to Trust</span><a id="more" href="/over-to-you/">All the questions →</a></div>
 
 <div class="ask">
   <div class="q" id="q"></div>
@@ -115,7 +115,7 @@ button{font:inherit;color:inherit;cursor:pointer}
   $('mine').onclick = editOwn;
   $('own').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); $('own').blur(); } });
   $('own').addEventListener('blur', () => { const v = $('own').value.trim(); store.set(v); mine = !!v; showQ(); });
-  $('more').href = withEvent('/over-to-you'); if (inGuide('dpQuestions')) $('more').onclick = e => { e.preventDefault(); window.parent.dpQuestions(); };
+  $('more').href = withEvent('/over-to-you/'); if (inGuide('dpQuestions')) $('more').onclick = e => { e.preventDefault(); window.parent.dpQuestions(); };
   showQ(); if (q.has('own')) editOwn();
 
   // what kind of thing it is: one word, kept with the star

@@ -39,7 +39,7 @@ const ASSETS = { async fetch(req) {
   for (const p of tries) {
     try { return new Response(await readFile(new URL('.' + p, dir)), { headers: { 'content-type': TYPES[p.split('.').pop()] || 'application/octet-stream' } }); } catch (e) {}
   }
-  if (!raw.endsWith('/') && !/\.\w+$/.test(raw) && existsSync(new URL('.' + raw + '/index.html', dir))) return new Response(null, { status: 301, headers: { location: raw + '/' } });
+  if (!raw.endsWith('/') && !/\.\w+$/.test(raw) && existsSync(new URL('.' + raw + '/index.html', dir))) return new Response(null, { status: 301, headers: { location: raw + '/' + new URL(req.url).search } });
   return new Response('Not found', { status: 404 });
 } };
 // NODE_NAME labels where the gate is held (shown on the end prompt), e.g. NODE_NAME="Mitch's Pi".
