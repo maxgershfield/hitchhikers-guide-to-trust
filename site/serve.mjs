@@ -53,13 +53,20 @@ if (env.SCROLL_ORIGIN && env.ROOM_NAME && env.ROOM_KEY) {
   beat(); setInterval(beat, 30000).unref();
 }
 
+// One API call at a time. The worker reads the chain, adds to it and saves it back, with awaits between, so two calls
+// at the same instant would read the same chain and the second save would erase the first one's star.
+// /api/city is left out: it waits on another server, and only reads.
+let turn = Promise.resolve();
+const inTurn = fn => { const run = turn.then(fn); turn = run.catch(() => {}); return run; };
+
 http.createServer(async (req, res) => {
   try {
     const chunks = []; for await (const c of req) chunks.push(c);
     // Behind a tunnel the visitor's address arrives in a header; locally it is the socket.
     const ip = req.headers['cf-connecting-ip'] || String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket.remoteAddress;
     const request = new Request('http://' + (req.headers.host || HOST) + req.url, { method: req.method, headers: { ...req.headers, 'cf-connecting-ip': ip }, body: ['GET', 'HEAD', 'OPTIONS'].includes(req.method) ? undefined : Buffer.concat(chunks) });
-    const r = await worker.fetch(request, env);
+    const queued = req.url.startsWith('/api/') && !req.url.startsWith('/api/city');
+    const r = await (queued ? inTurn(() => worker.fetch(request, env)) : worker.fetch(request, env));
     res.writeHead(r.status, Object.fromEntries(r.headers)); res.end(Buffer.from(await r.arrayBuffer()));
   } catch (e) { res.writeHead(500); res.end('error'); }
 }).listen(PORT, HOST, () => {

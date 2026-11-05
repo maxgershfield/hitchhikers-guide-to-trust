@@ -9,7 +9,7 @@
 // /api/* call is handed to that node instead. The pages stay up here; when the node is unplugged, the gate is
 // closed and nothing can be submitted. Hosting the graph is what lets people in.
 
-const LIMIT = { title: 40, text: 160, poem: 1500, by: 40 }, PER_MINUTE = 30, QUEUE_MAX = 500, GATE_TIMEOUT_MS = 4000, CHAIN_MAX = 20000;
+const LIMIT = { title: 40, text: 160, poem: 1500, by: 40 }, PER_MINUTE = 120, QUEUE_MAX = 500, GATE_TIMEOUT_MS = 4000, CHAIN_MAX = 20000;
 const VOICE_MAX_B64 = 480000, VOICES_MAX = 400; // ~45 s of opus per note, sealed; a few hundred notes per event
 const CORS = { 'access-control-allow-origin': '*', 'access-control-allow-headers': 'content-type, authorization', 'access-control-allow-methods': 'GET, POST, OPTIONS' };
 
