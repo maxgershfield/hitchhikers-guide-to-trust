@@ -37,7 +37,7 @@ function isKeeper(env, req) {
   return d === 0;
 }
 
-const shown = list => list.filter(x => !x.hidden).map(({ id, kind, title, text, by, event, place }) => ({ id, kind, title, text, by, event, place }));
+const shown = list => list.filter(x => !x.hidden).map(({ id, kind, title, text, by, event, place, topic, source }) => ({ id, kind, title, text, by, event, place, topic, source }));
 
 // Approved guides and proverbs as Federated Wiki pages, ready for a community node's wiki to import.
 function wikiPages(list, name) {
@@ -182,7 +182,7 @@ async function api(req, env, path, body) {
 
   if (!ev) return json({ error: 'Unknown guide.' }, 400);
   const Q = 'queue', A = 'approved';
-  if (path === '/api/approved' && req.method === 'GET') { const only = url.searchParams.get('only'); return json(shown((await load(env, A)).filter(x => !only || x.event === only))); }
+  if (path === '/api/approved' && req.method === 'GET') { const only = url.searchParams.get('only'), topic = (url.searchParams.get('topic') || '').toLowerCase(); return json(shown((await load(env, A)).filter(x => (!only || x.event === only) && (!topic || x.topic === topic)))); }
 
   // one person's evidence: their stars (same mark) in order, chained into a root anyone can recompute
   if (path === '/api/evidence' && req.method === 'GET') {
@@ -314,8 +314,8 @@ async function api(req, env, path, body) {
       const link = await addLink(env, ev, clean(body.kind, 20) || 'chat', digest, body.mark);
       return link ? json({ ok: true, link }) : json({ error: 'The chain is full.' }, 503);
     }
-    // ChatHackers ceremony: a text contribution already consented in chat and approved by the ceremony admin.
-    // Writes a chat star (digest only on the chain) and puts the text on the approved wall for that night.
+    // ChatHackers ceremony: consented text from a chat group. Writes a chat star (digest on the chain)
+    // and puts the text on the approved wall, tagged with topic (Knowledge Café / group).
     if (action === 'ceremony') {
       const night = clean(body.event, 40).toLowerCase(), EV = events(env);
       if (!night || !EV[night]) return json({ error: 'Give a known night (event), e.g. newspeak or iiw43.' }, 400);
@@ -323,14 +323,16 @@ async function api(req, env, path, body) {
       const sourceId = clean(body.sourceId, 200); if (!sourceId) return json({ error: 'sourceId required.' }, 400);
       const by = clean(body.by, LIMIT.by) || 'ChatHackers';
       const channel = ['whatsapp', 'signal', 'test'].includes(body.channel) ? body.channel : 'unknown';
+      const topic = clean(body.topic, 60).toLowerCase().replace(/\s+/g, '-') || 'general';
+      const groupId = clean(body.groupId, 120);
       const prior = approved.find(x => x.source === 'chathackers' && x.sourceId === sourceId);
-      if (prior) return json({ ok: true, already: true, id: prior.id, seq: prior.seq, hash: prior.hash, event: prior.event });
-      const digest = await hex('chathackers|' + sourceId + '|' + text);
-      const link = await addLink(env, night, 'chat', digest, '', null, { source: 'chathackers' });
+      if (prior) return json({ ok: true, already: true, id: prior.id, seq: prior.seq, hash: prior.hash, event: prior.event, topic: prior.topic });
+      const digest = await hex('chathackers|' + sourceId + '|' + topic + '|' + text);
+      const link = await addLink(env, night, 'chat', digest, '', null, { source: 'chathackers', topic, ...(groupId ? { groupId } : {}) });
       if (!link) return json({ error: 'The chain is full tonight.' }, 503);
-      const item = { id: Date.now() * 100 + Math.floor(Math.random() * 100), kind: 'proverb', text, by, event: night, at: new Date().toISOString(), source: 'chathackers', sourceId, channel, seq: link.seq, hash: link.hash };
+      const item = { id: Date.now() * 100 + Math.floor(Math.random() * 100), kind: 'proverb', text, by, event: night, topic, groupId, at: new Date().toISOString(), source: 'chathackers', sourceId, channel, seq: link.seq, hash: link.hash };
       approved.push(item); await save(env, A, approved);
-      return json({ ok: true, id: item.id, event: night, seq: link.seq, hash: link.hash, link });
+      return json({ ok: true, id: item.id, event: night, topic, seq: link.seq, hash: link.hash, link });
     }
     if (action === 'approve') {
       const i = queue.findIndex(x => x.id === id); if (i < 0) return json({ error: 'Not in the queue.' }, 404);

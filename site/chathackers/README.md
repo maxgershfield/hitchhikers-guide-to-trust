@@ -1,34 +1,28 @@
 # ChatHackers → Ceremony listener
 
-Standalone Node 20+ adapter. ChatHackers posts **consented text**; a ceremony admin
-approves; approval writes a **chat star** onto the Guide evidence chain and puts the
-text on that night's approved wall.
+Fast path for the night: ChatHackers posts **consented text** from a group; we write a
+**chat star** on that night’s Guide chain immediately, tagged with a **topic**
+(Knowledge Café). No approve click in the happy path.
 
-This does not invent cryptographic seals. The Guide's own keeper endpoint
-(`/api/keeper/ceremony` in `site/src/worker.js`) creates the star.
-
-## Start (with local Guide)
-
-Terminal A, the Guide:
+## Start with the Guide
 
 ```bash
-cd ../
-node serve.mjs          # http://127.0.0.1:8788 — note data/keeper-key.txt
-```
+# Terminal A — Guide
+cd site
+node serve.mjs
 
-Terminal B, this listener:
-
-```bash
+# Terminal B — listener
 cd site/chathackers
 export CHATHACKERS_WEBHOOK_SECRET="$(openssl rand -hex 32)"
 export TRUST_ADMIN_KEY="$(openssl rand -hex 32)"
 export TRUST_SITE=http://127.0.0.1:8788
 export KEEPER_KEY="$(tr -d '\n' < ../data/keeper-key.txt)"
-node server.mjs         # http://127.0.0.1:8799/
+export DEFAULT_EVENT=newspeak
+export TOPIC_MAP='{"wa:deep-thought":"deep-thought","wa:space-data-centers":"space-data-centers"}'
+node server.mjs
 ```
 
-Open the test UI, paste both secrets, send a text contribution with a night selected,
-then Approve. Confirm a new `chat` star on `http://127.0.0.1:8788/chain/?event=newspeak`.
+`AUTO_CHAIN` is on whenever `TRUST_SITE` and `KEEPER_KEY` are set. Set `AUTO_CHAIN=0` for the old pending/approve flow.
 
 ## ChatHackers contract
 
@@ -40,44 +34,67 @@ then Approve. Confirm a new `chat` star on `http://127.0.0.1:8788/chain/?event=n
   "messageId": "unique-message-id",
   "channel": "whatsapp",
   "type": "text",
-  "transcript": "I will keep the terrace desk for two hours tonight.",
+  "transcript": "I will keep looking at Deep Thought with this table for an hour.",
   "displayName": "Anonymous Hitchhiker",
   "consentToPublish": true,
-  "eventId": "newspeak"
+  "eventId": "newspeak",
+  "groupId": "wa:deep-thought",
+  "topic": "deep-thought"
 }
 ```
 
-- `eventId` required: `newspeak` | `iiw43` | `archive`
-- `type` must be `text` (transcript required; audio-only not accepted yet)
-- `consentToPublish` must be `true`
-- Repeated `messageId` → `200` duplicate, no second row
+| Field | Required | Notes |
+|-------|----------|--------|
+| `messageId` | yes | Idempotent |
+| `transcript` | yes | Text only for now |
+| `consentToPublish` | yes | Must be `true` |
+| `type` | yes | `text` |
+| `eventId` | no | Defaults to `DEFAULT_EVENT` (`newspeak`) |
+| `groupId` | no | Mapped via `TOPIC_MAP` → topic |
+| `topic` | no | Wins over map; else `DEFAULT_TOPIC` |
+
+**Response (auto):** `201 { status: "approved", seq, hash, topic, chainUrl }`  
+**Duplicate `messageId`:** `200` with the existing star.
+
+## Topics (different chat groups)
+
+Set `TOPIC_MAP` to stable ChatHackers / WhatsApp group ids:
+
+```bash
+TOPIC_MAP='{
+  "wa:deep-thought":"deep-thought",
+  "wa:space-data-centers":"space-data-centers"
+}'
+```
+
+| Group | topic |
+|-------|-------|
+| Deep Thought | `deep-thought` |
+| Space Data Centers | `space-data-centers` |
+
+Filter later: `/api/approved?topic=deep-thought` · `/api/ceremony/contributions?topic=space-data-centers` · `GET /api/ceremony/topics`
+
+Ask ChatHackers to send `groupId` on every webhook. Optional: after `201`, reply in that group with `chainUrl` (we cannot send WhatsApp ourselves).
 
 ## Routes
 
 | Route | Auth | Role |
 |-------|------|------|
-| `GET /health` | — | Health; `chain: true` when TRUST_SITE is wired |
-| `POST /api/integrations/chathackers` | webhook | Ingest pending text |
-| `GET /api/ceremony/pending` | admin | Pending list |
-| `POST /api/ceremony/approve/:id` | admin | Approve → Guide chain |
-| `POST /api/ceremony/reject/:id` | admin | Reject |
-| `GET /api/ceremony/contributions` | — | Approved feed |
-| `GET /api/ceremony/events` | — | SSE `event: star` |
+| `POST /api/integrations/chathackers` | webhook | Ingest → chain (auto) |
+| `GET /api/ceremony/contributions` | — | Approved feed (`?topic=` / `?event=`) |
+| `GET /api/ceremony/topics` | — | Counts + map |
+| `GET /api/ceremony/pending` | admin | Only if `AUTO_CHAIN=0` |
+| `POST /api/ceremony/approve/:id` | admin | Manual mode |
+| `POST /api/ceremony/reject/:id` | admin | Reject before chain |
+| `GET /api/ceremony/events` | — | SSE |
 
-## Deploy beside the Pi site
-
-Run on `127.0.0.1:8799`. In Caddy, route `/api/integrations/chathackers` and
-`/api/ceremony/*` here **before** the main Guide. Set `TRUST_SITE` to the Guide's
-loopback URL and `KEEPER_KEY` to the same key as the Guide. Do not expose the test UI
-or admin key publicly.
+Already-on-chain hide: Guide `/keeper` (approved wall).
 
 ## What lands on the chain
 
-On approve, the listener calls `POST {TRUST_SITE}/api/keeper/ceremony` with the keeper
-key. The Guide:
+`POST {TRUST_SITE}/api/keeper/ceremony` creates:
 
-1. adds a `chat` link whose leaf commits to `sha256(chathackers|sourceId|text)`
-2. puts the clear text on the **approved** proverb wall for that night (ceremony already
-   moderated; no second queue hop)
+1. a `chat` link with `topic` (and optional `groupId`) on that night
+2. an approved-wall proverb for readable text
 
-Public chain responses still show hashes and kinds only; the wall holds readable text.
+Leaf commits to `sha256(chathackers|sourceId|topic|text)`.
